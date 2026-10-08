@@ -118,6 +118,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) double verticalAlignmentMode;
 @property (nonatomic) NSInteger numberOfLines;
 @property (nonatomic) float preferredMaxLayoutWidth;
+
++ (instancetype)labelNodeWithText:(nullable NSString *)text;
 @end
 
 NS_ASSUME_NONNULL_END

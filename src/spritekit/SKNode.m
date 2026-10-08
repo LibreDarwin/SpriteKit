@@ -313,6 +313,26 @@ static NSValue *SKValueRect(CGRect r) {
 
 @implementation SKLabelNode
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _fontName = @"HelveticaNeue-UltraLight";
+        _fontSize = 32.0;
+        _fontColorR = _fontColorG = _fontColorB = _fontColorA = 1.0;
+        _colorR = _colorG = _colorB = _colorA = 1.0;
+        _numberOfLines = 1;
+        _preferredMaxLayoutWidth = 0.0;
+        _textSprites = [NSArray array];
+    }
+    return self;
+}
+
++ (instancetype)labelNodeWithText:(NSString *)text {
+    SKLabelNode *n = [[self alloc] init];
+    n.text = text;
+    return n;
+}
+
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
     [coder encodeObject:_fontName forKey:@"_fontName"];
@@ -331,10 +351,10 @@ static NSValue *SKValueRect(CGRect r) {
     [coder encodeDouble:_fontSize forKey:@"_fontSize"];
     [coder encodeDouble:_labelColorBlend forKey:@"_labelColorBlend"];
     [coder encodeInteger:_labelBlendMode forKey:@"_labelBlendMode"];
-    [coder encodeDouble:_horizontalAlignmentMode forKey:@"_horizontalAlignmentMode"];
-    [coder encodeDouble:_verticalAlignmentMode forKey:@"_verticalAlignmentMode"];
-    [coder encodeInteger:_numberOfLines forKey:@"_numberOfLines"];
-    [coder encodeFloat:_preferredMaxLayoutWidth forKey:@"_preferredMaxLayoutWidth"];
+    [coder encodeObject:@(_horizontalAlignmentMode) forKey:@"_horizontalAlignmentMode"];
+    [coder encodeObject:@(_verticalAlignmentMode) forKey:@"_verticalAlignmentMode"];
+    [coder encodeObject:@(_numberOfLines) forKey:@"_numberOfLines"];
+    [coder encodeObject:@(_preferredMaxLayoutWidth) forKey:@"_preferredMaxLayoutWidth"];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
@@ -356,10 +376,10 @@ static NSValue *SKValueRect(CGRect r) {
         _fontSize = [coder decodeDoubleForKey:@"_fontSize"];
         _labelColorBlend = [coder decodeDoubleForKey:@"_labelColorBlend"];
         _labelBlendMode = [coder decodeIntegerForKey:@"_labelBlendMode"];
-        _horizontalAlignmentMode = [coder decodeDoubleForKey:@"_horizontalAlignmentMode"];
-        _verticalAlignmentMode = [coder decodeDoubleForKey:@"_verticalAlignmentMode"];
-        _numberOfLines = [coder decodeIntegerForKey:@"_numberOfLines"];
-        _preferredMaxLayoutWidth = [coder decodeFloatForKey:@"_preferredMaxLayoutWidth"];
+        _horizontalAlignmentMode = [[coder decodeObjectForKey:@"_horizontalAlignmentMode"] doubleValue];
+        _verticalAlignmentMode = [[coder decodeObjectForKey:@"_verticalAlignmentMode"] doubleValue];
+        _numberOfLines = [[coder decodeObjectForKey:@"_numberOfLines"] integerValue];
+        _preferredMaxLayoutWidth = [[coder decodeObjectForKey:@"_preferredMaxLayoutWidth"] floatValue];
     }
     return self;
 }
