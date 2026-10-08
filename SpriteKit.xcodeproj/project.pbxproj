@@ -1,0 +1,256 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FEEDFACE0000000000000021 /* TextureAtlas.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000051 /* TextureAtlas.m */; };
+		FEEDFACE0000000000000022 /* maxrects.c in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000052 /* maxrects.c */; };
+		FEEDFACE0000000000000023 /* introsort.c in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000053 /* introsort.c */; };
+		FEEDFACE0000000000000031 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000061 /* Foundation.framework */; };
+		FEEDFACE0000000000000032 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000062 /* CoreGraphics.framework */; };
+		FEEDFACE0000000000000033 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000063 /* ImageIO.framework */; };
+		FEEDFACE0000000000000034 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000064 /* libz.tbd */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		FEEDFACE0000000000000041 /* TextureAtlas */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TextureAtlas; sourceTree = BUILT_PRODUCTS_DIR; };
+		FEEDFACE0000000000000051 /* TextureAtlas.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TextureAtlas.m; sourceTree = "<group>"; };
+		FEEDFACE0000000000000052 /* maxrects.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = maxrects.c; sourceTree = "<group>"; };
+		FEEDFACE0000000000000053 /* introsort.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = introsort.c; sourceTree = "<group>"; };
+		FEEDFACE0000000000000061 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		FEEDFACE0000000000000062 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		FEEDFACE0000000000000063 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		FEEDFACE0000000000000064 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FEEDFACE0000000000000081 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEEDFACE0000000000000031 /* Foundation.framework in Frameworks */,
+				FEEDFACE0000000000000032 /* CoreGraphics.framework in Frameworks */,
+				FEEDFACE0000000000000033 /* ImageIO.framework in Frameworks */,
+				FEEDFACE0000000000000034 /* libz.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FEEDFACE0000000000000002 = {
+			isa = PBXGroup;
+			children = (
+				FEEDFACE0000000000000004 /* src */,
+				FEEDFACE0000000000000006 /* Frameworks */,
+				FEEDFACE0000000000000003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FEEDFACE0000000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FEEDFACE0000000000000041 /* TextureAtlas */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FEEDFACE0000000000000004 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				FEEDFACE0000000000000005 /* atlasc */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		FEEDFACE0000000000000005 /* atlasc */ = {
+			isa = PBXGroup;
+			children = (
+				FEEDFACE0000000000000051 /* TextureAtlas.m */,
+				FEEDFACE0000000000000052 /* maxrects.c */,
+				FEEDFACE0000000000000053 /* introsort.c */,
+			);
+			path = atlasc;
+			sourceTree = "<group>";
+		};
+		FEEDFACE0000000000000006 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FEEDFACE0000000000000061 /* Foundation.framework */,
+				FEEDFACE0000000000000062 /* CoreGraphics.framework */,
+				FEEDFACE0000000000000063 /* ImageIO.framework */,
+				FEEDFACE0000000000000064 /* libz.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FEEDFACE0000000000000091 /* TextureAtlas */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FEEDFACE00000000000000A2 /* Build configuration list for PBXNativeTarget "TextureAtlas" */;
+			buildPhases = (
+				FEEDFACE0000000000000071 /* Sources */,
+				FEEDFACE0000000000000081 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TextureAtlas;
+			productName = TextureAtlas;
+			productReference = FEEDFACE0000000000000041 /* TextureAtlas */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FEEDFACE0000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = FEEDFACE00000000000000A1 /* Build configuration list for PBXProject "SpriteKit" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = FEEDFACE0000000000000002;
+			productRefGroup = FEEDFACE0000000000000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FEEDFACE0000000000000091 /* TextureAtlas */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FEEDFACE0000000000000071 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEEDFACE0000000000000021 /* TextureAtlas.m in Sources */,
+				FEEDFACE0000000000000022 /* maxrects.c in Sources */,
+				FEEDFACE0000000000000023 /* introsort.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		FEEDFACE00000000000000B1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_EXCEPTIONS = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = NO;
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/debug";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				OBJROOT = "$(SRCROOT)/build/obj/debug";
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SYMROOT = "$(SRCROOT)/build";
+			};
+			name = Debug;
+		};
+		FEEDFACE00000000000000B2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_EXCEPTIONS = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = NO;
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/release";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				OBJROOT = "$(SRCROOT)/build/obj/release";
+				SDKROOT = macosx;
+				SYMROOT = "$(SRCROOT)/build";
+			};
+			name = Release;
+		};
+		FEEDFACE00000000000000B3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = "";
+				OTHER_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-deprecated-declarations",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		FEEDFACE00000000000000B4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = "";
+				OTHER_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-deprecated-declarations",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FEEDFACE00000000000000A1 /* Build configuration list for PBXProject "SpriteKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FEEDFACE00000000000000B1 /* Debug */,
+				FEEDFACE00000000000000B2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FEEDFACE00000000000000A2 /* Build configuration list for PBXNativeTarget "TextureAtlas" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FEEDFACE00000000000000B3 /* Debug */,
+				FEEDFACE00000000000000B4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FEEDFACE0000000000000001 /* Project object */;
+}
