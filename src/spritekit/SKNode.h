@@ -58,10 +58,54 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) long blendMode;
 @end
 
+#pragma mark - PKPhysicsBody / PKPhysicsWorld
+
+// An SKScene archives its physics state under PhysicsKit's class names, with
+// PKPhysicsBody and PKPhysicsWorld both rooted at NSObject
+// (["$classname":"PKPhysicsBody", "$classes":["PKPhysicsBody","NSObject"]]).
+// The clean-room runtime therefore defines its own classes with those exact
+// names so the archived hierarchy matches byte-for-byte.
+
+@interface PKPhysicsBody : NSObject <NSCoding>
+@property (nonatomic) NSInteger shapeType;
+@property (nonatomic) double radius;
+@property (nonatomic, copy) NSString *p0;
+@property (nonatomic) double edgeRadius;
+@property (nonatomic) BOOL dynamic;
+@property (nonatomic) BOOL needsContinuousCollsionDetection;
+@property (nonatomic) BOOL allowRotation;
+@property (nonatomic) BOOL pinned;
+@property (nonatomic) double friction;
+@property (nonatomic) double charge;
+@property (nonatomic) double restitution;
+@property (nonatomic) double density;
+@property (nonatomic) BOOL affectedByGravity;
+@property (nonatomic) int32_t categoryBitMask;
+@property (nonatomic) int32_t collisionBitMask;
+@property (nonatomic) int32_t intersectionTestBitMask;
+@property (nonatomic) int32_t fieldBitMask;
+@property (nonatomic, copy) NSString *linearVelocity;
+@property (nonatomic) double angularVelocity;
+@property (nonatomic) double linearDamping;
+@property (nonatomic) double angularDamping;
+
+// Static body SKScene attaches to its world (dynamic == NO, category 0).
++ (instancetype)pinBody;
++ (instancetype)bodyWithCircleOfRadius:(double)radius;
+@end
+
+@interface PKPhysicsWorld : NSObject <NSCoding>
+@property (nonatomic, readonly) NSMutableArray *joints;
+@property (nonatomic, readonly) NSMutableArray *bodies;
+@property (nonatomic, copy) NSString *gravity;
+@property (nonatomic) double speedMultiplier;
++ (instancetype)world;
+@end
+
 #pragma mark - SKScene
 
 @interface SKScene : SKEffectNode
-@property (nonatomic, nullable) id scenePinBody;
+@property (nonatomic, strong, nullable) PKPhysicsBody *scenePinBody;
 @property (nonatomic) double backgroundColorR;
 @property (nonatomic) double backgroundColorG;
 @property (nonatomic) double backgroundColorB;
@@ -70,8 +114,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) CGRect visibleRect;
 @property (nonatomic, nullable) id camera;     // SKCameraNode
 @property (nonatomic) NSInteger scaleMode;
-@property (nonatomic, nullable) id physicsWorld; // SKPhysicsWorld
+@property (nonatomic, strong, nullable) PKPhysicsWorld *physicsWorld;
 @property (nonatomic) CGPoint anchorPoint;
+@property (nonatomic) CGSize size;
+
++ (instancetype)sceneWithSize:(CGSize)size;
 @end
 
 #pragma mark - SKSpriteNode

@@ -190,9 +190,203 @@ static NSValue *SKValueRect(CGRect r) {
 
 @end
 
+#pragma mark - PKPhysicsBody
+
+// PhysicsKit's body, as archived by SKScene.  Field order and encoding flavour
+// are taken from the runtime probe in tools/sk_emit_spy.m (encodeInt: /
+// encodeInt32: / encodeDouble: / encodeBool: / encodeObject:), not from the
+// archive's hash-bucket layout.
+
+@implementation PKPhysicsBody
+
++ (instancetype)pinBody {
+    PKPhysicsBody *body = [[self alloc] init];
+    body.dynamic = NO;
+    body.categoryBitMask = 0;
+    return body;
+}
+
++ (instancetype)bodyWithCircleOfRadius:(double)radius {
+    PKPhysicsBody *body = [[self alloc] init];
+    body.shapeType = 1;
+    body.radius = radius;
+    return body;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _shapeType = 1;
+        _radius = 1.0;
+        _p0 = NSStringFromPoint(NSZeroPoint);
+        _edgeRadius = (double)(float)0.009;
+        _dynamic = YES;
+        _needsContinuousCollsionDetection = NO;
+        _allowRotation = YES;
+        _pinned = NO;
+        _friction = (double)(float)0.2;
+        _charge = 0.0;
+        _restitution = (double)(float)0.2;
+        _density = 1.0;
+        _affectedByGravity = YES;
+        _categoryBitMask = -1;
+        _collisionBitMask = -1;
+        _intersectionTestBitMask = 0;
+        _fieldBitMask = -1;
+        _linearVelocity = NSStringFromPoint(NSZeroPoint);
+        _angularVelocity = 0.0;
+        _linearDamping = (double)(float)0.1;
+        _angularDamping = (double)(float)0.1;
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeInt:(int)_shapeType forKey:@"_shapeType"];
+    [coder encodeDouble:_radius forKey:@"_radius"];
+    [coder encodeObject:_p0 forKey:@"_p0"];
+    [coder encodeDouble:_edgeRadius forKey:@"_edgeRadius"];
+    [coder encodeBool:_dynamic forKey:@"dynamic"];
+    [coder encodeBool:_needsContinuousCollsionDetection forKey:@"needsContinuousCollsionDetection"];
+    [coder encodeBool:_allowRotation forKey:@"allowRotation"];
+    [coder encodeBool:_pinned forKey:@"pinned"];
+    [coder encodeDouble:_friction forKey:@"friction"];
+    [coder encodeDouble:_charge forKey:@"charge"];
+    [coder encodeDouble:_restitution forKey:@"restitution"];
+    [coder encodeDouble:_density forKey:@"density"];
+    [coder encodeBool:_affectedByGravity forKey:@"affectedByGravity"];
+    [coder encodeInt32:_categoryBitMask forKey:@"categoryBitMask"];
+    [coder encodeInt32:_collisionBitMask forKey:@"collisionBitMask"];
+    [coder encodeInt32:_intersectionTestBitMask forKey:@"intersectionTestBitMask"];
+    [coder encodeInt32:_fieldBitMask forKey:@"fieldBitMask"];
+    [coder encodeObject:_linearVelocity forKey:@"linearVelocity"];
+    [coder encodeDouble:_angularVelocity forKey:@"angularVelocity"];
+    [coder encodeDouble:_linearDamping forKey:@"linearDamping"];
+    [coder encodeDouble:_angularDamping forKey:@"angularDamping"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        _shapeType = [coder decodeIntegerForKey:@"_shapeType"];
+        _radius = [coder decodeDoubleForKey:@"_radius"];
+        _p0 = [coder decodeObjectOfClass:[NSString class] forKey:@"_p0"];
+        _edgeRadius = [coder decodeDoubleForKey:@"_edgeRadius"];
+        _dynamic = [coder decodeBoolForKey:@"dynamic"];
+        _needsContinuousCollsionDetection = [coder decodeBoolForKey:@"needsContinuousCollsionDetection"];
+        _allowRotation = [coder decodeBoolForKey:@"allowRotation"];
+        _pinned = [coder decodeBoolForKey:@"pinned"];
+        _friction = [coder decodeDoubleForKey:@"friction"];
+        _charge = [coder decodeDoubleForKey:@"charge"];
+        _restitution = [coder decodeDoubleForKey:@"restitution"];
+        _density = [coder decodeDoubleForKey:@"density"];
+        _affectedByGravity = [coder decodeBoolForKey:@"affectedByGravity"];
+        _categoryBitMask = (int32_t)[coder decodeInt32ForKey:@"categoryBitMask"];
+        _collisionBitMask = (int32_t)[coder decodeInt32ForKey:@"collisionBitMask"];
+        _intersectionTestBitMask = (int32_t)[coder decodeInt32ForKey:@"intersectionTestBitMask"];
+        _fieldBitMask = (int32_t)[coder decodeInt32ForKey:@"fieldBitMask"];
+        _linearVelocity = [coder decodeObjectOfClass:[NSString class] forKey:@"linearVelocity"];
+        _angularVelocity = [coder decodeDoubleForKey:@"angularVelocity"];
+        _linearDamping = [coder decodeDoubleForKey:@"linearDamping"];
+        _angularDamping = [coder decodeDoubleForKey:@"angularDamping"];
+    }
+    return self;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+@end
+
+#pragma mark - PKPhysicsWorld
+
+@implementation PKPhysicsWorld
+
++ (instancetype)world {
+    return [[self alloc] init];
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _joints = [NSMutableArray array];
+        _bodies = [NSMutableArray array];
+        _gravity = [NSString stringWithFormat:@"{%g, %g}", 0.0, -9.8];
+        _speedMultiplier = 1.0;
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:_joints forKey:@"_joints"];
+    [coder encodeObject:_bodies forKey:@"_bodies"];
+    [coder encodeObject:_gravity forKey:@"gravity"];
+    [coder encodeDouble:_speedMultiplier forKey:@"speedMultiplier"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        _joints = [coder decodeObjectForKey:@"_joints"];
+        _bodies = [coder decodeObjectForKey:@"_bodies"];
+        _gravity = [coder decodeObjectOfClass:[NSString class] forKey:@"gravity"];
+        _speedMultiplier = [coder decodeDoubleForKey:@"speedMultiplier"];
+    }
+    return self;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+@end
+
 #pragma mark - SKScene
 
 @implementation SKScene
+
++ (instancetype)sceneWithSize:(CGSize)size {
+    return [[self alloc] initWithSize:size];
+}
+
+- (instancetype)init {
+    return [self initWithSize:CGSizeZero];
+}
+
+- (instancetype)initWithSize:(CGSize)size {
+    // SKEffectNode's initializer defaults _shouldEnableEffects to YES; scenes
+    // never rasterize unless asked to, so it is turned back off here.
+    self = [super init];
+    if (self) {
+        self.shouldEnableEffects = NO;
+        _backgroundColorR = (double)(float)0.15;
+        _backgroundColorG = (double)(float)0.15;
+        _backgroundColorB = (double)(float)0.15;
+        _backgroundColorA = 1.0;
+        _anchorPoint = CGPointZero;
+        _sceneBounds = (CGRect){CGPointZero, size};
+        _visibleRect = CGRectMake(-_anchorPoint.x * size.width,
+                                  -_anchorPoint.y * size.height,
+                                  size.width, size.height);
+        _scaleMode = 0;
+        _scenePinBody = [PKPhysicsBody pinBody];
+        _physicsWorld = [PKPhysicsWorld world];
+        [_physicsWorld.bodies addObject:_scenePinBody];
+    }
+    return self;
+}
+
+- (CGSize)size {
+    return _sceneBounds.size;
+}
+
+- (void)setSize:(CGSize)size {
+    _sceneBounds = (CGRect){CGPointZero, size};
+    _visibleRect = CGRectMake(-_anchorPoint.x * size.width,
+                              -_anchorPoint.y * size.height,
+                              size.width, size.height);
+}
 
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
