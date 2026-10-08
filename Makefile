@@ -35,14 +35,18 @@ TOOL_OBJS := $(TOOL_OBJS:.c=.o)
 # Clean-room SpriteKit.framework runtime.  Currently the SKAction class
 # cluster; parity binaries drive the library against the Apple goldens in
 # tools/conformance/SpriteKit.
-SK_OBJS   := $(OBJDIR)/spritekit/SKAction.o
+SK_OBJS   := $(OBJDIR)/spritekit/SKAction.o $(OBJDIR)/spritekit/SKNode.o
 SK_FLAGS  := -I src/spritekit
 
 PARITY_ACTIONS := $(BUILD_DIR)/sk_action_parity
 PARITY_ACTIONS_OBJ := $(OBJDIR)/spritekit/sk_action_parity.o
 ACTIONS_GOLDEN := tools/conformance/SpriteKit/actions_moveAndScale.skeep
 
-all: $(TOOL) $(PARITY_ACTIONS)
+PARITY_NODE := $(BUILD_DIR)/sk_node_parity
+PARITY_NODE_OBJ := $(OBJDIR)/spritekit/sk_node_parity.o
+NODE_GOLDEN := tools/conformance/SpriteKit/oracle_node.skeep
+
+all: $(TOOL) $(PARITY_ACTIONS) $(PARITY_NODE)
 
 $(TOOL): $(TOOL_OBJS)
 	@mkdir -p $(BUILD_DIR)
@@ -52,6 +56,10 @@ $(OBJDIR)/spritekit/SKAction.o: src/spritekit/SKAction.m src/spritekit/SKAction.
 	@mkdir -p $(OBJDIR)/spritekit
 	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ src/spritekit/SKAction.m
 
+$(OBJDIR)/spritekit/SKNode.o: src/spritekit/SKNode.m src/spritekit/SKNode.h
+	@mkdir -p $(OBJDIR)/spritekit
+	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ src/spritekit/SKNode.m
+
 $(PARITY_ACTIONS_OBJ): tools/sk_action_parity.m src/spritekit/SKAction.h
 	@mkdir -p $(OBJDIR)/spritekit
 	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ tools/sk_action_parity.m
@@ -59,7 +67,16 @@ $(PARITY_ACTIONS_OBJ): tools/sk_action_parity.m src/spritekit/SKAction.h
 $(PARITY_ACTIONS): $(PARITY_ACTIONS_OBJ) $(SK_OBJS)
 	@mkdir -p $(BUILD_DIR)
 	$(CC) $(MFLAGS) -o $@ $(PARITY_ACTIONS_OBJ) $(SK_OBJS) \
-	    -framework Foundation -framework CoreGraphics
+	    -framework Foundation -framework CoreGraphics -framework AppKit
+
+$(PARITY_NODE_OBJ): tools/sk_node_parity.m src/spritekit/SKNode.h
+	@mkdir -p $(OBJDIR)/spritekit
+	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ tools/sk_node_parity.m
+
+$(PARITY_NODE): $(PARITY_NODE_OBJ) $(SK_OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(MFLAGS) -o $@ $(PARITY_NODE_OBJ) $(SK_OBJS) \
+	    -framework Foundation -framework CoreGraphics -framework AppKit
 
 $(OBJDIR)/atlasc/TextureAtlas.o: src/atlasc/TextureAtlas.m
 	@mkdir -p $(OBJDIR)/atlasc
@@ -88,8 +105,17 @@ test-atlasc: $(TOOL)
 	$(TEST_PY) tools/conformance/run_tests.py TextureAtlas --build-dir $(BUILD_DIR)
 
 # Byte-identical archive parity against Apple-recorded SpriteKit goldens.
-test-spritekit: $(PARITY_ACTIONS)
+test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE)
 	$(PARITY_ACTIONS) $(ACTIONS_GOLDEN)
+	$(PARITY_NODE) $(NODE_GOLDEN)
+
+# Re-record the Apple goldens (development aid; links the real SpriteKit).
+# Not part of `all` -- run by hand when adding a new node class to the suite.
+oracle-spritekit: tools/sk_oracle.m
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(OBJCFLAGS) -o $(BUILD_DIR)/sk_oracle tools/sk_oracle.m \
+	    -framework Foundation -framework CoreGraphics -framework AppKit -framework SpriteKit
+	$(BUILD_DIR)/sk_oracle
 
 clean:
 	rm -rf build

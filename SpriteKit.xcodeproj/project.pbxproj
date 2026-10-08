@@ -14,17 +14,57 @@
 		FEEDFACE0000000000000032 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000062 /* CoreGraphics.framework */; };
 		FEEDFACE0000000000000033 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000063 /* ImageIO.framework */; };
 		FEEDFACE0000000000000034 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000064 /* libz.tbd */; };
+		FEEDFACE0000000000000025 /* SKAction.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000055 /* SKAction.m */; };
+		FEEDFACE0000000000000026 /* SKNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000057 /* SKNode.m */; };
+		FEEDFACE0000000000000027 /* sk_action_parity.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000059 /* sk_action_parity.m */; };
+		FEEDFACE0000000000000028 /* sk_node_parity.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE000000000000005A /* sk_node_parity.m */; };
+		FEEDFACE0000000000000035 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000065 /* AppKit.framework */; };
+		FEEDFACE0000000000000036 /* libSpriteKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000042 /* libSpriteKit.a */; };
+		FEEDFACE0000000000000037 /* libSpriteKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000042 /* libSpriteKit.a */; };
+		FEEDFACE0000000000000038 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000061 /* Foundation.framework */; };
+		FEEDFACE0000000000000039 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000062 /* CoreGraphics.framework */; };
+		FEEDFACE000000000000003A /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000065 /* AppKit.framework */; };
+		FEEDFACE000000000000003B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000061 /* Foundation.framework */; };
+		FEEDFACE000000000000003C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000062 /* CoreGraphics.framework */; };
+		FEEDFACE000000000000003D /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000065 /* AppKit.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FEEDFACE00000000000000C1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FEEDFACE0000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FEEDFACE0000000000000091;
+			remoteInfo = SpriteKit;
+		};
+		FEEDFACE00000000000000C3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FEEDFACE0000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FEEDFACE0000000000000091;
+			remoteInfo = SpriteKit;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		FEEDFACE0000000000000041 /* TextureAtlas */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TextureAtlas; sourceTree = BUILT_PRODUCTS_DIR; };
+		FEEDFACE0000000000000042 /* libSpriteKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSpriteKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FEEDFACE0000000000000043 /* sk_action_parity */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sk_action_parity; sourceTree = BUILT_PRODUCTS_DIR; };
+		FEEDFACE0000000000000044 /* sk_node_parity */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sk_node_parity; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEEDFACE0000000000000051 /* TextureAtlas.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TextureAtlas.m; sourceTree = "<group>"; };
 		FEEDFACE0000000000000052 /* maxrects.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = maxrects.c; sourceTree = "<group>"; };
 		FEEDFACE0000000000000053 /* introsort.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = introsort.c; sourceTree = "<group>"; };
+		FEEDFACE0000000000000055 /* SKAction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKAction.m; sourceTree = "<group>"; };
+		FEEDFACE0000000000000056 /* SKAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKAction.h; sourceTree = "<group>"; };
+		FEEDFACE0000000000000057 /* SKNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKNode.m; sourceTree = "<group>"; };
+		FEEDFACE0000000000000058 /* SKNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKNode.h; sourceTree = "<group>"; };
+		FEEDFACE0000000000000059 /* sk_action_parity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sk_action_parity.m; sourceTree = "<group>"; };
+		FEEDFACE000000000000005A /* sk_node_parity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sk_node_parity.m; sourceTree = "<group>"; };
 		FEEDFACE0000000000000061 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FEEDFACE0000000000000062 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		FEEDFACE0000000000000063 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		FEEDFACE0000000000000064 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		FEEDFACE0000000000000065 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +79,38 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FEEDFACE0000000000000083 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEEDFACE0000000000000031 /* Foundation.framework in Frameworks */,
+				FEEDFACE0000000000000032 /* CoreGraphics.framework in Frameworks */,
+				FEEDFACE0000000000000035 /* AppKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FEEDFACE0000000000000085 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEEDFACE0000000000000036 /* libSpriteKit.a in Frameworks */,
+				FEEDFACE0000000000000038 /* Foundation.framework in Frameworks */,
+				FEEDFACE0000000000000039 /* CoreGraphics.framework in Frameworks */,
+				FEEDFACE000000000000003A /* AppKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FEEDFACE0000000000000087 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEEDFACE0000000000000037 /* libSpriteKit.a in Frameworks */,
+				FEEDFACE000000000000003B /* Foundation.framework in Frameworks */,
+				FEEDFACE000000000000003C /* CoreGraphics.framework in Frameworks */,
+				FEEDFACE000000000000003D /* AppKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -46,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				FEEDFACE0000000000000004 /* src */,
+				FEEDFACE0000000000000008 /* tools */,
 				FEEDFACE0000000000000006 /* Frameworks */,
 				FEEDFACE0000000000000003 /* Products */,
 			);
@@ -55,6 +128,9 @@
 			isa = PBXGroup;
 			children = (
 				FEEDFACE0000000000000041 /* TextureAtlas */,
+				FEEDFACE0000000000000042 /* libSpriteKit.a */,
+				FEEDFACE0000000000000043 /* sk_action_parity */,
+				FEEDFACE0000000000000044 /* sk_node_parity */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -63,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				FEEDFACE0000000000000005 /* atlasc */,
+				FEEDFACE0000000000000007 /* spritekit */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -83,19 +160,40 @@
 				FEEDFACE0000000000000061 /* Foundation.framework */,
 				FEEDFACE0000000000000062 /* CoreGraphics.framework */,
 				FEEDFACE0000000000000063 /* ImageIO.framework */,
+				FEEDFACE0000000000000065 /* AppKit.framework */,
 				FEEDFACE0000000000000064 /* libz.tbd */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		FEEDFACE0000000000000007 /* spritekit */ = {
+			isa = PBXGroup;
+			children = (
+				FEEDFACE0000000000000056 /* SKAction.h */,
+				FEEDFACE0000000000000055 /* SKAction.m */,
+				FEEDFACE0000000000000058 /* SKNode.h */,
+				FEEDFACE0000000000000057 /* SKNode.m */,
+			);
+			path = spritekit;
+			sourceTree = "<group>";
+		};
+		FEEDFACE0000000000000008 /* tools */ = {
+			isa = PBXGroup;
+			children = (
+				FEEDFACE0000000000000059 /* sk_action_parity.m */,
+				FEEDFACE000000000000005A /* sk_node_parity.m */,
+			);
+			path = tools;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		FEEDFACE0000000000000091 /* TextureAtlas */ = {
+		FEEDFACE0000000000000040 /* TextureAtlas */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FEEDFACE00000000000000A2 /* Build configuration list for PBXNativeTarget "TextureAtlas" */;
 			buildPhases = (
-				FEEDFACE0000000000000071 /* Sources */,
+				FEEDFACE0000000000000080 /* Sources */,
 				FEEDFACE0000000000000081 /* Frameworks */,
 			);
 			buildRules = (
@@ -107,14 +205,64 @@
 			productReference = FEEDFACE0000000000000041 /* TextureAtlas */;
 			productType = "com.apple.product-type.tool";
 		};
+		FEEDFACE0000000000000091 /* SpriteKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FEEDFACE00000000000000A3 /* Build configuration list for PBXNativeTarget "SpriteKit" */;
+			buildPhases = (
+				FEEDFACE0000000000000082 /* Sources */,
+				FEEDFACE0000000000000083 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SpriteKit;
+			productName = SpriteKit;
+			productReference = FEEDFACE0000000000000042 /* libSpriteKit.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		FEEDFACE0000000000000092 /* sk_action_parity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FEEDFACE00000000000000A4 /* Build configuration list for PBXNativeTarget "sk_action_parity" */;
+			buildPhases = (
+				FEEDFACE0000000000000084 /* Sources */,
+				FEEDFACE0000000000000085 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FEEDFACE00000000000000C2 /* PBXTargetDependency */,
+			);
+			name = sk_action_parity;
+			productName = sk_action_parity;
+			productReference = FEEDFACE0000000000000043 /* sk_action_parity */;
+			productType = "com.apple.product-type.tool";
+		};
+		FEEDFACE0000000000000093 /* sk_node_parity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FEEDFACE00000000000000A5 /* Build configuration list for PBXNativeTarget "sk_node_parity" */;
+			buildPhases = (
+				FEEDFACE0000000000000086 /* Sources */,
+				FEEDFACE0000000000000087 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FEEDFACE00000000000000C4 /* PBXTargetDependency */,
+			);
+			name = sk_node_parity;
+			productName = sk_node_parity;
+			productReference = FEEDFACE0000000000000044 /* sk_node_parity */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		FEEDFACE0000000000000001 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1600;
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1500;
 			};
 			buildConfigurationList = FEEDFACE00000000000000A1 /* Build configuration list for PBXProject "SpriteKit" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -129,13 +277,16 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				FEEDFACE0000000000000091 /* TextureAtlas */,
+				FEEDFACE0000000000000040 /* TextureAtlas */,
+				FEEDFACE0000000000000091 /* SpriteKit */,
+				FEEDFACE0000000000000092 /* sk_action_parity */,
+				FEEDFACE0000000000000093 /* sk_node_parity */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		FEEDFACE0000000000000071 /* Sources */ = {
+		FEEDFACE0000000000000080 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -145,87 +296,144 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FEEDFACE0000000000000082 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEEDFACE0000000000000025 /* SKAction.m in Sources */,
+				FEEDFACE0000000000000026 /* SKNode.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FEEDFACE0000000000000084 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEEDFACE0000000000000027 /* sk_action_parity.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FEEDFACE0000000000000086 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEEDFACE0000000000000028 /* sk_node_parity.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FEEDFACE00000000000000C2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FEEDFACE0000000000000091 /* SpriteKit */;
+			targetProxy = FEEDFACE00000000000000C1 /* PBXContainerItemProxy */;
+		};
+		FEEDFACE00000000000000C4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FEEDFACE0000000000000091 /* SpriteKit */;
+			targetProxy = FEEDFACE00000000000000C3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		FEEDFACE00000000000000B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_EXCEPTIONS = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = NO;
-				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/debug";
-				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				OBJROOT = "$(SRCROOT)/build/obj/debug";
-				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
-				SYMROOT = "$(SRCROOT)/build";
 			};
 			name = Debug;
 		};
 		FEEDFACE00000000000000B2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_EXCEPTIONS = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = NO;
-				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/release";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				OBJROOT = "$(SRCROOT)/build/obj/release";
 				SDKROOT = macosx;
-				SYMROOT = "$(SRCROOT)/build";
 			};
 			name = Release;
 		};
 		FEEDFACE00000000000000B3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXECUTABLE_PREFIX = "";
-				OTHER_CFLAGS = (
-					"-Wall",
-					"-Wextra",
-					"-Wno-deprecated-declarations",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/debug";
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = TextureAtlas;
 			};
 			name = Debug;
 		};
 		FEEDFACE00000000000000B4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EXECUTABLE_PREFIX = "";
-				OTHER_CFLAGS = (
-					"-Wall",
-					"-Wextra",
-					"-Wno-deprecated-declarations",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/release";
+				GCC_OPTIMIZATION_LEVEL = 2;
+				PRODUCT_NAME = TextureAtlas;
+			};
+			name = Release;
+		};
+		FEEDFACE00000000000000B5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/debug";
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/src/spritekit";
+				PRODUCT_NAME = SpriteKit;
+			};
+			name = Debug;
+		};
+		FEEDFACE00000000000000B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/release";
+				GCC_OPTIMIZATION_LEVEL = 2;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/src/spritekit";
+				PRODUCT_NAME = SpriteKit;
+			};
+			name = Release;
+		};
+		FEEDFACE00000000000000B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/debug";
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/src/spritekit";
+				PRODUCT_NAME = sk_action_parity;
+			};
+			name = Debug;
+		};
+		FEEDFACE00000000000000B8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/release";
+				GCC_OPTIMIZATION_LEVEL = 2;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/src/spritekit";
+				PRODUCT_NAME = sk_action_parity;
+			};
+			name = Release;
+		};
+		FEEDFACE00000000000000B9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/debug";
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/src/spritekit";
+				PRODUCT_NAME = sk_node_parity;
+			};
+			name = Debug;
+		};
+		FEEDFACE00000000000000BA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/release";
+				GCC_OPTIMIZATION_LEVEL = 2;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/src/spritekit";
+				PRODUCT_NAME = sk_node_parity;
 			};
 			name = Release;
 		};
@@ -246,6 +454,33 @@
 			buildConfigurations = (
 				FEEDFACE00000000000000B3 /* Debug */,
 				FEEDFACE00000000000000B4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FEEDFACE00000000000000A3 /* Build configuration list for PBXNativeTarget "SpriteKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FEEDFACE00000000000000B5 /* Debug */,
+				FEEDFACE00000000000000B6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FEEDFACE00000000000000A4 /* Build configuration list for PBXNativeTarget "sk_action_parity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FEEDFACE00000000000000B7 /* Debug */,
+				FEEDFACE00000000000000B8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FEEDFACE00000000000000A5 /* Build configuration list for PBXNativeTarget "sk_node_parity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FEEDFACE00000000000000B9 /* Debug */,
+				FEEDFACE00000000000000BA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
