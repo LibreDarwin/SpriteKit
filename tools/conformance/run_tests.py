@@ -14,6 +14,7 @@ Passing a `<flaky>` marker in a case directory degrades a failure to a skip.
 Usage: run_tests.py TextureAtlas --build-dir DIR [--verify-oracle]
 """
 import os
+import plistlib
 import shutil
 import subprocess
 import sys
@@ -89,10 +90,55 @@ def snapshot_tree(root):
     return files
 
 
-def compare(golden, expected, actual):
-    if expected != actual:
+def plist_canon_key(obj):
+    """A stable string for plist equality as a multiset member."""
+    return plistlib.dumps(obj, sort_keys=True)
+
+
+def plist_equal(g, a):
+    """Compare two parsed plists, ignoring the order of the images array
+    on purpose: the page order Apple writes there is the iteration order of
+    their own group dictionary (a hash-table memory layout), which is not a
+    contract SpriteKit depends on.  Everything else, including each page's
+    subimage order, must match exactly."""
+    if not isinstance(g, dict) or not isinstance(a, dict):
+        return g == a
+    if g.keys() != a.keys():
         return False
+    for k in g:
+        if k == "images":
+            if not isinstance(g[k], list) or not isinstance(a[k], list):
+                return False
+            gs = sorted(plist_canon_key(i) for i in g[k])
+            as_ = sorted(plist_canon_key(i) for i in a[k])
+            if gs != as_:
+                return False
+        elif g[k] != a[k]:
+            return False
     return True
+
+
+def compare(actual, expected):
+    """Which tree files differ (multiset of relative paths).
+
+    .plist files are compared semantically (see plist_equal) so that a
+    byte-identical result never shows up as a difference; page PNGs and
+    anything else stay byte-for-byte.
+    """
+    bad = []
+    for f in sorted(expected.keys() & actual.keys()):
+        gb = expected[f]
+        ab = actual[f]
+        if gb == ab:
+            continue
+        if f.endswith(".plist"):
+            try:
+                if plist_equal(plistlib.loads(gb), plistlib.loads(ab)):
+                    continue
+            except Exception:
+                pass
+        bad.append(f)
+    return bad
 
 
 def main():
@@ -159,8 +205,7 @@ def main():
         output_ok = (m_exit, m_out, m_err) == (g_exit, g_out, g_err)
         extra = sorted(set(actual) - set(g_tree))
         missing = sorted(set(g_tree) - set(actual))
-        diffed = [f for f in sorted(set(actual) & set(g_tree))
-                  if g_tree[f] != actual[f]]
+        diffed = compare(actual, g_tree)
         tree_ok = not (extra or missing or diffed)
         ok = output_ok and tree_ok
 

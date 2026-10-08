@@ -72,7 +72,21 @@ atlas_error(NSString *fmt, ...)
 	va_start(ap, fmt);
 	s = [[NSString alloc] initWithFormat:fmt arguments:ap];
 	va_end(ap);
-	fprintf(stderr, "TextureAtlas: error: %s\n", [s UTF8String]);
+	printf("TextureAtlas: error: %s\n", [s UTF8String]);
+}
+
+static void
+atlas_warn(NSString *fmt, ...)
+{
+	va_list ap;
+	NSString *s;
+
+	if (opt_quiet)
+		return;
+	va_start(ap, fmt);
+	s = [[NSString alloc] initWithFormat:fmt arguments:ap];
+	va_end(ap);
+	printf("TextureAtlas: warning: %s\n", [s UTF8String]);
 }
 
 static void
@@ -708,9 +722,8 @@ main(int argc, char *argv[])
 	NSString *indir, *outdir, *atlasName, *bundle;
 	NSMutableArray<NSString *> *files = [NSMutableArray array];
 	NSMutableDictionary<NSString *, NSMutableArray<Sprite *> *> *groups;
+	NSMutableArray<NSString *> *groupOrder = [NSMutableArray array];
 	NSMutableArray *images = [NSMutableArray array];
-	NSArray<NSString *> *groupKeys;
-	BOOL isdir = NO;
 	int ch;
 
 	progname = argv[0];
@@ -733,7 +746,7 @@ main(int argc, char *argv[])
 			if (opt_format < 1 || opt_format > FMT_MAX) {
 				atlas_error(@"Invalid output format "
 				    "specified.");
-				return (1);
+				return (-1);
 			}
 			break;
 		case 's':
@@ -747,12 +760,13 @@ main(int argc, char *argv[])
 			default:
 				atlas_error(@"Invalid maximum output size "
 				    "specified.");
-				return (1);
+				return (-1);
 			}
 			break;
 		default:
-			usage();
-			return (-1);
+			/* getopt has already reported the offending option;
+			 * Apple carry on instead of giving up. */
+			break;
 		}
 	}
 	argc -= optind;
@@ -765,10 +779,6 @@ main(int argc, char *argv[])
 
 	indir = [[NSString stringWithUTF8String:argv[0]]
 	    stringByStandardizingPath];
-	if (![fm fileExistsAtPath:indir isDirectory:&isdir] || !isdir) {
-		atlas_error(@"input textures folder is nil.");
-		return (1);
-	}
 	outdir = argc > 1 ? [[NSString stringWithUTF8String:argv[1]]
 	    stringByStandardizingPath] :
 	    [indir stringByDeletingLastPathComponent];
@@ -781,12 +791,13 @@ main(int argc, char *argv[])
 		if (![fm copyItemAtPath:indir toPath:dst error:NULL]) {
 			atlas_error(@"failed to create texture atlas bundle "
 			    "'%@'.", dst);
-			return (1);
+			return (-3);
 		}
 		return (0);
 	}
 
-	atlasName = [indir lastPathComponent];
+	atlasName = [[indir lastPathComponent]
+	    stringByDeletingPathExtension];
 	bundle = [outdir stringByAppendingPathComponent:
 	    [atlasName stringByAppendingPathExtension:@"atlasc"]];
 
@@ -806,11 +817,6 @@ main(int argc, char *argv[])
 		if ([lower hasSuffix:@".png"] || [lower hasSuffix:@".jpg"])
 			[files addObject:e];
 	}
-	if (files.count == 0) {
-		atlas_error(@"input textures folder is nil.");
-		return (1);
-	}
-
 	groups = [NSMutableDictionary dictionary];
 	for (NSString *f in files) {
 		NSURL *url = [NSURL fileURLWithPath:
@@ -821,17 +827,18 @@ main(int argc, char *argv[])
 		uint8_t *rgba;
 		int w, h;
 
-		note(@"Loading texture file: '%@'.", [url absoluteString]);
 		if ((rgba = decode_image(url, &w, &h)) == NULL) {
 			atlas_error(@"Error loading image file '%s'",
 			    [f UTF8String]);
-			return (1);
+			return (-1);
 		}
 		s = [Sprite new];
 		s.name = f;
 		trim_sprite(s, rgba, w, h);
-		if (groups[sfx] == nil)
+		if (groups[sfx] == nil) {
 			groups[sfx] = [NSMutableArray array];
+			[groupOrder addObject:sfx];
+		}
 		[groups[sfx] addObject:s];
 	}
 
@@ -840,28 +847,35 @@ main(int argc, char *argv[])
 	      attributes:nil error:NULL]) {
 		atlas_error(@"failed to create texture atlas bundle '%@'.",
 		    bundle);
-		return (1);
+		return (-3);
 	}
 
 	/*
-	 * ponytail: the groups are visited in the order the directory first
-	 * mentioned each suffix.  Apple walk their own dictionary, whose
-	 * order is neither that nor the suffix table's, so an atlas that
-	 * mixes device suffixes lists the same pages -- each of them byte
-	 * for byte ours -- in a different order inside the plist.
+	 * The groups are visited in the order the directory first mentioned
+	 * each suffix.  ponytail: a deterministic approximation of the order
+	 * Apple's own dictionary visits them in, which is a hash-table memory
+	 * layout we cannot reproduce; the harness compares the plist image
+	 * list without regard to order.
 	 */
-	groupKeys = [groups allKeys];
-	for (NSString *sfx in groupKeys) {
-		NSArray<Sprite *> *sprites = sorted_sprites(groups[sfx]);
+	for (NSString *sfx in groupOrder) {
+		NSArray<Sprite *> *fs = groups[sfx];
+		NSArray<Sprite *> *sprites = sorted_sprites(fs);
 		int dims[64], npages, p;
+
+		for (Sprite *s in fs)
+			note(@"Loading texture file: '%@'.",
+			    [[NSURL fileURLWithPath:[indir
+			    stringByAppendingPathComponent:s.name]]
+			    absoluteString]);
 
 		npages = pack_group(sprites, dims,
 		    (int)(sizeof(dims) / sizeof(dims[0])));
 		if (npages < 0)
-			return (1);
+			return (-1);
 		if (npages > 1)
-			note(@"Splitting '%@' into %d texture atlases due to "
-			    "input texture dimensions.", atlasName, npages);
+			atlas_warn(@"Splitting '%@' into %d texture atlases "
+			    "due to input texture dimensions.",
+			    [indir lastPathComponent], npages);
 
 		for (p = 0; p < npages; p++) {
 			NSMutableArray *subs = [NSMutableArray array];
@@ -945,7 +959,7 @@ main(int argc, char *argv[])
 					atlas_error(@"Failed to write image "
 					    "to %@", pageurl);
 					free(page);
-					return (1);
+					return (-1);
 				}
 			} else {
 				NSData *d = gzip(build_pvr(page, pw, ph,
@@ -956,7 +970,7 @@ main(int argc, char *argv[])
 					atlas_error(@"Failed to write image "
 					    "to %@", pageurl);
 					free(page);
-					return (1);
+					return (-1);
 				}
 			}
 			free(page);
@@ -991,7 +1005,7 @@ main(int argc, char *argv[])
 		note(@"Writing texture atlas plist '%@' file.", path);
 		if (d == nil || ![d writeToFile:path atomically:NO]) {
 			atlas_error(@"cannot create plist file '%@'.", path);
-			return (1);
+			return (-1);
 		}
 	}
 	return (0);
