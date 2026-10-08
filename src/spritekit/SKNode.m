@@ -222,14 +222,55 @@ static NSValue *SKValueRect(CGRect r) {
 
 #pragma mark - SKSpriteNode
 
-@implementation SKSpriteNode
+@implementation SKSpriteNode {
+    CGSize _size;
+    int32_t _lightingBitMask;
+    int32_t _shadowCastBitMask;
+    int32_t _shadowedBitMask;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _anchorPoint = CGPointMake(0.5, 0.5);
+        _centerRect = CGRectMake(0, 0, 1, 1);
+        _blendMode = 0;
+        _colorMix = 0.0;
+        _baseColorR = _baseColorG = _baseColorB = _baseColorA = 1.0;
+        _subdivisionLevels = 2;
+    }
+    return self;
+}
+
++ (instancetype)spriteNodeWithColor:(id)color size:(CGSize)size {
+    SKSpriteNode *n = [[self alloc] init];
+    n->_size = size;
+    if (color) {
+        NSColor *c = [(NSColor *)color colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
+        if (c) {
+            CGFloat r = 1, g = 1, b = 1, a = 1;
+            [c getRed:&r green:&g blue:&b alpha:&a];
+            n->_baseColorR = r;
+            n->_baseColorG = g;
+            n->_baseColorB = b;
+            n->_baseColorA = a;
+        }
+    }
+    return n;
+}
 
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
-    [coder encodeObject:SKValueRect(_bounds) forKey:@"_bounds"];
+    CGRect frame = CGRectMake(self.position.x - _anchorPoint.x * _size.width,
+                              self.position.y - _anchorPoint.y * _size.height,
+                              _size.width, _size.height);
+    [coder encodeObject:SKValueRect(frame) forKey:@"_bounds"];
     [coder encodeObject:@(_blendMode) forKey:@"_blendMode"];
     [coder encodeObject:_shader forKey:@"_shader"];
     [coder encodeObject:_normalTexture forKey:@"_normalTexture"];
+    [coder encodeInt32:_lightingBitMask forKey:@"_lightingBitMask"];
+    [coder encodeInt32:_shadowCastBitMask forKey:@"_shadowCastBitMask"];
+    [coder encodeInt32:_shadowedBitMask forKey:@"_shadowedBitMask"];
     [coder encodeObject:_texture forKey:@"_texture"];
     [coder encodeObject:@(_colorMix) forKey:@"_colorMix"];
     [coder encodeObject:SKValuePoint(_anchorPoint) forKey:@"_anchorPoint"];
@@ -239,15 +280,19 @@ static NSValue *SKValueRect(CGRect r) {
     [coder encodeObject:@(_baseColorA) forKey:@"_baseColorA"];
     [coder encodeObject:SKValueRect(_centerRect) forKey:@"_centerRect"];
     [coder encodeObject:_warpGeometry forKey:@"_warpGeometry"];
+    [coder encodeInteger:_subdivisionLevels forKey:@"_subdivisionLevels"];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super initWithCoder:coder];
     if (self) {
-        _bounds = [(NSValue *)[coder decodeObjectForKey:@"_bounds"] rectValue];
+        _size = [(NSValue *)[coder decodeObjectForKey:@"_bounds"] rectValue].size;
         _blendMode = [coder decodeIntegerForKey:@"_blendMode"];
         _shader = [coder decodeObjectForKey:@"_shader"];
         _normalTexture = [coder decodeObjectForKey:@"_normalTexture"];
+        _lightingBitMask = [coder decodeInt32ForKey:@"_lightingBitMask"];
+        _shadowCastBitMask = [coder decodeInt32ForKey:@"_shadowCastBitMask"];
+        _shadowedBitMask = [coder decodeInt32ForKey:@"_shadowedBitMask"];
         _texture = [coder decodeObjectForKey:@"_texture"];
         _colorMix = [coder decodeDoubleForKey:@"_colorMix"];
         _anchorPoint = [(NSValue *)[coder decodeObjectForKey:@"_anchorPoint"] pointValue];
@@ -257,6 +302,7 @@ static NSValue *SKValueRect(CGRect r) {
         _baseColorA = [coder decodeDoubleForKey:@"_baseColorA"];
         _centerRect = [(NSValue *)[coder decodeObjectForKey:@"_centerRect"] rectValue];
         _warpGeometry = [coder decodeObjectForKey:@"_warpGeometry"];
+        _subdivisionLevels = [coder decodeIntegerForKey:@"_subdivisionLevels"];
     }
     return self;
 }

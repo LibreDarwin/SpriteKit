@@ -46,7 +46,11 @@ PARITY_NODE := $(BUILD_DIR)/sk_node_parity
 PARITY_NODE_OBJ := $(OBJDIR)/spritekit/sk_node_parity.o
 NODE_GOLDEN := tools/conformance/SpriteKit/oracle_node.skeep
 
-all: $(TOOL) $(PARITY_ACTIONS) $(PARITY_NODE)
+PARITY_SPRITE := $(BUILD_DIR)/sk_sprite_parity
+PARITY_SPRITE_OBJ := $(OBJDIR)/spritekit/sk_sprite_parity.o
+SPRITE_GOLDEN := tools/conformance/SpriteKit/oracle_sprite.skeep
+
+all: $(TOOL) $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE)
 
 $(TOOL): $(TOOL_OBJS)
 	@mkdir -p $(BUILD_DIR)
@@ -78,6 +82,15 @@ $(PARITY_NODE): $(PARITY_NODE_OBJ) $(SK_OBJS)
 	$(CC) $(MFLAGS) -o $@ $(PARITY_NODE_OBJ) $(SK_OBJS) \
 	    -framework Foundation -framework CoreGraphics -framework AppKit
 
+$(PARITY_SPRITE_OBJ): tools/sk_sprite_parity.m src/spritekit/SKNode.h
+	@mkdir -p $(OBJDIR)/spritekit
+	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ tools/sk_sprite_parity.m
+
+$(PARITY_SPRITE): $(PARITY_SPRITE_OBJ) $(SK_OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(MFLAGS) -o $@ $(PARITY_SPRITE_OBJ) $(SK_OBJS) \
+	    -framework Foundation -framework CoreGraphics -framework AppKit
+
 $(OBJDIR)/atlasc/TextureAtlas.o: src/atlasc/TextureAtlas.m
 	@mkdir -p $(OBJDIR)/atlasc
 	$(CC) $(OBJCFLAGS) -c -o $@ src/atlasc/TextureAtlas.m
@@ -105,9 +118,10 @@ test-atlasc: $(TOOL)
 	$(TEST_PY) tools/conformance/run_tests.py TextureAtlas --build-dir $(BUILD_DIR)
 
 # Byte-identical archive parity against Apple-recorded SpriteKit goldens.
-test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE)
+test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE)
 	$(PARITY_ACTIONS) $(ACTIONS_GOLDEN)
 	$(PARITY_NODE) $(NODE_GOLDEN)
+	$(PARITY_SPRITE) $(SPRITE_GOLDEN)
 
 # Re-record the Apple goldens (development aid; links the real SpriteKit).
 # Not part of `all` -- run by hand when adding a new node class to the suite.

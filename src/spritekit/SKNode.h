@@ -77,7 +77,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - SKSpriteNode
 
 @interface SKSpriteNode : SKNode
-@property (nonatomic) CGRect bounds;
+@property (nonatomic) CGSize size;
 @property (nonatomic) long blendMode;
 @property (nonatomic, nullable) id shader;
 @property (nonatomic, nullable) id normalTexture;
@@ -90,6 +90,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) double baseColorA;
 @property (nonatomic) CGRect centerRect;
 @property (nonatomic, nullable) id warpGeometry;
+@property (nonatomic) NSInteger subdivisionLevels;
+
++ (instancetype)spriteNodeWithColor:(nullable id)color size:(CGSize)size;
 @end
 
 #pragma mark - SKLabelNode
