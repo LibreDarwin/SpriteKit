@@ -40,6 +40,18 @@ int main(void) {
         SKLabelNode *lb = [SKLabelNode labelNodeWithText:@"Hi"];
         lb.name = @"lbl";
         save(lb, [dir stringByAppendingPathComponent:@"oracle_label.skeep"]);
+
+        SKEffectNode *fx = (SKEffectNode *)[SKEffectNode node];
+        fx.name = @"fx";
+        save(fx, [dir stringByAppendingPathComponent:@"oracle_effect.skeep"]);
+
+        SKShapeNode *shape = [SKShapeNode shapeNodeWithCircleOfRadius:10];
+        shape.name = @"dot";
+        save(shape, [dir stringByAppendingPathComponent:@"oracle_shape.skeep"]);
+
+        SKScene *scene = [SKScene sceneWithSize:CGSizeMake(320, 480)];
+        scene.name = @"scene";
+        save(scene, [dir stringByAppendingPathComponent:@"oracle_scene.skeep"]);
     }
     return 0;
 }

@@ -156,6 +156,15 @@ static NSValue *SKValueRect(CGRect r) {
 
 @implementation SKEffectNode
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _shouldEnableEffects = YES;
+        _shouldCenterFilter = YES;
+    }
+    return self;
+}
+
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
     [coder encodeObject:_filter forKey:@"_filter"];
