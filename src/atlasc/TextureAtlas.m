@@ -63,6 +63,16 @@ static bool		 opt_verbose;	/* -v */
 static int		 opt_format = FMT_RGBA8888;
 static int		 opt_maxdim = 2048;
 
+/*
+ * The fingerprint symbols Apple export from their binary so build systems can
+ * recognise the tool; names, types, values and the private-external linkage
+ * mirror IDESpriteKitSupport-24020 (the version string's data includes the
+ * newline the original carries).
+ */
+__private_extern__ const double	 TextureAtlasVersionNumber = 24020.0;
+__private_extern__ const char	 TextureAtlasVersionString[] =
+    "@(#)PROGRAM:TextureAtlas  PROJECT:IDESpriteKitSupport-24020\n";
+
 static void
 atlas_error(NSString *fmt, ...)
 {
