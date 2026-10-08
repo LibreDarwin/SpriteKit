@@ -1,0 +1,14 @@
+Loading texture file: 'file:///private/var/folders/rl/j819t0wj451c1l81w697mmv00000gn/T/atlas-conform-ws/mixed-verbose.atlas/icon.png'.
+Loading texture file: 'file:///private/var/folders/rl/j819t0wj451c1l81w697mmv00000gn/T/atlas-conform-ws/mixed-verbose.atlas/hero.png'.
+Loading texture file: 'file:///private/var/folders/rl/j819t0wj451c1l81w697mmv00000gn/T/atlas-conform-ws/mixed-verbose.atlas/spark.png'.
+Loading texture file: 'file:///private/var/folders/rl/j819t0wj451c1l81w697mmv00000gn/T/atlas-conform-ws/mixed-verbose.atlas/bg.png'.
+Generated texture atlas size [258, 196].
+Extrude texture: bg.png
+Extrude texture: hero.png
+Extrude texture: spark.png
+Writing texture atlas 'out/mixed-verbose.atlasc/mixed-verbose.1.png' file.
+Loading texture file: 'file:///private/var/folders/rl/j819t0wj451c1l81w697mmv00000gn/T/atlas-conform-ws/mixed-verbose.atlas/hero@2x.png'.
+Generated texture atlas size [130, 130].
+Extrude texture: hero@2x.png
+Writing texture atlas 'out/mixed-verbose.atlasc/mixed-verbose.1@2x.png' file.
+Writing texture atlas plist 'out/mixed-verbose.atlasc/mixed-verbose.plist' file.

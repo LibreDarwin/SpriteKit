@@ -54,7 +54,15 @@ install: all
 	install -d $(DESTDIR)$(PREFIX)/bin
 	install -m 0755 $(TOOL) $(DESTDIR)$(PREFIX)/bin/TextureAtlas
 
+# Black-box conformance suite: compares build/<CONFIG>/TextureAtlas against the
+# committed Apple goldens under tools/conformance/TextureAtlas.  For details and
+# --verify-oracle (re-record vs. the real Apple binary) see run_tests.py.
+TEST_PY ?= python3
+
+test: all
+	$(TEST_PY) tools/conformance/run_tests.py TextureAtlas --build-dir $(BUILD_DIR)
+
 clean:
 	rm -rf build
 
-.PHONY: all install clean
+.PHONY: all install clean test
