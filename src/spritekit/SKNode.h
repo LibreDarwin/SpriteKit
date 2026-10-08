@@ -122,4 +122,28 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)labelNodeWithText:(nullable NSString *)text;
 @end
 
+#pragma mark - SKShapeNode
+
+@interface SKShapeNode : SKNode
+@property (nonatomic, nullable) id cgPath;         // private SKCGSPath form
+@property (nonatomic) double lineWidth;
+@property (nonatomic) double smoothWidth;
+@property (nonatomic) BOOL smoothStroke;
+@property (nonatomic) double strokeColorR;
+@property (nonatomic) double strokeColorG;
+@property (nonatomic) double strokeColorB;
+@property (nonatomic) double strokeColorA;
+@property (nonatomic) double fillColorR;
+@property (nonatomic) double fillColorG;
+@property (nonatomic) double fillColorB;
+@property (nonatomic) double fillColorA;
+@property (nonatomic) NSInteger lineJoin;
+@property (nonatomic) NSInteger lineCap;
+@property (nonatomic) double miterLimit;
+@property (nonatomic, nullable) id strokeTexture;
+@property (nonatomic, nullable) id fillTexture;
+
++ (instancetype)shapeNodeWithCircleOfRadius:(CGFloat)radius;
+@end
+
 NS_ASSUME_NONNULL_END

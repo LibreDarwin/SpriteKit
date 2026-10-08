@@ -394,3 +394,113 @@ static NSValue *SKValueRect(CGRect r) {
 }
 
 @end
+
+#pragma mark - SKShapeNode
+
+// Apple does not archive a raw CGPath for a shape's geometry.  It serializes
+// the private "SKCGSPath" form: an NSMutableArray of segments, each an
+// NSMutableDictionary {"type": <CGPathElementType>, "points": [NSValue...]}.
+// type 0 = moveToPoint (1 point), 1 = addLineToPoint (1), 2 =
+// addQuadCurveToPoint (2), 3 = addCurveToPoint/cubic (3: c1, c2, end), 4 =
+// closeSubpath (0).  Byte parity requires reproducing this exact object graph
+// (including shared points) -- see local/SpriteKit/SpriteKit.md.
+static NSMutableDictionary *SKPathSegment(int type, NSArray *points) {
+    NSMutableDictionary *seg = [NSMutableDictionary dictionary];
+    seg[@"type"] = @(type);
+    seg[@"points"] = [NSMutableArray arrayWithArray:points];
+    return seg;
+}
+
+static NSMutableArray *SKCirclePath(CGFloat radius) {
+    // Apple's circle->Bezier control constant is the truncated literal
+    // 0.5522847498 (not the full-precision (4/3)(sqrt2-1)); that is what makes
+    // the archived control points print as "5.522847498" for radius 10.
+    double r = radius;
+    double k = 0.5522847498 * r;
+    NSMutableArray *path = [NSMutableArray array];
+    [path addObject:SKPathSegment(0, @[ SKValuePoint(CGPointMake(r, 0)) ])];
+    [path addObject:SKPathSegment(3, @[ SKValuePoint(CGPointMake(r, k)),
+                                       SKValuePoint(CGPointMake(k, r)),
+                                       SKValuePoint(CGPointMake(0, r)) ])];
+    [path addObject:SKPathSegment(3, @[ SKValuePoint(CGPointMake(-k, r)),
+                                       SKValuePoint(CGPointMake(-r, k)),
+                                       SKValuePoint(CGPointMake(-r, 0)) ])];
+    [path addObject:SKPathSegment(3, @[ SKValuePoint(CGPointMake(-r, -k)),
+                                       SKValuePoint(CGPointMake(-k, -r)),
+                                       SKValuePoint(CGPointMake(0, -r)) ])];
+    [path addObject:SKPathSegment(3, @[ SKValuePoint(CGPointMake(k, -r)),
+                                       SKValuePoint(CGPointMake(r, -k)),
+                                       SKValuePoint(CGPointMake(r, 0)) ])];
+    [path addObject:SKPathSegment(4, @[])];
+    return path;
+}
+
+@implementation SKShapeNode
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _lineWidth = 1.0;
+        _smoothWidth = 0.0;
+        _smoothStroke = YES;
+        _strokeColorR = _strokeColorG = _strokeColorB = _strokeColorA = 1.0;
+        _fillColorR = _fillColorG = _fillColorB = _fillColorA = 0.0;
+        _lineJoin = 2;
+        _lineCap = 0;
+        _miterLimit = 0.5;
+    }
+    return self;
+}
+
++ (instancetype)shapeNodeWithCircleOfRadius:(CGFloat)radius {
+    SKShapeNode *n = [[self alloc] init];
+    n->_cgPath = SKCirclePath(radius);
+    return n;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_cgPath forKey:@"_cgPath"];
+    [coder encodeObject:@(_lineWidth) forKey:@"_lineWidth"];
+    [coder encodeObject:@(_smoothWidth) forKey:@"_smoothWidth"];
+    [coder encodeObject:@(_smoothStroke) forKey:@"_smoothStroke"];
+    [coder encodeObject:@(_fillColorR) forKey:@"_fillColorR"];
+    [coder encodeObject:@(_fillColorG) forKey:@"_fillColorG"];
+    [coder encodeObject:@(_fillColorB) forKey:@"_fillColorB"];
+    [coder encodeObject:@(_fillColorA) forKey:@"_fillColorA"];
+    [coder encodeObject:@(_strokeColorR) forKey:@"_strokeColorR"];
+    [coder encodeObject:@(_strokeColorG) forKey:@"_strokeColorG"];
+    [coder encodeObject:@(_strokeColorB) forKey:@"_strokeColorB"];
+    [coder encodeObject:@(_strokeColorA) forKey:@"_strokeColorA"];
+    [coder encodeInteger:_lineJoin forKey:@"_lineJoin"];
+    [coder encodeInteger:_lineCap forKey:@"_lineCap"];
+    [coder encodeDouble:_miterLimit forKey:@"_miterLimit"];
+    [coder encodeObject:_strokeTexture forKey:@"_strokeTexture"];
+    [coder encodeObject:_fillTexture forKey:@"_fillTexture"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _cgPath = [coder decodeObjectForKey:@"_cgPath"];
+        _lineWidth = [coder decodeDoubleForKey:@"_lineWidth"];
+        _smoothWidth = [coder decodeDoubleForKey:@"_smoothWidth"];
+        _smoothStroke = [coder decodeBoolForKey:@"_smoothStroke"];
+        _strokeColorR = [coder decodeDoubleForKey:@"_strokeColorR"];
+        _strokeColorG = [coder decodeDoubleForKey:@"_strokeColorG"];
+        _strokeColorB = [coder decodeDoubleForKey:@"_strokeColorB"];
+        _strokeColorA = [coder decodeDoubleForKey:@"_strokeColorA"];
+        _fillColorR = [coder decodeDoubleForKey:@"_fillColorR"];
+        _fillColorG = [coder decodeDoubleForKey:@"_fillColorG"];
+        _fillColorB = [coder decodeDoubleForKey:@"_fillColorB"];
+        _fillColorA = [coder decodeDoubleForKey:@"_fillColorA"];
+        _lineJoin = [coder decodeIntegerForKey:@"_lineJoin"];
+        _lineCap = [coder decodeIntegerForKey:@"_lineCap"];
+        _miterLimit = [coder decodeDoubleForKey:@"_miterLimit"];
+        _strokeTexture = [coder decodeObjectForKey:@"_strokeTexture"];
+        _fillTexture = [coder decodeObjectForKey:@"_fillTexture"];
+    }
+    return self;
+}
+
+@end
