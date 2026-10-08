@@ -32,11 +32,34 @@ TOOL_OBJS := $(TOOL_SRCS:src/%=$(OBJDIR)/%)
 TOOL_OBJS := $(TOOL_OBJS:.m=.o)
 TOOL_OBJS := $(TOOL_OBJS:.c=.o)
 
-all: $(TOOL)
+# Clean-room SpriteKit.framework runtime.  Currently the SKAction class
+# cluster; parity binaries drive the library against the Apple goldens in
+# tools/conformance/SpriteKit.
+SK_OBJS   := $(OBJDIR)/spritekit/SKAction.o
+SK_FLAGS  := -I src/spritekit
+
+PARITY_ACTIONS := $(BUILD_DIR)/sk_action_parity
+PARITY_ACTIONS_OBJ := $(OBJDIR)/spritekit/sk_action_parity.o
+ACTIONS_GOLDEN := tools/conformance/SpriteKit/actions_moveAndScale.skeep
+
+all: $(TOOL) $(PARITY_ACTIONS)
 
 $(TOOL): $(TOOL_OBJS)
 	@mkdir -p $(BUILD_DIR)
 	$(CC) $(MFLAGS) -o $@ $(TOOL_OBJS) $(LFLAGS)
+
+$(OBJDIR)/spritekit/SKAction.o: src/spritekit/SKAction.m src/spritekit/SKAction.h
+	@mkdir -p $(OBJDIR)/spritekit
+	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ src/spritekit/SKAction.m
+
+$(PARITY_ACTIONS_OBJ): tools/sk_action_parity.m src/spritekit/SKAction.h
+	@mkdir -p $(OBJDIR)/spritekit
+	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ tools/sk_action_parity.m
+
+$(PARITY_ACTIONS): $(PARITY_ACTIONS_OBJ) $(SK_OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(MFLAGS) -o $@ $(PARITY_ACTIONS_OBJ) $(SK_OBJS) \
+	    -framework Foundation -framework CoreGraphics
 
 $(OBJDIR)/atlasc/TextureAtlas.o: src/atlasc/TextureAtlas.m
 	@mkdir -p $(OBJDIR)/atlasc
@@ -59,10 +82,16 @@ install: all
 # --verify-oracle (re-record vs. the real Apple binary) see run_tests.py.
 TEST_PY ?= python3
 
-test: all
+test: all test-atlasc test-spritekit
+
+test-atlasc: $(TOOL)
 	$(TEST_PY) tools/conformance/run_tests.py TextureAtlas --build-dir $(BUILD_DIR)
+
+# Byte-identical archive parity against Apple-recorded SpriteKit goldens.
+test-spritekit: $(PARITY_ACTIONS)
+	$(PARITY_ACTIONS) $(ACTIONS_GOLDEN)
 
 clean:
 	rm -rf build
 
-.PHONY: all install clean test
+.PHONY: all install clean test test-atlasc test-spritekit
