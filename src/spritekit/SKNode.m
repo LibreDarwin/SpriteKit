@@ -910,3 +910,97 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
 }
 
 @end
+
+#pragma mark - SKTransformNode
+
+@implementation SKTransformNode
+@end
+
+#pragma mark - SKVideoNode
+
+@implementation SKVideoNode
+
++ (instancetype)videoNodeWithFileNamed:(NSString *)name {
+    SKVideoNode *n = [[self alloc] init];
+    n->_videoFileName = [name copy];
+    return n;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_videoFileName forKey:@"_videoFileName"];
+    [coder encodeObject:_videoFileURL forKey:@"_videoFileURL"];
+    [coder encodeObject:SKValueRect(_bounds) forKey:@"_bounds"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _videoFileName = [coder decodeObjectForKey:@"_videoFileName"];
+        _videoFileURL = [coder decodeObjectForKey:@"_videoFileURL"];
+        _bounds = [((NSValue *)[coder decodeObjectForKey:@"_bounds"]) rectValue];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - SKAudioNode
+
+@implementation SKAudioNode
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _autoplayLooped = YES;
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeBool:_autoplayLooped forKey:@"_autoplayLooped"];
+    [coder encodeObject:_audioName forKey:@"_audioName"];
+    [coder encodeObject:_audioURL forKey:@"_audioURL"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _autoplayLooped = [coder decodeBoolForKey:@"_autoplayLooped"];
+        _audioName = [coder decodeObjectForKey:@"_audioName"];
+        _audioURL = [coder decodeObjectForKey:@"_audioURL"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - SKReferenceNode
+
+@implementation SKReferenceNode
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _referenceFileName = @"";
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_referenceURL forKey:@"_referenceURL"];
+    [coder encodeObject:_referenceFileName forKey:@"_referenceFileName"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _referenceURL = [coder decodeObjectForKey:@"_referenceURL"];
+        _referenceFileName = [coder decodeObjectForKey:@"_referenceFileName"];
+    }
+    return self;
+}
+
+@end

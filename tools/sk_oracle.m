@@ -65,6 +65,22 @@ int main(void) {
         emitter.name = @"emit";
         save(emitter, [dir stringByAppendingPathComponent:@"oracle_emitter.skeep"]);
 
+        SKTransformNode *xform = [SKTransformNode node];
+        xform.name = @"xform";
+        save(xform, [dir stringByAppendingPathComponent:@"oracle_transform.skeep"]);
+
+        SKVideoNode *video = [[SKVideoNode alloc] init];
+        video.name = @"video";
+        save(video, [dir stringByAppendingPathComponent:@"oracle_video.skeep"]);
+
+        SKAudioNode *audio = [[SKAudioNode alloc] init];
+        audio.name = @"audio";
+        save(audio, [dir stringByAppendingPathComponent:@"oracle_audio.skeep"]);
+
+        SKReferenceNode *ref = [[SKReferenceNode alloc] init];
+        ref.name = @"ref";
+        save(ref, [dir stringByAppendingPathComponent:@"oracle_reference.skeep"]);
+
         // Canonical .sks form: the init+encode graph the runtime writer emits
         // for a scene with content (the decode->re-encode fixpoint loses a
         // deduped object, so this is the target, not a round-trip).

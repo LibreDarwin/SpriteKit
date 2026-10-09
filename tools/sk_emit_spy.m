@@ -108,6 +108,12 @@ int main(void) {
         dump(@"SKCameraNode", [SKCameraNode node]);
         dump(@"SKCropNode", [SKCropNode node]);
         dump(@"SKEmitterNode", [SKEmitterNode node]);
+        dump(@"SKFieldNode", [SKFieldNode node]);
+        dump(@"SKLightNode", [SKLightNode node]);
+        dump(@"SKAudioNode", [[SKAudioNode alloc] init]);
+        dump(@"SKReferenceNode", [[SKReferenceNode alloc] init]);
+        dump(@"SKVideoNode", [[SKVideoNode alloc] init]);
+        dump(@"SKTransformNode", [SKTransformNode node]);
     }
     return 0;
 }

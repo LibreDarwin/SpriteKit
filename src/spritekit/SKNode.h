@@ -276,4 +276,40 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+#pragma mark - SKTransformNode
+
+// Like SKCameraNode, carries no own archived state; only _originalClass differs.
+@interface SKTransformNode : SKNode
+@end
+
+#pragma mark - SKVideoNode
+
+// Own fields (spy order): _videoFileName (obj), _videoFileURL (obj),
+// _bounds (NSValue rectval, defaults to CGRectZero).
+@interface SKVideoNode : SKNode
+@property (nonatomic, copy, nullable) NSString *videoFileName;
+@property (nonatomic, copy, nullable) NSURL *videoFileURL;
+@property (nonatomic) CGRect bounds;
++ (instancetype)videoNodeWithFileNamed:(NSString *)name;
+@end
+
+#pragma mark - SKAudioNode
+
+// Own fields (spy order): _autoplayLooped (bool, default YES), _audioName (obj),
+// _audioURL (obj).
+@interface SKAudioNode : SKNode
+@property (nonatomic) BOOL autoplayLooped;
+@property (nonatomic, copy, nullable) NSString *audioName;
+@property (nonatomic, copy, nullable) NSURL *audioURL;
+@end
+
+#pragma mark - SKReferenceNode
+
+// Own fields (spy order): _referenceURL (obj, nil), _referenceFileName
+// (obj, defaults to the empty constant string).
+@interface SKReferenceNode : SKNode
+@property (nonatomic, copy, nullable) NSURL *referenceURL;
+@property (nonatomic, copy, nullable) NSString *referenceFileName;
+@end
+
 NS_ASSUME_NONNULL_END
