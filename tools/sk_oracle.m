@@ -116,6 +116,15 @@ int main(void) {
         efx.name = @"efx";
         save(efx, [dir stringByAppendingPathComponent:@"oracle_effect_shader.skeep"]);
 
+        SKAttributeValue *avf = [SKAttributeValue valueWithFloat:3.5f];
+        save(avf, [dir stringByAppendingPathComponent:@"oracle_attribute_value_float.skeep"]);
+        SKAttributeValue *av4 = [SKAttributeValue valueWithVectorFloat4:(vector_float4){1, 2, 3, 4}];
+        save(av4, [dir stringByAppendingPathComponent:@"oracle_attribute_value_vec4.skeep"]);
+        SKSpriteNode *attrs = [SKSpriteNode spriteNodeWithColor:[NSColor redColor] size:CGSizeMake(64, 64)];
+        attrs.name = @"attrs";
+        [attrs setValue:[SKAttributeValue valueWithFloat:3.5f] forAttributeNamed:@"glow"];
+        save(attrs, [dir stringByAppendingPathComponent:@"oracle_sprite_attr.skeep"]);
+
         // Canonical .sks form: the init+encode graph the runtime writer emits
         // for a scene with content (the decode->re-encode fixpoint loses a
         // deduped object, so this is the target, not a round-trip).

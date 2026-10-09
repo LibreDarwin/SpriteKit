@@ -13,6 +13,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
+#import <simd/simd.h>
 
 #if TARGET_OS_OSX
 #import <AppKit/AppKit.h>
@@ -22,6 +23,8 @@
 #endif
 
 NS_ASSUME_NONNULL_BEGIN
+
+@class SKAttributeValue;
 
 @interface SKNode : SK_NODE_SUPERCLASS <NSCoding, NSCopying>
 
@@ -43,6 +46,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSMutableArray<SKNode *> *children;
 
 - (void)addChild:(SKNode *)node;
+- (void)setValue:(nullable SKAttributeValue *)value forAttributeNamed:(nonnull NSString *)name;
+- (nullable SKAttributeValue *)valueForAttributeNamed:(nonnull NSString *)name;
+@property (nonatomic, copy, nullable) NSDictionary<NSString *, SKAttributeValue *> *attributeValues;
 - (void)removeFromParent;
 
 @end
@@ -386,6 +392,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSString *source;
 @property (nonatomic, copy, nullable) NSString *fileName;
 @property (nonatomic, copy, nullable) NSArray<id> *uniforms;
+@end
+
+#pragma mark - SKAttributeValue
+
+// Root NSObject subclass.  Own fields (spy order): _type (obj, NSNumber,
+// always 0 for the float/vector constructors), _floatValues0..3 (floats).
+@interface SKAttributeValue : NSObject
++ (instancetype)valueWithFloat:(float)value;
++ (instancetype)valueWithVectorFloat4:(vector_float4)value;
+@property (nonatomic) float floatValue;
+@property (nonatomic) vector_float4 vectorFloat4Value;
 @end
 
 NS_ASSUME_NONNULL_END

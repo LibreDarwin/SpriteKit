@@ -122,6 +122,14 @@ int main(void) {
         SKEffectNode *efx = [SKEffectNode node];
         efx.shader = [SKShader shader];
         dump(@"SKEffectNode(shader set)", efx);
+        dump(@"SKAttributeValue(float)", [SKAttributeValue valueWithFloat:3.5f]);
+        dump(@"SKAttributeValue(vec2)", [SKAttributeValue valueWithVectorFloat2:(vector_float2){7,8}]);
+        dump(@"SKAttributeValue(vec3)", [SKAttributeValue valueWithVectorFloat3:(vector_float3){9,10,11}]);
+        dump(@"SKAttributeValue(vec4)", [SKAttributeValue valueWithVectorFloat4:(vector_float4){1,2,3,4}]);
+        SKSpriteNode *attrs = [SKSpriteNode spriteNodeWithColor:[NSColor redColor] size:CGSizeMake(64, 64)];
+        attrs.name = @"attrs";
+        [attrs setValue:[SKAttributeValue valueWithFloat:3.5f] forAttributeNamed:@"glow"];
+        dump(@"SKSpriteNode(attr float)", attrs);
     }
     return 0;
 }

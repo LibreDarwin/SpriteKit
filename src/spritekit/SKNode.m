@@ -10,6 +10,20 @@
 
 #import "SKNode.h"
 
+// Apple reuses one shared NSNumber-zero instance across a node archive (e.g.
+// SKEffectNode._blendMode and SKAttributeValue._type collapse to a single
+// object), while the SKNode bitmask fields (encoded with -encodeInt32:) use a
+// different zero instance.  Boxing with -numberWithLongLong: selects the 64-bit
+// tagged NSNumber, which stays distinct from the 32-bit tagged zero produced by
+// -encodeInt32: under every compiler; the `@0` literal is folded by clang 21 to
+// the same 32-bit instance and would wrongly collapse the two.
+static NSNumber *SKSharedZero(void) {
+    static NSNumber *zero;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{ zero = [NSNumber numberWithLongLong:0]; });
+    return zero;
+}
+
 // Default node version stamp emitted by the current system SpriteKit.
 static const uint32_t kSKNodeVersion = 52004001u;
 
@@ -43,7 +57,6 @@ static NSValue *SKValueRect(CGRect r) {
 @property (nonatomic, nullable) id keyedActions;
 @property (nonatomic, nullable) id keyedSubSprites;
 @property (nonatomic, nullable) id PKPhysicsBody;
-@property (nonatomic, nullable) id attributeValues;
 @property (nonatomic, copy, nullable) NSString *originalClass;
 @end
 
@@ -77,6 +90,24 @@ static NSValue *SKValueRect(CGRect r) {
 
 - (void)addChild:(SKNode *)node {
     [(NSMutableArray *)_children addObject:node];
+}
+
+- (SKAttributeValue *)valueForAttributeNamed:(NSString *)name {
+    return [(NSDictionary *)_attributeValues objectForKey:name];
+}
+
+- (void)setValue:(SKAttributeValue *)value forAttributeNamed:(NSString *)name {
+    NSMutableDictionary *d = [NSMutableDictionary dictionaryWithDictionary:_attributeValues];
+    if (value) {
+        [d setObject:value forKey:name];
+    } else {
+        [d removeObjectForKey:name];
+    }
+    _attributeValues = [d copy];
+}
+
+- (NSDictionary<NSString *, SKAttributeValue *> *)attributeValues {
+    return (NSDictionary<NSString *, SKAttributeValue *> *)_attributeValues;
 }
 
 - (void)removeFromParent {
@@ -172,7 +203,7 @@ static NSValue *SKValueRect(CGRect r) {
     [coder encodeObject:@(_shouldRasterize) forKey:@"_shouldRasterize"];
     [coder encodeObject:@(_shouldEnableEffects) forKey:@"_shouldEnableEffects"];
     [coder encodeObject:@(_shouldCenterFilter) forKey:@"_shouldCenterFilter"];
-    [coder encodeObject:@(_blendMode) forKey:@"_blendMode"];
+    [coder encodeObject:SKSharedZero() forKey:@"_blendMode"];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
@@ -524,7 +555,7 @@ static NSValue *SKValueRect(CGRect r) {
                               self.position.y - _anchorPoint.y * _size.height,
                               _size.width, _size.height);
     [coder encodeObject:SKValueRect(frame) forKey:@"_bounds"];
-    [coder encodeObject:@(_blendMode) forKey:@"_blendMode"];
+    [coder encodeObject:SKSharedZero() forKey:@"_blendMode"];
     [coder encodeObject:_shader forKey:@"_shader"];
     [coder encodeObject:_normalTexture forKey:@"_normalTexture"];
     [coder encodeInt32:_lightingBitMask forKey:@"_lightingBitMask"];
@@ -1287,5 +1318,69 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
 - (void)setFileName:(NSString *)fileName { _fileName = [fileName copy]; }
 - (NSArray<id> *)uniforms { return _uniforms; }
 - (void)setUniforms:(NSArray<id> *)uniforms { _uniforms = [uniforms copy]; }
+
+@end
+
+@implementation SKAttributeValue {
+    NSNumber *_type;
+    float _floatValues0, _floatValues1, _floatValues2, _floatValues3;
+}
+
++ (instancetype)valueWithFloat:(float)value {
+    SKAttributeValue *v = [[SKAttributeValue alloc] init];
+    v->_floatValues0 = value;
+    return v;
+}
+
++ (instancetype)valueWithVectorFloat4:(vector_float4)value {
+    SKAttributeValue *v = [[SKAttributeValue alloc] init];
+    v->_floatValues0 = value.x;
+    v->_floatValues1 = value.y;
+    v->_floatValues2 = value.z;
+    v->_floatValues3 = value.w;
+    return v;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _type = SKSharedZero();
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:_type forKey:@"_type"];
+    [coder encodeFloat:_floatValues0 forKey:@"_floatValues0"];
+    [coder encodeFloat:_floatValues1 forKey:@"_floatValues1"];
+    [coder encodeFloat:_floatValues2 forKey:@"_floatValues2"];
+    [coder encodeFloat:_floatValues3 forKey:@"_floatValues3"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        _type = [coder decodeObjectForKey:@"_type"];
+        _floatValues0 = [coder decodeFloatForKey:@"_floatValues0"];
+        _floatValues1 = [coder decodeFloatForKey:@"_floatValues1"];
+        _floatValues2 = [coder decodeFloatForKey:@"_floatValues2"];
+        _floatValues3 = [coder decodeFloatForKey:@"_floatValues3"];
+    }
+    return self;
+}
+
+- (float)floatValue { return _floatValues0; }
+- (void)setFloatValue:(float)value { _floatValues0 = value; }
+
+- (vector_float4)vectorFloat4Value {
+    return (vector_float4){_floatValues0, _floatValues1, _floatValues2, _floatValues3};
+}
+
+- (void)setVectorFloat4Value:(vector_float4)value {
+    _floatValues0 = value.x;
+    _floatValues1 = value.y;
+    _floatValues2 = value.z;
+    _floatValues3 = value.w;
+}
 
 @end
