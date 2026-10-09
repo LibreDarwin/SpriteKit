@@ -25,6 +25,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class SKAttributeValue;
+@class SKTexture;
 
 @interface SKNode : SK_NODE_SUPERCLASS <NSCoding, NSCopying>
 
@@ -403,6 +404,20 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)valueWithVectorFloat4:(vector_float4)value;
 @property (nonatomic) float floatValue;
 @property (nonatomic) vector_float4 vectorFloat4Value;
+@end
+
+#pragma mark - SKTexture
+
+// Root NSObject subclass.  Spy order: _originalAtlasName (nil),
+// _subTextureName (nil), _isPath (bool, NO), _isCapture (bool, NO),
+// _isData (bool, YES), _imageData (obj, TIFF NSData), _imgName (nil),
+// _disableAlpha (bool, NO), _size (NSValue size), _pixelSize (NSValue size),
+// _textRect (NSValue rect), _cropOffset (NSValue point), _cropScale (NSValue
+// point), _isRotated (bool, NO), _isFlipped (bool, NO), _filteringMode
+// (encodeInteger, 1).
+@interface SKTexture : NSObject
++ (instancetype)textureWithImage:(NSImage *)image;
+@property (nonatomic, readonly) CGSize size;
 @end
 
 NS_ASSUME_NONNULL_END

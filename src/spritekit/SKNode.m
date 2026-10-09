@@ -45,6 +45,14 @@ static NSValue *SKValueRect(CGRect r) {
 #endif
 }
 
+static NSValue *SKValueSize(CGSize s) {
+#if TARGET_OS_OSX
+    return [NSValue valueWithSize:NSSizeFromCGSize(s)];
+#else
+    return [NSValue valueWithCGSize:s];
+#endif
+}
+
 #pragma mark - SKNode
 
 @interface SKNode ()
@@ -1381,6 +1389,90 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
     _floatValues1 = value.y;
     _floatValues2 = value.z;
     _floatValues3 = value.w;
+}
+
+@end
+
+#pragma mark - SKTexture
+
+@implementation SKTexture {
+    id _originalAtlasName;
+    id _subTextureName;
+    BOOL _isPath;
+    BOOL _isCapture;
+    BOOL _isData;
+    NSData *_imageData;
+    id _imgName;
+    BOOL _disableAlpha;
+    NSValue *_size;
+    NSValue *_pixelSize;
+    NSValue *_textRect;
+    NSValue *_cropOffset;
+    NSValue *_cropScale;
+    BOOL _isRotated;
+    BOOL _isFlipped;
+    NSInteger _filteringMode;
+}
+
++ (instancetype)textureWithImage:(NSImage *)image {
+    SKTexture *t = [[SKTexture alloc] init];
+    CGSize size = image.size;
+    t->_imageData = [image TIFFRepresentation];
+    t->_isData = YES;
+    t->_size = SKValueSize(size);
+    t->_pixelSize = SKValueSize(size);
+    t->_textRect = SKValueRect(CGRectMake(0, 0, size.width, size.height));
+    t->_cropOffset = SKValuePoint(CGPointMake(0, 0));
+    t->_cropScale = SKValuePoint(CGPointMake(1, 1));
+    t->_filteringMode = 1;
+    return t;
+}
+
+- (CGSize)size {
+    NSSize s = _size.sizeValue;
+    return CGSizeMake(s.width, s.height);
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:_originalAtlasName forKey:@"_originalAtlasName"];
+    [coder encodeObject:_subTextureName forKey:@"_subTextureName"];
+    [coder encodeBool:_isPath forKey:@"_isPath"];
+    [coder encodeBool:_isCapture forKey:@"_isCapture"];
+    [coder encodeBool:_isData forKey:@"_isData"];
+    [coder encodeObject:_imageData forKey:@"_imageData"];
+    [coder encodeObject:_imgName forKey:@"_imgName"];
+    [coder encodeBool:_disableAlpha forKey:@"_disableAlpha"];
+    [coder encodeObject:_size forKey:@"_size"];
+    [coder encodeObject:_pixelSize forKey:@"_pixelSize"];
+    [coder encodeObject:_textRect forKey:@"_textRect"];
+    [coder encodeObject:_cropOffset forKey:@"_cropOffset"];
+    [coder encodeObject:_cropScale forKey:@"_cropScale"];
+    [coder encodeBool:_isRotated forKey:@"_isRotated"];
+    [coder encodeBool:_isFlipped forKey:@"_isFlipped"];
+    [coder encodeInteger:_filteringMode forKey:@"_filteringMode"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        _originalAtlasName = [coder decodeObjectForKey:@"_originalAtlasName"];
+        _subTextureName = [coder decodeObjectForKey:@"_subTextureName"];
+        _isPath = [coder decodeBoolForKey:@"_isPath"];
+        _isCapture = [coder decodeBoolForKey:@"_isCapture"];
+        _isData = [coder decodeBoolForKey:@"_isData"];
+        _imageData = [coder decodeObjectForKey:@"_imageData"];
+        _imgName = [coder decodeObjectForKey:@"_imgName"];
+        _disableAlpha = [coder decodeBoolForKey:@"_disableAlpha"];
+        _size = [coder decodeObjectForKey:@"_size"];
+        _pixelSize = [coder decodeObjectForKey:@"_pixelSize"];
+        _textRect = [coder decodeObjectForKey:@"_textRect"];
+        _cropOffset = [coder decodeObjectForKey:@"_cropOffset"];
+        _cropScale = [coder decodeObjectForKey:@"_cropScale"];
+        _isRotated = [coder decodeBoolForKey:@"_isRotated"];
+        _isFlipped = [coder decodeBoolForKey:@"_isFlipped"];
+        _filteringMode = [coder decodeIntegerForKey:@"_filteringMode"];
+    }
+    return self;
 }
 
 @end

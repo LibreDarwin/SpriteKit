@@ -130,6 +130,15 @@ int main(void) {
         attrs.name = @"attrs";
         [attrs setValue:[SKAttributeValue valueWithFloat:3.5f] forAttributeNamed:@"glow"];
         dump(@"SKSpriteNode(attr float)", attrs);
+        NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
+                          pixelsWide:1 pixelsHigh:1 bitsPerSample:8 samplesPerPixel:4
+                          hasAlpha:YES isPlanar:NO colorSpaceName:NSDeviceRGBColorSpace
+                          bytesPerRow:4 bitsPerPixel:32];
+        uint8_t *pp = (uint8_t *)rep.bitmapData;
+        pp[0] = 0x80; pp[1] = 0x80; pp[2] = 0x80; pp[3] = 0xFF;
+        NSImage *timg = [[NSImage alloc] initWithSize:NSMakeSize(1, 1)];
+        [timg addRepresentation:rep];
+        dump(@"SKTexture(1x1 gray)", [SKTexture textureWithImage:timg]);
     }
     return 0;
 }
