@@ -103,6 +103,11 @@ int main(void) {
         SKTexture *tex = [SKTexture textureWithImage:img];
         save(tex, [dir stringByAppendingPathComponent:@"oracle_texture.skeep"]);
 
+        SKSpriteNode *wps = [SKSpriteNode spriteNodeWithColor:[NSColor redColor] size:CGSizeMake(64, 64)];
+        wps.warpGeometry = [SKWarpGeometryGrid gridWithColumns:2 rows:2];
+        wps.name = @"wps";
+        save(wps, [dir stringByAppendingPathComponent:@"oracle_sprite_warp.skeep"]);
+
         // Canonical .sks form: the init+encode graph the runtime writer emits
         // for a scene with content (the decode->re-encode fixpoint loses a
         // deduped object, so this is the target, not a round-trip).

@@ -115,6 +115,9 @@ int main(void) {
         dump(@"SKVideoNode", [[SKVideoNode alloc] init]);
         dump(@"SKTransformNode", [SKTransformNode node]);
         dump(@"SKWarpGeometryGrid(2x2)", [SKWarpGeometryGrid gridWithColumns:2 rows:2]);
+        SKSpriteNode *wps = [SKSpriteNode spriteNodeWithColor:[NSColor redColor] size:CGSizeMake(64, 64)];
+        wps.warpGeometry = [SKWarpGeometryGrid gridWithColumns:2 rows:2];
+        dump(@"SKSpriteNode(warp set)", wps);
     }
     return 0;
 }
