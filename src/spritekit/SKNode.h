@@ -336,4 +336,23 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) int32_t lightCategoryBitMask;
 @end
 
+#pragma mark - SKFieldNode
+
+// Own fields (spy order): _strength (float, 0), _falloff (float, 0),
+// _minimumRadius (float, 2^-15 = 3.0517578125e-05), _active (bool, NO),
+// _exclusive (bool, NO), _categoryBitMask (int32, 0), _direction (obj, a
+// 12-byte NSMutableData holding three zero floats), _smoothness (float, 0),
+// _animationSpeed (float, 0).
+@interface SKFieldNode : SKNode
+@property (nonatomic) float strength;
+@property (nonatomic) float falloff;
+@property (nonatomic) float minimumRadius;
+@property (nonatomic) BOOL active;
+@property (nonatomic) BOOL exclusive;
+@property (nonatomic) int32_t categoryBitMask;
+@property (nonatomic) float smoothness;
+@property (nonatomic) float animationSpeed;
+- (void)setDirectionX:(float)x y:(float)y z:(float)z;
+@end
+
 NS_ASSUME_NONNULL_END

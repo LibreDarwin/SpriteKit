@@ -97,6 +97,11 @@
 		FEEDFACE000000000000017E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000061 /* Foundation.framework */; };
 		FEEDFACE000000000000017F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000062 /* CoreGraphics.framework */; };
 		FEEDFACE0000000000000180 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000065 /* AppKit.framework */; };
+		FEEDFACE000000000000018B /* sk_field_parity.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000189 /* sk_field_parity.m */; };
+		FEEDFACE000000000000018C /* libSpriteKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000042 /* libSpriteKit.a */; };
+		FEEDFACE000000000000018D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000061 /* Foundation.framework */; };
+		FEEDFACE000000000000018E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000062 /* CoreGraphics.framework */; };
+		FEEDFACE000000000000018F /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000065 /* AppKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -212,6 +217,13 @@
 			remoteGlobalIDString = FEEDFACE0000000000000091;
 			remoteInfo = SpriteKit;
 		};
+		FEEDFACE000000000000018A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FEEDFACE0000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FEEDFACE0000000000000091;
+			remoteInfo = SpriteKit;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -261,6 +273,8 @@
 		FEEDFACE000000000000016B /* sk_reference_parity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sk_reference_parity.m; sourceTree = "<group>"; };
 		FEEDFACE0000000000000179 /* sk_light_parity */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sk_light_parity; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEEDFACE000000000000017A /* sk_light_parity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sk_light_parity.m; sourceTree = "<group>"; };
+		FEEDFACE0000000000000188 /* sk_field_parity */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sk_field_parity; sourceTree = BUILT_PRODUCTS_DIR; };
+		FEEDFACE0000000000000189 /* sk_field_parity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sk_field_parity.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -461,6 +475,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FEEDFACE0000000000000190 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEEDFACE000000000000018C /* libSpriteKit.a in Frameworks */,
+				FEEDFACE000000000000018D /* Foundation.framework in Frameworks */,
+				FEEDFACE000000000000018E /* CoreGraphics.framework in Frameworks */,
+				FEEDFACE000000000000018F /* AppKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -494,6 +519,7 @@
 				FEEDFACE000000000000015B /* sk_audio_parity */,
 				FEEDFACE000000000000016A /* sk_reference_parity */,
 				FEEDFACE0000000000000179 /* sk_light_parity */,
+				FEEDFACE0000000000000188 /* sk_field_parity */,
 				FEEDFACE000000000000011F /* sk_crop_parity */,
 			);
 			name = Products;
@@ -559,6 +585,7 @@
 				FEEDFACE000000000000015C /* sk_audio_parity.m */,
 				FEEDFACE000000000000016B /* sk_reference_parity.m */,
 				FEEDFACE000000000000017A /* sk_light_parity.m */,
+				FEEDFACE0000000000000189 /* sk_field_parity.m */,
 				FEEDFACE0000000000000120 /* sk_crop_parity.m */,
 			);
 			path = tools;
@@ -871,6 +898,23 @@
 			productReference = FEEDFACE0000000000000179 /* sk_light_parity */;
 			productType = "com.apple.product-type.tool";
 		};
+		FEEDFACE0000000000000192 /* sk_field_parity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FEEDFACE0000000000000194 /* Build configuration list for PBXNativeTarget "sk_field_parity" */;
+			buildPhases = (
+				FEEDFACE0000000000000191 /* Sources */,
+				FEEDFACE0000000000000190 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FEEDFACE0000000000000193 /* PBXTargetDependency */,
+			);
+			name = sk_field_parity;
+			productName = sk_field_parity;
+			productReference = FEEDFACE0000000000000188 /* sk_field_parity */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -910,6 +954,7 @@
 				FEEDFACE0000000000000165 /* sk_audio_parity */,
 				FEEDFACE0000000000000174 /* sk_reference_parity */,
 				FEEDFACE0000000000000183 /* sk_light_parity */,
+				FEEDFACE0000000000000192 /* sk_field_parity */,
 				FEEDFACE0000000000000129 /* sk_crop_parity */,
 			);
 		};
@@ -1063,6 +1108,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FEEDFACE0000000000000191 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEEDFACE000000000000018B /* sk_field_parity.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1145,6 +1198,11 @@
 			isa = PBXTargetDependency;
 			target = FEEDFACE0000000000000091 /* SpriteKit */;
 			targetProxy = FEEDFACE000000000000017B /* PBXContainerItemProxy */;
+		};
+		FEEDFACE0000000000000193 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FEEDFACE0000000000000091 /* SpriteKit */;
+			targetProxy = FEEDFACE000000000000018A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1529,6 +1587,26 @@
 			};
 			name = Release;
 		};
+		FEEDFACE0000000000000195 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/debug";
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/src/spritekit";
+				PRODUCT_NAME = sk_field_parity;
+			};
+			name = Debug;
+		};
+		FEEDFACE0000000000000196 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/release";
+				GCC_OPTIMIZATION_LEVEL = 2;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/src/spritekit";
+				PRODUCT_NAME = sk_field_parity;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1699,6 +1777,15 @@
 			buildConfigurations = (
 				FEEDFACE0000000000000186 /* Debug */,
 				FEEDFACE0000000000000187 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FEEDFACE0000000000000194 /* Build configuration list for PBXNativeTarget "sk_field_parity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FEEDFACE0000000000000195 /* Debug */,
+				FEEDFACE0000000000000196 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

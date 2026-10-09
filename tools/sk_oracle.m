@@ -85,6 +85,10 @@ int main(void) {
         light.name = @"light";
         save(light, [dir stringByAppendingPathComponent:@"oracle_light.skeep"]);
 
+        SKFieldNode *field = [SKFieldNode node];
+        field.name = @"field";
+        save(field, [dir stringByAppendingPathComponent:@"oracle_field.skeep"]);
+
         // Canonical .sks form: the init+encode graph the runtime writer emits
         // for a scene with content (the decode->re-encode fixpoint loses a
         // deduped object, so this is the target, not a round-trip).

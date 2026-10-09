@@ -1071,3 +1071,66 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
 }
 
 @end
+
+#pragma mark - SKFieldNode
+
+// Own-field emit order after the 24 SKNode fields (from tools/sk_emit_spy.m):
+// _strength, _falloff, _minimumRadius (floats), _active, _exclusive (bools),
+// _categoryBitMask (encodeInt32), _direction (a 12-byte NSMutableData of three
+// zero floats), _smoothness, _animationSpeed (floats).
+
+@implementation SKFieldNode {
+    NSMutableData *_direction;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _strength = 0.0f;
+        _falloff = 0.0f;
+        _minimumRadius = 3.0517578125e-05f;  // 2^-15, Apple's default
+        _active = NO;
+        _exclusive = NO;
+        _categoryBitMask = 0;
+        _direction = [NSMutableData dataWithLength:12];
+        _smoothness = 0.0f;
+        _animationSpeed = 0.0f;
+    }
+    return self;
+}
+
+- (void)setDirectionX:(float)x y:(float)y z:(float)z {
+    float v[3] = { x, y, z };
+    [_direction replaceBytesInRange:NSMakeRange(0, 12) withBytes:v];
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeFloat:_strength forKey:@"_strength"];
+    [coder encodeFloat:_falloff forKey:@"_falloff"];
+    [coder encodeFloat:_minimumRadius forKey:@"_minimumRadius"];
+    [coder encodeBool:_active forKey:@"_active"];
+    [coder encodeBool:_exclusive forKey:@"_exclusive"];
+    [coder encodeInt32:_categoryBitMask forKey:@"_categoryBitMask"];
+    [coder encodeObject:_direction forKey:@"_direction"];
+    [coder encodeFloat:_smoothness forKey:@"_smoothness"];
+    [coder encodeFloat:_animationSpeed forKey:@"_animationSpeed"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _strength = [coder decodeFloatForKey:@"_strength"];
+        _falloff = [coder decodeFloatForKey:@"_falloff"];
+        _minimumRadius = [coder decodeFloatForKey:@"_minimumRadius"];
+        _active = [coder decodeBoolForKey:@"_active"];
+        _exclusive = [coder decodeBoolForKey:@"_exclusive"];
+        _categoryBitMask = [coder decodeInt32ForKey:@"_categoryBitMask"];
+        _direction = [coder decodeObjectForKey:@"_direction"];
+        _smoothness = [coder decodeFloatForKey:@"_smoothness"];
+        _animationSpeed = [coder decodeFloatForKey:@"_animationSpeed"];
+    }
+    return self;
+}
+
+@end
