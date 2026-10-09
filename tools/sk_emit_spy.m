@@ -104,6 +104,10 @@ int main(void) {
         dump(@"SKPhysicsBody(circle r=1)", b);
         SKPhysicsWorld *w = [[SKPhysicsWorld alloc] init];
         dump(@"PKPhysicsWorld(new)", w);
+
+        dump(@"SKCameraNode", [SKCameraNode node]);
+        dump(@"SKCropNode", [SKCropNode node]);
+        dump(@"SKEmitterNode", [SKEmitterNode node]);
     }
     return 0;
 }

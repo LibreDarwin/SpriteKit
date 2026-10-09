@@ -58,6 +58,21 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) long blendMode;
 @end
 
+#pragma mark - SKCameraNode
+
+// A camera carries no extra state beyond SKNode; the archive is the 24 SKNode
+// fields alone (its _originalClass is "SKCameraNode").
+@interface SKCameraNode : SKNode
+@end
+
+#pragma mark - SKCropNode
+
+@interface SKCropNode : SKNode
+@property (nonatomic, nullable) id mask;      // SKNode
+@property (nonatomic) BOOL prefersAlphaMask;
+@property (nonatomic) BOOL invertMask;
+@end
+
 #pragma mark - PKPhysicsBody / PKPhysicsWorld
 
 // An SKScene archives its physics state under PhysicsKit's class names, with

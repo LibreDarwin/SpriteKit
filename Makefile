@@ -70,7 +70,15 @@ PARITY_SCENE_CANONICAL := $(BUILD_DIR)/sk_scene_canonical_parity
 PARITY_SCENE_CANONICAL_OBJ := $(OBJDIR)/spritekit/sk_scene_canonical_parity.o
 SCENE_CANONICAL_GOLDEN := tools/conformance/SpriteKit/oracle_scene_canonical.skeep
 
-all: $(TOOL) $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL)
+PARITY_CAMERA := $(BUILD_DIR)/sk_camera_parity
+PARITY_CAMERA_OBJ := $(OBJDIR)/spritekit/sk_camera_parity.o
+CAMERA_GOLDEN := tools/conformance/SpriteKit/oracle_camera.skeep
+
+PARITY_CROP := $(BUILD_DIR)/sk_crop_parity
+PARITY_CROP_OBJ := $(OBJDIR)/spritekit/sk_crop_parity.o
+CROP_GOLDEN := tools/conformance/SpriteKit/oracle_crop.skeep
+
+all: $(TOOL) $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP)
 
 $(TOOL): $(TOOL_OBJS)
 	@mkdir -p $(BUILD_DIR)
@@ -156,6 +164,24 @@ $(PARITY_SCENE_CANONICAL): $(PARITY_SCENE_CANONICAL_OBJ) $(SK_OBJS)
 	$(CC) $(MFLAGS) -o $@ $(PARITY_SCENE_CANONICAL_OBJ) $(SK_OBJS) \
 	    -framework Foundation -framework CoreGraphics -framework AppKit
 
+$(PARITY_CAMERA_OBJ): tools/sk_camera_parity.m src/spritekit/SKNode.h
+	@mkdir -p $(OBJDIR)/spritekit
+	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ tools/sk_camera_parity.m
+
+$(PARITY_CAMERA): $(PARITY_CAMERA_OBJ) $(SK_OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(MFLAGS) -o $@ $(PARITY_CAMERA_OBJ) $(SK_OBJS) \
+	    -framework Foundation -framework CoreGraphics -framework AppKit
+
+$(PARITY_CROP_OBJ): tools/sk_crop_parity.m src/spritekit/SKNode.h
+	@mkdir -p $(OBJDIR)/spritekit
+	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ tools/sk_crop_parity.m
+
+$(PARITY_CROP): $(PARITY_CROP_OBJ) $(SK_OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(MFLAGS) -o $@ $(PARITY_CROP_OBJ) $(SK_OBJS) \
+	    -framework Foundation -framework CoreGraphics -framework AppKit
+
 $(OBJDIR)/atlasc/TextureAtlas.o: src/atlasc/TextureAtlas.m
 	@mkdir -p $(OBJDIR)/atlasc
 	$(CC) $(OBJCFLAGS) -c -o $@ src/atlasc/TextureAtlas.m
@@ -183,7 +209,7 @@ test-atlasc: $(TOOL)
 	$(TEST_PY) tools/conformance/run_tests.py TextureAtlas --build-dir $(BUILD_DIR)
 
 # Byte-identical archive parity against Apple-recorded SpriteKit goldens.
-test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL)
+test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP)
 	$(PARITY_ACTIONS) $(ACTIONS_GOLDEN)
 	$(PARITY_NODE) $(NODE_GOLDEN)
 	$(PARITY_SPRITE) $(SPRITE_GOLDEN)
@@ -192,6 +218,8 @@ test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL
 	$(PARITY_SHAPE) $(SHAPE_GOLDEN)
 	$(PARITY_SCENE) $(SCENE_GOLDEN)
 	$(PARITY_SCENE_CANONICAL) $(SCENE_CANONICAL_GOLDEN)
+	$(PARITY_CAMERA) $(CAMERA_GOLDEN)
+	$(PARITY_CROP) $(CROP_GOLDEN)
 
 # Re-record the Apple goldens (development aid; links the real SpriteKit).
 # Not part of `all` -- run by hand when adding a new node class to the suite.

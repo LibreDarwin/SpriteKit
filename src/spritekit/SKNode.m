@@ -190,6 +190,37 @@ static NSValue *SKValueRect(CGRect r) {
 
 @end
 
+#pragma mark - SKCameraNode
+
+@implementation SKCameraNode
+@end
+
+#pragma mark - SKCropNode
+
+// Own-field emit order after the 24 SKNode fields (from tools/sk_emit_spy.m):
+// _mask (obj), _prefersAlphaMask (bool), _invertMask (bool).
+
+@implementation SKCropNode
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_mask forKey:@"_mask"];
+    [coder encodeBool:_prefersAlphaMask forKey:@"_prefersAlphaMask"];
+    [coder encodeBool:_invertMask forKey:@"_invertMask"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _mask = [coder decodeObjectForKey:@"_mask"];
+        _prefersAlphaMask = [coder decodeBoolForKey:@"_prefersAlphaMask"];
+        _invertMask = [coder decodeBoolForKey:@"_invertMask"];
+    }
+    return self;
+}
+
+@end
+
 #pragma mark - PKPhysicsBody
 
 // PhysicsKit's body, as archived by SKScene.  Field order and encoding flavour

@@ -53,6 +53,14 @@ int main(void) {
         scene.name = @"scene";
         save(scene, [dir stringByAppendingPathComponent:@"oracle_scene.skeep"]);
 
+        SKCameraNode *camera = [SKCameraNode node];
+        camera.name = @"cam";
+        save(camera, [dir stringByAppendingPathComponent:@"oracle_camera.skeep"]);
+
+        SKCropNode *crop = [SKCropNode node];
+        crop.name = @"crop";
+        save(crop, [dir stringByAppendingPathComponent:@"oracle_crop.skeep"]);
+
         // Canonical .sks form: the init+encode graph the runtime writer emits
         // for a scene with content (the decode->re-encode fixpoint loses a
         // deduped object, so this is the target, not a round-trip).
