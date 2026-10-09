@@ -118,6 +118,10 @@ int main(void) {
         SKSpriteNode *wps = [SKSpriteNode spriteNodeWithColor:[NSColor redColor] size:CGSizeMake(64, 64)];
         wps.warpGeometry = [SKWarpGeometryGrid gridWithColumns:2 rows:2];
         dump(@"SKSpriteNode(warp set)", wps);
+        dump(@"SKShader(empty)", [SKShader shader]);
+        SKEffectNode *efx = [SKEffectNode node];
+        efx.shader = [SKShader shader];
+        dump(@"SKEffectNode(shader set)", efx);
     }
     return 0;
 }

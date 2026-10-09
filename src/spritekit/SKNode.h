@@ -375,4 +375,17 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)gridWithColumns:(NSInteger)cols rows:(NSInteger)rows;
 @end
 
+#pragma mark - SKShader
+
+// Root NSObject subclass.  Own fields (spy order): _isCapture (bool, NO),
+// _uniforms (obj, default empty NSArray), _source (obj, default @""),
+// _fileName (obj, nil), _attributes (obj, nil).
+@interface SKShader : NSObject
++ (instancetype)shader;
++ (instancetype)shaderWithString:(NSString *)source;
+@property (nonatomic, copy, nullable) NSString *source;
+@property (nonatomic, copy, nullable) NSString *fileName;
+@property (nonatomic, copy, nullable) NSArray<id> *uniforms;
+@end
+
 NS_ASSUME_NONNULL_END

@@ -1232,3 +1232,60 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
 - (NSArray<NSArray<NSNumber *> *> *)destPositions { return _dstPositions; }
 
 @end
+
+@implementation SKShader {
+    BOOL _isCapture;
+    NSArray *_uniforms;
+    NSString *_source;
+    NSString *_fileName;
+    id _attributes;
+}
+
++ (instancetype)shader {
+    return [[SKShader alloc] init];
+}
+
++ (instancetype)shaderWithString:(NSString *)source {
+    SKShader *sh = [[SKShader alloc] init];
+    sh.source = source;
+    return sh;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _isCapture = NO;
+        _uniforms = [NSArray array];
+        _source = @"";
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeBool:_isCapture forKey:@"_isCapture"];
+    [coder encodeObject:_uniforms forKey:@"_uniforms"];
+    [coder encodeObject:_source forKey:@"_source"];
+    [coder encodeObject:_fileName forKey:@"_fileName"];
+    [coder encodeObject:_attributes forKey:@"_attributes"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        _isCapture = [coder decodeBoolForKey:@"_isCapture"];
+        _uniforms = [coder decodeObjectForKey:@"_uniforms"];
+        _source = [coder decodeObjectForKey:@"_source"];
+        _fileName = [coder decodeObjectForKey:@"_fileName"];
+        _attributes = [coder decodeObjectForKey:@"_attributes"];
+    }
+    return self;
+}
+
+- (NSString *)source { return _source; }
+- (void)setSource:(NSString *)source { _source = [source copy]; }
+- (NSString *)fileName { return _fileName; }
+- (void)setFileName:(NSString *)fileName { _fileName = [fileName copy]; }
+- (NSArray<id> *)uniforms { return _uniforms; }
+- (void)setUniforms:(NSArray<id> *)uniforms { _uniforms = [uniforms copy]; }
+
+@end

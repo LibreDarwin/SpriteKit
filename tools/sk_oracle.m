@@ -108,6 +108,14 @@ int main(void) {
         wps.name = @"wps";
         save(wps, [dir stringByAppendingPathComponent:@"oracle_sprite_warp.skeep"]);
 
+        SKShader *shader = [SKShader shader];
+        save(shader, [dir stringByAppendingPathComponent:@"oracle_shader.skeep"]);
+
+        SKEffectNode *efx = [SKEffectNode node];
+        efx.shader = shader;
+        efx.name = @"efx";
+        save(efx, [dir stringByAppendingPathComponent:@"oracle_effect_shader.skeep"]);
+
         // Canonical .sks form: the init+encode graph the runtime writer emits
         // for a scene with content (the decode->re-encode fixpoint loses a
         // deduped object, so this is the target, not a round-trip).

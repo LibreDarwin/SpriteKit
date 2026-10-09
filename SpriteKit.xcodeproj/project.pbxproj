@@ -112,6 +112,16 @@
 		FEEDFACE00000000000001AB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000061 /* Foundation.framework */; };
 		FEEDFACE00000000000001AC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000062 /* CoreGraphics.framework */; };
 		FEEDFACE00000000000001AD /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000065 /* AppKit.framework */; };
+		FEEDFACE00000000000001B8 /* sk_shader_parity.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE00000000000001B6 /* sk_shader_parity.m */; };
+		FEEDFACE00000000000001B9 /* libSpriteKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000042 /* libSpriteKit.a */; };
+		FEEDFACE00000000000001BA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000061 /* Foundation.framework */; };
+		FEEDFACE00000000000001BB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000062 /* CoreGraphics.framework */; };
+		FEEDFACE00000000000001BC /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000065 /* AppKit.framework */; };
+		FEEDFACE00000000000001C7 /* sk_effect_shader_parity.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEDFACE00000000000001C5 /* sk_effect_shader_parity.m */; };
+		FEEDFACE00000000000001C8 /* libSpriteKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000042 /* libSpriteKit.a */; };
+		FEEDFACE00000000000001C9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000061 /* Foundation.framework */; };
+		FEEDFACE00000000000001CA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000062 /* CoreGraphics.framework */; };
+		FEEDFACE00000000000001CB /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEDFACE0000000000000065 /* AppKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -248,6 +258,20 @@
 			remoteGlobalIDString = FEEDFACE0000000000000091;
 			remoteInfo = SpriteKit;
 		};
+		FEEDFACE00000000000001B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FEEDFACE0000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FEEDFACE0000000000000091;
+			remoteInfo = SpriteKit;
+		};
+		FEEDFACE00000000000001C6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FEEDFACE0000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FEEDFACE0000000000000091;
+			remoteInfo = SpriteKit;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -303,6 +327,10 @@
 		FEEDFACE0000000000000198 /* sk_warp_grid_parity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sk_warp_grid_parity.m; sourceTree = "<group>"; };
 		FEEDFACE00000000000001A6 /* sk_sprite_warp_parity */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sk_sprite_warp_parity; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEEDFACE00000000000001A7 /* sk_sprite_warp_parity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sk_sprite_warp_parity.m; sourceTree = "<group>"; };
+		FEEDFACE00000000000001B5 /* sk_shader_parity */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sk_shader_parity; sourceTree = BUILT_PRODUCTS_DIR; };
+		FEEDFACE00000000000001B6 /* sk_shader_parity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sk_shader_parity.m; sourceTree = "<group>"; };
+		FEEDFACE00000000000001C4 /* sk_effect_shader_parity */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sk_effect_shader_parity; sourceTree = BUILT_PRODUCTS_DIR; };
+		FEEDFACE00000000000001C5 /* sk_effect_shader_parity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sk_effect_shader_parity.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -536,6 +564,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FEEDFACE00000000000001BD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEEDFACE00000000000001B9 /* libSpriteKit.a in Frameworks */,
+				FEEDFACE00000000000001BA /* Foundation.framework in Frameworks */,
+				FEEDFACE00000000000001BB /* CoreGraphics.framework in Frameworks */,
+				FEEDFACE00000000000001BC /* AppKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FEEDFACE00000000000001CC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEEDFACE00000000000001C8 /* libSpriteKit.a in Frameworks */,
+				FEEDFACE00000000000001C9 /* Foundation.framework in Frameworks */,
+				FEEDFACE00000000000001CA /* CoreGraphics.framework in Frameworks */,
+				FEEDFACE00000000000001CB /* AppKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -572,6 +622,8 @@
 				FEEDFACE0000000000000188 /* sk_field_parity */,
 				FEEDFACE0000000000000197 /* sk_warp_grid_parity */,
 				FEEDFACE00000000000001A6 /* sk_sprite_warp_parity */,
+				FEEDFACE00000000000001C4 /* sk_effect_shader_parity */,
+				FEEDFACE00000000000001B5 /* sk_shader_parity */,
 				FEEDFACE000000000000011F /* sk_crop_parity */,
 			);
 			name = Products;
@@ -640,6 +692,8 @@
 				FEEDFACE0000000000000189 /* sk_field_parity.m */,
 				FEEDFACE0000000000000198 /* sk_warp_grid_parity.m */,
 				FEEDFACE00000000000001A7 /* sk_sprite_warp_parity.m */,
+				FEEDFACE00000000000001C5 /* sk_effect_shader_parity.m */,
+				FEEDFACE00000000000001B6 /* sk_shader_parity.m */,
 				FEEDFACE0000000000000120 /* sk_crop_parity.m */,
 			);
 			path = tools;
@@ -1003,6 +1057,40 @@
 			productReference = FEEDFACE00000000000001A6 /* sk_sprite_warp_parity */;
 			productType = "com.apple.product-type.tool";
 		};
+		FEEDFACE00000000000001BF /* sk_shader_parity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FEEDFACE00000000000001C1 /* Build configuration list for PBXNativeTarget "sk_shader_parity" */;
+			buildPhases = (
+				FEEDFACE00000000000001BE /* Sources */,
+				FEEDFACE00000000000001BD /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FEEDFACE00000000000001C0 /* PBXTargetDependency */,
+			);
+			name = sk_shader_parity;
+			productName = sk_shader_parity;
+			productReference = FEEDFACE00000000000001B5 /* sk_shader_parity */;
+			productType = "com.apple.product-type.tool";
+		};
+		FEEDFACE00000000000001CE /* sk_effect_shader_parity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FEEDFACE00000000000001D0 /* Build configuration list for PBXNativeTarget "sk_effect_shader_parity" */;
+			buildPhases = (
+				FEEDFACE00000000000001CD /* Sources */,
+				FEEDFACE00000000000001CC /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FEEDFACE00000000000001CF /* PBXTargetDependency */,
+			);
+			name = sk_effect_shader_parity;
+			productName = sk_effect_shader_parity;
+			productReference = FEEDFACE00000000000001C4 /* sk_effect_shader_parity */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1045,6 +1133,8 @@
 				FEEDFACE0000000000000192 /* sk_field_parity */,
 				FEEDFACE00000000000001A1 /* sk_warp_grid_parity */,
 				FEEDFACE00000000000001B0 /* sk_sprite_warp_parity */,
+				FEEDFACE00000000000001CE /* sk_effect_shader_parity */,
+				FEEDFACE00000000000001BF /* sk_shader_parity */,
 				FEEDFACE0000000000000129 /* sk_crop_parity */,
 			);
 		};
@@ -1222,6 +1312,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FEEDFACE00000000000001BE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEEDFACE00000000000001B8 /* sk_shader_parity.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FEEDFACE00000000000001CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEEDFACE00000000000001C7 /* sk_effect_shader_parity.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1319,6 +1425,16 @@
 			isa = PBXTargetDependency;
 			target = FEEDFACE0000000000000091 /* SpriteKit */;
 			targetProxy = FEEDFACE00000000000001A8 /* PBXContainerItemProxy */;
+		};
+		FEEDFACE00000000000001C0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FEEDFACE0000000000000091 /* SpriteKit */;
+			targetProxy = FEEDFACE00000000000001B7 /* PBXContainerItemProxy */;
+		};
+		FEEDFACE00000000000001CF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FEEDFACE0000000000000091 /* SpriteKit */;
+			targetProxy = FEEDFACE00000000000001C6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1763,6 +1879,46 @@
 			};
 			name = Release;
 		};
+		FEEDFACE00000000000001C2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/debug";
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/src/spritekit";
+				PRODUCT_NAME = sk_shader_parity;
+			};
+			name = Debug;
+		};
+		FEEDFACE00000000000001C3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/release";
+				GCC_OPTIMIZATION_LEVEL = 2;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/src/spritekit";
+				PRODUCT_NAME = sk_shader_parity;
+			};
+			name = Release;
+		};
+		FEEDFACE00000000000001D1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/debug";
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/src/spritekit";
+				PRODUCT_NAME = sk_effect_shader_parity;
+			};
+			name = Debug;
+		};
+		FEEDFACE00000000000001D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/build/release";
+				GCC_OPTIMIZATION_LEVEL = 2;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/src/spritekit";
+				PRODUCT_NAME = sk_effect_shader_parity;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1960,6 +2116,24 @@
 			buildConfigurations = (
 				FEEDFACE00000000000001B3 /* Debug */,
 				FEEDFACE00000000000001B4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FEEDFACE00000000000001C1 /* Build configuration list for PBXNativeTarget "sk_shader_parity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FEEDFACE00000000000001C2 /* Debug */,
+				FEEDFACE00000000000001C3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FEEDFACE00000000000001D0 /* Build configuration list for PBXNativeTarget "sk_effect_shader_parity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FEEDFACE00000000000001D1 /* Debug */,
+				FEEDFACE00000000000001D2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
