@@ -106,6 +106,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SKScene : SKEffectNode
 @property (nonatomic, strong, nullable) PKPhysicsBody *scenePinBody;
+@property (nonatomic, copy, nullable) id backgroundColor;   // SKColor -> RGBA
 @property (nonatomic) double backgroundColorR;
 @property (nonatomic) double backgroundColorG;
 @property (nonatomic) double backgroundColorB;
@@ -167,6 +168,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) float preferredMaxLayoutWidth;
 
 + (instancetype)labelNodeWithText:(nullable NSString *)text;
++ (instancetype)labelNodeWithFontNamed:(nullable NSString *)fontName;
 @end
 
 #pragma mark - SKShapeNode

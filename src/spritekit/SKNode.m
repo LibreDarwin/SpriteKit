@@ -388,6 +388,31 @@ static NSValue *SKValueRect(CGRect r) {
                               size.width, size.height);
 }
 
+// The public SKScene.backgroundColor is a color; the archive only carries its
+// decomposed components, so the setter flattens to sRGB doubles.
+- (id)backgroundColor {
+    return [NSColor colorWithRed:_backgroundColorR
+                            green:_backgroundColorG
+                             blue:_backgroundColorB
+                            alpha:_backgroundColorA];
+}
+
+- (void)setBackgroundColor:(id)color {
+    if (!color) {
+        return;
+    }
+    NSColor *c = [(NSColor *)color colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
+    if (!c) {
+        return;
+    }
+    CGFloat r = 0, g = 0, b = 0, a = 1;
+    [c getRed:&r green:&g blue:&b alpha:&a];
+    _backgroundColorR = r;
+    _backgroundColorG = g;
+    _backgroundColorB = b;
+    _backgroundColorA = a;
+}
+
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
     [coder encodeObject:_scenePinBody forKey:@"_scenePinBody"];
@@ -533,6 +558,12 @@ static NSValue *SKValueRect(CGRect r) {
 + (instancetype)labelNodeWithText:(NSString *)text {
     SKLabelNode *n = [[self alloc] init];
     n.text = text;
+    return n;
+}
+
++ (instancetype)labelNodeWithFontNamed:(NSString *)fontName {
+    SKLabelNode *n = [[self alloc] init];
+    n.fontName = fontName;
     return n;
 }
 

@@ -52,6 +52,23 @@ int main(void) {
         SKScene *scene = [SKScene sceneWithSize:CGSizeMake(320, 480)];
         scene.name = @"scene";
         save(scene, [dir stringByAppendingPathComponent:@"oracle_scene.skeep"]);
+
+        // Canonical .sks form: the init+encode graph the runtime writer emits
+        // for a scene with content (the decode->re-encode fixpoint loses a
+        // deduped object, so this is the target, not a round-trip).
+        SKScene *full = [SKScene sceneWithSize:CGSizeMake(320, 240)];
+        full.backgroundColor = [SKColor blueColor];
+        SKSpriteNode *sq = [SKSpriteNode spriteNodeWithColor:[SKColor redColor]
+                                                       size:CGSizeMake(64, 48)];
+        sq.position = CGPointMake(100, 90);
+        sq.zRotation = 0.25;
+        SKLabelNode *caption = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
+        caption.text = @"ok";
+        caption.fontSize = 24;
+        caption.position = CGPointMake(160, 120);
+        [full addChild:sq];
+        [full addChild:caption];
+        save(full, [dir stringByAppendingPathComponent:@"oracle_scene_canonical.skeep"]);
     }
     return 0;
 }
