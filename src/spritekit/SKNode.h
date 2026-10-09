@@ -355,4 +355,24 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setDirectionX:(float)x y:(float)y z:(float)z;
 @end
 
+#pragma mark - SKWarpGeometry / SKWarpGeometryGrid
+
+// Abstract base of the warp-geometry cluster.  Root NSObject subclass (class
+// chain SKWarpGeometry <- NSObject); encode contributes no fields of its own.
+// SKWarpGeometryGrid adds (spy order, all encodeInteger for the scalars):
+// _SKWarpGeometryGridVersion (1), _numberOfColumns, _numberOfRows, then
+// _sourcePositions, _destPositions (encodeObject).  Positions are arrays of
+// two float64 NSValues -- the archive stores each as [x, y] NSArray of float32
+// NSNumber elements (a GridConfiguration boxed as an array).
+@interface SKWarpGeometry : NSObject
+@property (nonatomic, readonly) NSInteger gridColumns;
+@property (nonatomic, readonly) NSInteger gridRows;
+- (nullable NSArray<NSArray<NSNumber *> *> *)sourcePositions;
+- (nullable NSArray<NSArray<NSNumber *> *> *)destPositions;
+@end
+
+@interface SKWarpGeometryGrid : SKWarpGeometry
++ (instancetype)gridWithColumns:(NSInteger)cols rows:(NSInteger)rows;
+@end
+
 NS_ASSUME_NONNULL_END

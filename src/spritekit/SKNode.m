@@ -1134,3 +1134,101 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
 }
 
 @end
+
+#pragma mark - SKWarpGeometry / SKWarpGeometryGrid
+
+// Emit order for SKWarpGeometryGrid (from tools/sk_emit_spy.m):
+//   _SKWarpGeometryGridVersion  integer(1)
+//   _numberOfColumns            integer(2)
+//   _numberOfRows               integer(2)
+//   _sourcePositions            obj(__NSArrayM)
+//   _destPositions              obj(__NSArrayM)
+// Each position archive element is an [x, y] NSArray of float32 NSNumber
+// values (1.0 and 0.0 shared as single instances, other coordinates freshly
+// created), which mirrors the 2x2 default grid recorded in the oracle.
+
+@implementation SKWarpGeometry
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    (void)coder;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    (void)coder;
+    return [super init];
+}
+
+- (NSInteger)gridColumns { return 0; }
+- (NSInteger)gridRows { return 0; }
+- (NSArray<NSArray<NSNumber *> *> *)sourcePositions { return nil; }
+- (NSArray<NSArray<NSNumber *> *> *)destPositions { return nil; }
+
+@end
+
+@implementation SKWarpGeometryGrid {
+    NSInteger _columns, _rows;
+    NSArray *_srcPositions;
+    NSArray *_dstPositions;
+}
+
++ (instancetype)gridWithColumns:(NSInteger)cols rows:(NSInteger)rows {
+    return [[SKWarpGeometryGrid alloc] initWithColumns:cols rows:rows];
+}
+
+- (instancetype)initWithColumns:(NSInteger)cols rows:(NSInteger)rows {
+    self = [super init];
+    if (self) {
+        _columns = cols;
+        _rows = rows;
+        NSNumber *zero = [NSNumber numberWithFloat:0.0f];
+        NSNumber *one = [NSNumber numberWithFloat:1.0f];
+        NSMutableArray *src = [NSMutableArray array];
+        NSMutableArray *dst = [NSMutableArray array];
+        NSInteger r, c;
+        for (r = 0; r <= rows; r++) {
+            for (c = 0; c <= cols; c++) {
+                float x = (float)c / (float)cols;
+                float y = (float)r / (float)rows;
+                NSNumber *sx = x == 0.0f ? zero : (x == 1.0f ? one : [NSNumber numberWithFloat:x]);
+                NSNumber *sy = y == 0.0f ? zero : (y == 1.0f ? one : [NSNumber numberWithFloat:y]);
+                NSNumber *dx = x == 0.0f ? zero : (x == 1.0f ? one : [NSNumber numberWithFloat:x]);
+                NSNumber *dy = y == 0.0f ? zero : (y == 1.0f ? one : [NSNumber numberWithFloat:y]);
+                NSArray *srcPair = @[ sx, sy ];
+                NSArray *dstPair = @[ dx, dy ];
+                [src addObject:srcPair];
+                [dst addObject:dstPair];
+            }
+        }
+        _srcPositions = src;
+        _dstPositions = dst;
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeInteger:1 forKey:@"_SKWarpGeometryGridVersion"];
+    [coder encodeInteger:_columns forKey:@"_numberOfColumns"];
+    [coder encodeInteger:_rows forKey:@"_numberOfRows"];
+    [coder encodeObject:_srcPositions forKey:@"_sourcePositions"];
+    [coder encodeObject:_dstPositions forKey:@"_destPositions"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        [coder decodeIntegerForKey:@"_SKWarpGeometryGridVersion"];
+        _columns = [coder decodeIntegerForKey:@"_numberOfColumns"];
+        _rows = [coder decodeIntegerForKey:@"_numberOfRows"];
+        _srcPositions = [coder decodeObjectForKey:@"_sourcePositions"];
+        _dstPositions = [coder decodeObjectForKey:@"_destPositions"];
+    }
+    return self;
+}
+
+- (NSInteger)gridColumns { return _columns; }
+- (NSInteger)gridRows { return _rows; }
+- (NSArray<NSArray<NSNumber *> *> *)sourcePositions { return _srcPositions; }
+- (NSArray<NSArray<NSNumber *> *> *)destPositions { return _dstPositions; }
+
+@end

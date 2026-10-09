@@ -106,7 +106,11 @@ PARITY_FIELD := $(BUILD_DIR)/sk_field_parity
 PARITY_FIELD_OBJ := $(OBJDIR)/spritekit/sk_field_parity.o
 FIELD_GOLDEN := tools/conformance/SpriteKit/oracle_field.skeep
 
-all: $(TOOL) $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP) $(PARITY_EMITTER) $(PARITY_TRANSFORM) $(PARITY_VIDEO) $(PARITY_AUDIO) $(PARITY_REFERENCE) $(PARITY_LIGHT) $(PARITY_FIELD)
+PARITY_WARP_GRID := $(BUILD_DIR)/sk_warp_grid_parity
+PARITY_WARP_GRID_OBJ := $(OBJDIR)/spritekit/sk_warp_grid_parity.o
+WARP_GRID_GOLDEN := tools/conformance/SpriteKit/oracle_warp_grid.skeep
+
+all: $(TOOL) $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP) $(PARITY_EMITTER) $(PARITY_TRANSFORM) $(PARITY_VIDEO) $(PARITY_AUDIO) $(PARITY_REFERENCE) $(PARITY_LIGHT) $(PARITY_FIELD) $(PARITY_WARP_GRID)
 
 $(TOOL): $(TOOL_OBJS)
 	@mkdir -p $(BUILD_DIR)
@@ -273,6 +277,15 @@ $(PARITY_FIELD): $(PARITY_FIELD_OBJ) $(SK_OBJS)
 	$(CC) $(MFLAGS) -o $@ $(PARITY_FIELD_OBJ) $(SK_OBJS) \
 	    -framework Foundation -framework CoreGraphics -framework AppKit
 
+$(PARITY_WARP_GRID_OBJ): tools/sk_warp_grid_parity.m src/spritekit/SKNode.h
+	@mkdir -p $(OBJDIR)/spritekit
+	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ tools/sk_warp_grid_parity.m
+
+$(PARITY_WARP_GRID): $(PARITY_WARP_GRID_OBJ) $(SK_OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(MFLAGS) -o $@ $(PARITY_WARP_GRID_OBJ) $(SK_OBJS) \
+	    -framework Foundation -framework CoreGraphics -framework AppKit
+
 $(OBJDIR)/atlasc/TextureAtlas.o: src/atlasc/TextureAtlas.m
 	@mkdir -p $(OBJDIR)/atlasc
 	$(CC) $(OBJCFLAGS) -c -o $@ src/atlasc/TextureAtlas.m
@@ -300,7 +313,7 @@ test-atlasc: $(TOOL)
 	$(TEST_PY) tools/conformance/run_tests.py TextureAtlas --build-dir $(BUILD_DIR)
 
 # Byte-identical archive parity against Apple-recorded SpriteKit goldens.
-test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP) $(PARITY_EMITTER) $(PARITY_TRANSFORM) $(PARITY_VIDEO) $(PARITY_AUDIO) $(PARITY_REFERENCE) $(PARITY_LIGHT) $(PARITY_FIELD)
+test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP) $(PARITY_EMITTER) $(PARITY_TRANSFORM) $(PARITY_VIDEO) $(PARITY_AUDIO) $(PARITY_REFERENCE) $(PARITY_LIGHT) $(PARITY_FIELD) $(PARITY_WARP_GRID)
 	$(PARITY_ACTIONS) $(ACTIONS_GOLDEN)
 	$(PARITY_NODE) $(NODE_GOLDEN)
 	$(PARITY_SPRITE) $(SPRITE_GOLDEN)
@@ -318,6 +331,7 @@ test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL
 	$(PARITY_REFERENCE) $(REFERENCE_GOLDEN)
 	$(PARITY_LIGHT) $(LIGHT_GOLDEN)
 	$(PARITY_FIELD) $(FIELD_GOLDEN)
+	$(PARITY_WARP_GRID) $(WARP_GRID_GOLDEN)
 
 # Re-record the Apple goldens (development aid; links the real SpriteKit).
 # Not part of `all` -- run by hand when adding a new node class to the suite.

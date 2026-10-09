@@ -114,6 +114,7 @@ int main(void) {
         dump(@"SKReferenceNode", [[SKReferenceNode alloc] init]);
         dump(@"SKVideoNode", [[SKVideoNode alloc] init]);
         dump(@"SKTransformNode", [SKTransformNode node]);
+        dump(@"SKWarpGeometryGrid(2x2)", [SKWarpGeometryGrid gridWithColumns:2 rows:2]);
     }
     return 0;
 }

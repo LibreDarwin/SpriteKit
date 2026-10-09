@@ -89,6 +89,20 @@ int main(void) {
         field.name = @"field";
         save(field, [dir stringByAppendingPathComponent:@"oracle_field.skeep"]);
 
+        SKWarpGeometryGrid *grid = [SKWarpGeometryGrid gridWithColumns:2 rows:2];
+        save(grid, [dir stringByAppendingPathComponent:@"oracle_warp_grid.skeep"]);
+
+        NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
+                          pixelsWide:1 pixelsHigh:1 bitsPerSample:8 samplesPerPixel:4
+                          hasAlpha:YES isPlanar:NO colorSpaceName:NSDeviceRGBColorSpace
+                          bytesPerRow:4 bitsPerPixel:32];
+        uint8_t *pp = (uint8_t *)rep.bitmapData;
+        pp[0] = 0x80; pp[1] = 0x80; pp[2] = 0x80; pp[3] = 0xFF;
+        NSImage *img = [[NSImage alloc] initWithSize:NSMakeSize(1, 1)];
+        [img addRepresentation:rep];
+        SKTexture *tex = [SKTexture textureWithImage:img];
+        save(tex, [dir stringByAppendingPathComponent:@"oracle_texture.skeep"]);
+
         // Canonical .sks form: the init+encode graph the runtime writer emits
         // for a scene with content (the decode->re-encode fixpoint loses a
         // deduped object, so this is the target, not a round-trip).
