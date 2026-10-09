@@ -312,4 +312,28 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSString *referenceFileName;
 @end
 
+#pragma mark - SKLightNode
+
+// Own fields (spy order): enabled (bool, default YES), lightDecay (double, 1),
+// lightColor RGBA (1,1,1,1), ambientColor RGBA (0,0,0,1), shadowColor RGBA
+// (0,0,0,0.5), lightCategoryBitMask (int32, 1).  The color components are keyed
+// "<name>.redComponent"/".greenComponent"/".blueComponent"/".alphaComponent".
+@interface SKLightNode : SKNode
+@property (nonatomic) BOOL enabled;
+@property (nonatomic) double lightDecay;
+@property (nonatomic) double lightColorR;
+@property (nonatomic) double lightColorG;
+@property (nonatomic) double lightColorB;
+@property (nonatomic) double lightColorA;
+@property (nonatomic) double ambientColorR;
+@property (nonatomic) double ambientColorG;
+@property (nonatomic) double ambientColorB;
+@property (nonatomic) double ambientColorA;
+@property (nonatomic) double shadowColorR;
+@property (nonatomic) double shadowColorG;
+@property (nonatomic) double shadowColorB;
+@property (nonatomic) double shadowColorA;
+@property (nonatomic) int32_t lightCategoryBitMask;
+@end
+
 NS_ASSUME_NONNULL_END

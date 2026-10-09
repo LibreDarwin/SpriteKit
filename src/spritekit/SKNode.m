@@ -1004,3 +1004,70 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
 }
 
 @end
+
+#pragma mark - SKLightNode
+
+// Own-field emit order after the 24 SKNode fields (from tools/sk_emit_spy.m):
+// enabled (bool), lightDecay (double), lightColor RGBA, ambientColor RGBA,
+// shadowColor RGBA (all doubles), lightCategoryBitMask (encodeInt32).  Keys for
+// the color components are "<name>.<component>Component".
+
+@implementation SKLightNode
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _enabled = YES;
+        _lightDecay = 1.0;
+        _lightColorR = _lightColorG = _lightColorB = _lightColorA = 1.0;
+        _ambientColorR = _ambientColorG = _ambientColorB = 0.0;
+        _ambientColorA = 1.0;
+        _shadowColorR = _shadowColorG = _shadowColorB = 0.0;
+        _shadowColorA = 0.5;
+        _lightCategoryBitMask = 1;
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeBool:_enabled forKey:@"enabled"];
+    [coder encodeDouble:_lightDecay forKey:@"lightDecay"];
+    [coder encodeDouble:_lightColorR forKey:@"lightColor.redComponent"];
+    [coder encodeDouble:_lightColorG forKey:@"lightColor.greenComponent"];
+    [coder encodeDouble:_lightColorB forKey:@"lightColor.blueComponent"];
+    [coder encodeDouble:_lightColorA forKey:@"lightColor.alphaComponent"];
+    [coder encodeDouble:_ambientColorR forKey:@"ambientColor.redComponent"];
+    [coder encodeDouble:_ambientColorG forKey:@"ambientColor.greenComponent"];
+    [coder encodeDouble:_ambientColorB forKey:@"ambientColor.blueComponent"];
+    [coder encodeDouble:_ambientColorA forKey:@"ambientColor.alphaComponent"];
+    [coder encodeDouble:_shadowColorR forKey:@"shadowColor.redComponent"];
+    [coder encodeDouble:_shadowColorG forKey:@"shadowColor.greenComponent"];
+    [coder encodeDouble:_shadowColorB forKey:@"shadowColor.blueComponent"];
+    [coder encodeDouble:_shadowColorA forKey:@"shadowColor.alphaComponent"];
+    [coder encodeInt32:_lightCategoryBitMask forKey:@"lightCategoryBitMask"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _enabled = [coder decodeBoolForKey:@"enabled"];
+        _lightDecay = [coder decodeDoubleForKey:@"lightDecay"];
+        _lightColorR = [coder decodeDoubleForKey:@"lightColor.redComponent"];
+        _lightColorG = [coder decodeDoubleForKey:@"lightColor.greenComponent"];
+        _lightColorB = [coder decodeDoubleForKey:@"lightColor.blueComponent"];
+        _lightColorA = [coder decodeDoubleForKey:@"lightColor.alphaComponent"];
+        _ambientColorR = [coder decodeDoubleForKey:@"ambientColor.redComponent"];
+        _ambientColorG = [coder decodeDoubleForKey:@"ambientColor.greenComponent"];
+        _ambientColorB = [coder decodeDoubleForKey:@"ambientColor.blueComponent"];
+        _ambientColorA = [coder decodeDoubleForKey:@"ambientColor.alphaComponent"];
+        _shadowColorR = [coder decodeDoubleForKey:@"shadowColor.redComponent"];
+        _shadowColorG = [coder decodeDoubleForKey:@"shadowColor.greenComponent"];
+        _shadowColorB = [coder decodeDoubleForKey:@"shadowColor.blueComponent"];
+        _shadowColorA = [coder decodeDoubleForKey:@"shadowColor.alphaComponent"];
+        _lightCategoryBitMask = [coder decodeInt32ForKey:@"lightCategoryBitMask"];
+    }
+    return self;
+}
+
+@end
