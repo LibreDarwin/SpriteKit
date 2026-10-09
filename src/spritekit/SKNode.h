@@ -210,4 +210,70 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)shapeNodeWithCircleOfRadius:(CGFloat)radius;
 @end
 
+#pragma mark - SKEmitterNode
+
+// A particle emitter.  Its 54 own fields follow the 24 SKNode fields; the emit
+// order and encoding flavour come from tools/sk_emit_spy.m.  Geometry
+// (_startPosition/_startPositionVariance/_startSize/_acceleration) is carried as
+// tagged-pointer strings ("{0, 0}") matching Apple's NSStringFrom{CGPoint,..}
+// defaults, and _emissionAngle defaults to (double)(float)M_PI_2.
+@interface SKEmitterNode : SKNode
+
+@property (nonatomic, nullable) id particleAction;              // SKAction
+@property (nonatomic) double startColorMix;
+@property (nonatomic) double startColorBlendVariance;
+@property (nonatomic) double startColorR;
+@property (nonatomic) double startColorG;
+@property (nonatomic) double startColorB;
+@property (nonatomic) double startColorA;
+@property (nonatomic) double startColorVarianceR;
+@property (nonatomic) double startColorVarianceG;
+@property (nonatomic) double startColorVarianceB;
+@property (nonatomic) double startColorVarianceA;
+@property (nonatomic) double birthrate;
+@property (nonatomic, nullable) id particleTexture;
+@property (nonatomic, copy, nullable) NSString *startPosition;
+@property (nonatomic, copy, nullable) NSString *startPositionVariance;
+@property (nonatomic) double startZPosition;
+@property (nonatomic) double startZPositionVariance;
+@property (nonatomic) double lifetime;
+@property (nonatomic) double lifetimeVariance;
+@property (nonatomic) double startOpacity;
+@property (nonatomic) double startOpacityVariance;
+@property (nonatomic) NSInteger particleBlendMode;
+@property (nonatomic) double startRotation;
+@property (nonatomic) double startRotationVariance;
+@property (nonatomic, copy, nullable) NSString *startSize;
+@property (nonatomic) double startScale;
+@property (nonatomic) double startScaleVariance;
+@property (nonatomic, copy, nullable) NSString *acceleration;
+@property (nonatomic) double colorSpeedR;
+@property (nonatomic) double colorSpeedG;
+@property (nonatomic) double colorSpeedB;
+@property (nonatomic) double colorSpeedA;
+@property (nonatomic) double colorBlendSpeed;
+@property (nonatomic) double rotationSpeed;
+@property (nonatomic) double scaleSpeed;
+@property (nonatomic) double opacitySpeed;
+@property (nonatomic) double startSpeed;
+@property (nonatomic) double startSpeedVariance;
+@property (nonatomic) double emissionAngle;
+@property (nonatomic) double emissionAngleVariance;
+@property (nonatomic, nullable) id target;
+@property (nonatomic, nullable) NSNumber *numParticlesToEmit;
+@property (nonatomic) double zPositionSpeed;
+@property (nonatomic) double emissionDistance;
+@property (nonatomic) double emissionDistanceRange;
+@property (nonatomic) int32_t fieldBitMask;
+@property (nonatomic, nullable) id particleAlphaSequence;
+@property (nonatomic, nullable) id particleColorSequence;
+@property (nonatomic, nullable) id particleColorBlendFactorSequence;
+@property (nonatomic, nullable) id particleScaleSequence;
+@property (nonatomic, nullable) id particleRotationSequence;
+@property (nonatomic, nullable) id fieldInfluenceSequence;
+@property (nonatomic, nullable) id particleSpeedSequence;
+@property (nonatomic, nullable) id shader;
+
+@end
+
 NS_ASSUME_NONNULL_END

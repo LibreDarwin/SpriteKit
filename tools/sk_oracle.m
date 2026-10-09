@@ -61,6 +61,10 @@ int main(void) {
         crop.name = @"crop";
         save(crop, [dir stringByAppendingPathComponent:@"oracle_crop.skeep"]);
 
+        SKEmitterNode *emitter = [SKEmitterNode node];
+        emitter.name = @"emit";
+        save(emitter, [dir stringByAppendingPathComponent:@"oracle_emitter.skeep"]);
+
         // Canonical .sks form: the init+encode graph the runtime writer emits
         // for a scene with content (the decode->re-encode fixpoint loses a
         // deduped object, so this is the target, not a round-trip).

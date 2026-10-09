@@ -760,3 +760,153 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
 }
 
 @end
+
+#pragma mark - SKEmitterNode
+
+// Own-field emit order after the 24 SKNode fields (from tools/sk_emit_spy.m).
+// Doubles dominate; the geometry fields are tagged-pointer strings, and only
+// _particleBlendMode (encodeInteger) and _fieldBitMask (encodeInt32) are
+// primitives.  Defaults are read from oracle_emitter.skeep.
+
+@implementation SKEmitterNode
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _startColorR = 1.0;
+        _startColorG = 1.0;
+        _startColorB = 1.0;
+        _startColorA = 0.0;
+        _startOpacity = 1.0;
+        _startScale = 1.0;
+        _emissionAngle = (double)(float)M_PI_2;
+        NSString *zero2 = [NSString stringWithFormat:@"{%g, %g}", 0.0, 0.0];
+        _startPosition = zero2;
+        _startPositionVariance = zero2;
+        _startSize = zero2;
+        _acceleration = zero2;
+        _numParticlesToEmit = [NSNumber numberWithUnsignedInteger:0];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_particleAction forKey:@"_particleAction"];
+    [coder encodeDouble:_startColorMix forKey:@"_startColorMix"];
+    [coder encodeDouble:_startColorBlendVariance forKey:@"_startColorBlendVariance"];
+    [coder encodeDouble:_startColorR forKey:@"_startColorR"];
+    [coder encodeDouble:_startColorG forKey:@"_startColorG"];
+    [coder encodeDouble:_startColorB forKey:@"_startColorB"];
+    [coder encodeDouble:_startColorA forKey:@"_startColorA"];
+    [coder encodeDouble:_startColorVarianceR forKey:@"_startColorVarianceR"];
+    [coder encodeDouble:_startColorVarianceG forKey:@"_startColorVarianceG"];
+    [coder encodeDouble:_startColorVarianceB forKey:@"_startColorVarianceB"];
+    [coder encodeDouble:_startColorVarianceA forKey:@"_startColorVarianceA"];
+    [coder encodeDouble:_birthrate forKey:@"_birthrate"];
+    [coder encodeObject:_particleTexture forKey:@"_particleTexture"];
+    [coder encodeObject:_startPosition forKey:@"_startPosition"];
+    [coder encodeObject:_startPositionVariance forKey:@"_startPositionVariance"];
+    [coder encodeDouble:_startZPosition forKey:@"_startZPosition"];
+    [coder encodeDouble:_startZPositionVariance forKey:@"_startZPositionVariance"];
+    [coder encodeDouble:_lifetime forKey:@"_lifetime"];
+    [coder encodeDouble:_lifetimeVariance forKey:@"_lifetimeVariance"];
+    [coder encodeDouble:_startOpacity forKey:@"_startOpacity"];
+    [coder encodeDouble:_startOpacityVariance forKey:@"_startOpacityVariance"];
+    [coder encodeInteger:_particleBlendMode forKey:@"_particleBlendMode"];
+    [coder encodeDouble:_startRotation forKey:@"_startRotation"];
+    [coder encodeDouble:_startRotationVariance forKey:@"_startRotationVariance"];
+    [coder encodeObject:_startSize forKey:@"_startSize"];
+    [coder encodeDouble:_startScale forKey:@"_startScale"];
+    [coder encodeDouble:_startScaleVariance forKey:@"_startScaleVariance"];
+    [coder encodeObject:_acceleration forKey:@"_acceleration"];
+    [coder encodeDouble:_colorSpeedR forKey:@"_colorSpeedR"];
+    [coder encodeDouble:_colorSpeedG forKey:@"_colorSpeedG"];
+    [coder encodeDouble:_colorSpeedB forKey:@"_colorSpeedB"];
+    [coder encodeDouble:_colorSpeedA forKey:@"_colorSpeedA"];
+    [coder encodeDouble:_colorBlendSpeed forKey:@"_colorBlendSpeed"];
+    [coder encodeDouble:_rotationSpeed forKey:@"_rotationSpeed"];
+    [coder encodeDouble:_scaleSpeed forKey:@"_scaleSpeed"];
+    [coder encodeDouble:_opacitySpeed forKey:@"_opacitySpeed"];
+    [coder encodeDouble:_startSpeed forKey:@"_startSpeed"];
+    [coder encodeDouble:_startSpeedVariance forKey:@"_startSpeedVariance"];
+    [coder encodeDouble:_emissionAngle forKey:@"_emissionAngle"];
+    [coder encodeDouble:_emissionAngleVariance forKey:@"_emissionAngleVariance"];
+    [coder encodeObject:_target forKey:@"_target"];
+    [coder encodeObject:_numParticlesToEmit forKey:@"_numParticlesToEmit"];
+    [coder encodeDouble:_zPositionSpeed forKey:@"_zPositionSpeed"];
+    [coder encodeDouble:_emissionDistance forKey:@"_emissionDistance"];
+    [coder encodeDouble:_emissionDistanceRange forKey:@"_emissionDistanceRange"];
+    [coder encodeInt32:_fieldBitMask forKey:@"_fieldBitMask"];
+    [coder encodeObject:_particleAlphaSequence forKey:@"_particleAlphaSequence"];
+    [coder encodeObject:_particleColorSequence forKey:@"_particleColorSequence"];
+    [coder encodeObject:_particleColorBlendFactorSequence forKey:@"_particleColorBlendFactorSequence"];
+    [coder encodeObject:_particleScaleSequence forKey:@"_particleScaleSequence"];
+    [coder encodeObject:_particleRotationSequence forKey:@"_particleRotationSequence"];
+    [coder encodeObject:_fieldInfluenceSequence forKey:@"_fieldInfluenceSequence"];
+    [coder encodeObject:_particleSpeedSequence forKey:@"_particleSpeedSequence"];
+    [coder encodeObject:_shader forKey:@"_shader"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _particleAction = [coder decodeObjectForKey:@"_particleAction"];
+        _startColorMix = [coder decodeDoubleForKey:@"_startColorMix"];
+        _startColorBlendVariance = [coder decodeDoubleForKey:@"_startColorBlendVariance"];
+        _startColorR = [coder decodeDoubleForKey:@"_startColorR"];
+        _startColorG = [coder decodeDoubleForKey:@"_startColorG"];
+        _startColorB = [coder decodeDoubleForKey:@"_startColorB"];
+        _startColorA = [coder decodeDoubleForKey:@"_startColorA"];
+        _startColorVarianceR = [coder decodeDoubleForKey:@"_startColorVarianceR"];
+        _startColorVarianceG = [coder decodeDoubleForKey:@"_startColorVarianceG"];
+        _startColorVarianceB = [coder decodeDoubleForKey:@"_startColorVarianceB"];
+        _startColorVarianceA = [coder decodeDoubleForKey:@"_startColorVarianceA"];
+        _birthrate = [coder decodeDoubleForKey:@"_birthrate"];
+        _particleTexture = [coder decodeObjectForKey:@"_particleTexture"];
+        _startPosition = [coder decodeObjectForKey:@"_startPosition"];
+        _startPositionVariance = [coder decodeObjectForKey:@"_startPositionVariance"];
+        _startZPosition = [coder decodeDoubleForKey:@"_startZPosition"];
+        _startZPositionVariance = [coder decodeDoubleForKey:@"_startZPositionVariance"];
+        _lifetime = [coder decodeDoubleForKey:@"_lifetime"];
+        _lifetimeVariance = [coder decodeDoubleForKey:@"_lifetimeVariance"];
+        _startOpacity = [coder decodeDoubleForKey:@"_startOpacity"];
+        _startOpacityVariance = [coder decodeDoubleForKey:@"_startOpacityVariance"];
+        _particleBlendMode = [coder decodeIntegerForKey:@"_particleBlendMode"];
+        _startRotation = [coder decodeDoubleForKey:@"_startRotation"];
+        _startRotationVariance = [coder decodeDoubleForKey:@"_startRotationVariance"];
+        _startSize = [coder decodeObjectForKey:@"_startSize"];
+        _startScale = [coder decodeDoubleForKey:@"_startScale"];
+        _startScaleVariance = [coder decodeDoubleForKey:@"_startScaleVariance"];
+        _acceleration = [coder decodeObjectForKey:@"_acceleration"];
+        _colorSpeedR = [coder decodeDoubleForKey:@"_colorSpeedR"];
+        _colorSpeedG = [coder decodeDoubleForKey:@"_colorSpeedG"];
+        _colorSpeedB = [coder decodeDoubleForKey:@"_colorSpeedB"];
+        _colorSpeedA = [coder decodeDoubleForKey:@"_colorSpeedA"];
+        _colorBlendSpeed = [coder decodeDoubleForKey:@"_colorBlendSpeed"];
+        _rotationSpeed = [coder decodeDoubleForKey:@"_rotationSpeed"];
+        _scaleSpeed = [coder decodeDoubleForKey:@"_scaleSpeed"];
+        _opacitySpeed = [coder decodeDoubleForKey:@"_opacitySpeed"];
+        _startSpeed = [coder decodeDoubleForKey:@"_startSpeed"];
+        _startSpeedVariance = [coder decodeDoubleForKey:@"_startSpeedVariance"];
+        _emissionAngle = [coder decodeDoubleForKey:@"_emissionAngle"];
+        _emissionAngleVariance = [coder decodeDoubleForKey:@"_emissionAngleVariance"];
+        _target = [coder decodeObjectForKey:@"_target"];
+        _numParticlesToEmit = [coder decodeObjectForKey:@"_numParticlesToEmit"];
+        _zPositionSpeed = [coder decodeDoubleForKey:@"_zPositionSpeed"];
+        _emissionDistance = [coder decodeDoubleForKey:@"_emissionDistance"];
+        _emissionDistanceRange = [coder decodeDoubleForKey:@"_emissionDistanceRange"];
+        _fieldBitMask = [coder decodeInt32ForKey:@"_fieldBitMask"];
+        _particleAlphaSequence = [coder decodeObjectForKey:@"_particleAlphaSequence"];
+        _particleColorSequence = [coder decodeObjectForKey:@"_particleColorSequence"];
+        _particleColorBlendFactorSequence = [coder decodeObjectForKey:@"_particleColorBlendFactorSequence"];
+        _particleScaleSequence = [coder decodeObjectForKey:@"_particleScaleSequence"];
+        _particleRotationSequence = [coder decodeObjectForKey:@"_particleRotationSequence"];
+        _fieldInfluenceSequence = [coder decodeObjectForKey:@"_fieldInfluenceSequence"];
+        _particleSpeedSequence = [coder decodeObjectForKey:@"_particleSpeedSequence"];
+        _shader = [coder decodeObjectForKey:@"_shader"];
+    }
+    return self;
+}
+
+@end

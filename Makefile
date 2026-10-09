@@ -78,7 +78,11 @@ PARITY_CROP := $(BUILD_DIR)/sk_crop_parity
 PARITY_CROP_OBJ := $(OBJDIR)/spritekit/sk_crop_parity.o
 CROP_GOLDEN := tools/conformance/SpriteKit/oracle_crop.skeep
 
-all: $(TOOL) $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP)
+PARITY_EMITTER := $(BUILD_DIR)/sk_emitter_parity
+PARITY_EMITTER_OBJ := $(OBJDIR)/spritekit/sk_emitter_parity.o
+EMITTER_GOLDEN := tools/conformance/SpriteKit/oracle_emitter.skeep
+
+all: $(TOOL) $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP) $(PARITY_EMITTER)
 
 $(TOOL): $(TOOL_OBJS)
 	@mkdir -p $(BUILD_DIR)
@@ -182,6 +186,15 @@ $(PARITY_CROP): $(PARITY_CROP_OBJ) $(SK_OBJS)
 	$(CC) $(MFLAGS) -o $@ $(PARITY_CROP_OBJ) $(SK_OBJS) \
 	    -framework Foundation -framework CoreGraphics -framework AppKit
 
+$(PARITY_EMITTER_OBJ): tools/sk_emitter_parity.m src/spritekit/SKNode.h
+	@mkdir -p $(OBJDIR)/spritekit
+	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ tools/sk_emitter_parity.m
+
+$(PARITY_EMITTER): $(PARITY_EMITTER_OBJ) $(SK_OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(MFLAGS) -o $@ $(PARITY_EMITTER_OBJ) $(SK_OBJS) \
+	    -framework Foundation -framework CoreGraphics -framework AppKit
+
 $(OBJDIR)/atlasc/TextureAtlas.o: src/atlasc/TextureAtlas.m
 	@mkdir -p $(OBJDIR)/atlasc
 	$(CC) $(OBJCFLAGS) -c -o $@ src/atlasc/TextureAtlas.m
@@ -209,7 +222,7 @@ test-atlasc: $(TOOL)
 	$(TEST_PY) tools/conformance/run_tests.py TextureAtlas --build-dir $(BUILD_DIR)
 
 # Byte-identical archive parity against Apple-recorded SpriteKit goldens.
-test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP)
+test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP) $(PARITY_EMITTER)
 	$(PARITY_ACTIONS) $(ACTIONS_GOLDEN)
 	$(PARITY_NODE) $(NODE_GOLDEN)
 	$(PARITY_SPRITE) $(SPRITE_GOLDEN)
@@ -220,6 +233,7 @@ test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL
 	$(PARITY_SCENE_CANONICAL) $(SCENE_CANONICAL_GOLDEN)
 	$(PARITY_CAMERA) $(CAMERA_GOLDEN)
 	$(PARITY_CROP) $(CROP_GOLDEN)
+	$(PARITY_EMITTER) $(EMITTER_GOLDEN)
 
 # Re-record the Apple goldens (development aid; links the real SpriteKit).
 # Not part of `all` -- run by hand when adding a new node class to the suite.
