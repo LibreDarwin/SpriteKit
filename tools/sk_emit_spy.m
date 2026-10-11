@@ -139,6 +139,11 @@ int main(void) {
         NSImage *timg = [[NSImage alloc] initWithSize:NSMakeSize(1, 1)];
         [timg addRepresentation:rep];
         dump(@"SKTexture(1x1 gray)", [SKTexture textureWithImage:timg]);
+        dump(@"SKMutableTexture(2x2)", [[SKMutableTexture alloc] initWithSize:CGSizeMake(2, 2)]);
+        dump(@"SKKeyframeSequence", [[SKKeyframeSequence alloc]
+              initWithKeyframeValues:@[ @0, @1 ] times:@[ @0, @1 ]]);
+        dump(@"SKRange(constant 1)", [SKRange rangeWithConstantValue:1]);
+        dump(@"SKConstraint", [SKConstraint positionX:[SKRange rangeWithConstantValue:1]]);
     }
     return 0;
 }

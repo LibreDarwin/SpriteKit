@@ -125,6 +125,13 @@ int main(void) {
         [attrs setValue:[SKAttributeValue valueWithFloat:3.5f] forAttributeNamed:@"glow"];
         save(attrs, [dir stringByAppendingPathComponent:@"oracle_sprite_attr.skeep"]);
 
+        save([SKRange rangeWithConstantValue:1],
+             [dir stringByAppendingPathComponent:@"oracle_skrange.skeep"]);
+        save([[SKKeyframeSequence alloc] initWithKeyframeValues:@[ @0, @1 ] times:@[ @0, @1 ]],
+             [dir stringByAppendingPathComponent:@"oracle_keyframe_sequence.skeep"]);
+        save([SKConstraint positionX:[SKRange rangeWithConstantValue:1]],
+             [dir stringByAppendingPathComponent:@"oracle_constraint_position.skeep"]);
+
         // Canonical .sks form: the init+encode graph the runtime writer emits
         // for a scene with content (the decode->re-encode fixpoint loses a
         // deduped object, so this is the target, not a round-trip).

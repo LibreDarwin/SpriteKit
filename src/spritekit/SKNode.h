@@ -420,4 +420,45 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) CGSize size;
 @end
 
+#pragma mark - SKRange
+
+// Root NSObject subclass.  Spy order: _lowerLimit (double), _upperLimit
+// (double).
+@interface SKRange : NSObject
++ (instancetype)rangeWithConstantValue:(double)value;
++ (instancetype)rangeWithLowerLimit:(double)lower upperLimit:(double)upper;
++ (instancetype)rangeWithValue:(double)value variance:(double)variance;
+@property (nonatomic) double lowerLimit;
+@property (nonatomic) double upperLimit;
+@end
+
+#pragma mark - SKKeyframeSequence
+
+// Root NSObject subclass.  Spy order: _interpolationMode (encodeInteger),
+// _repeatMode (encodeInteger), _values (obj, NSMutableArray), _times (obj,
+// NSMutableArray).
+@interface SKKeyframeSequence : NSObject
+- (instancetype)initWithKeyframeValues:(NSArray *)values times:(NSArray *)times;
+- (void)addKeyframeValue:(id)value time:(double)time;
+@property (nonatomic, readonly) NSUInteger count;
+@property (nonatomic) NSInteger interpolationMode;
+@property (nonatomic) NSInteger repeatMode;
+@end
+
+#pragma mark - SKConstraint
+
+// Root NSObject subclass.  Spy order: _enabled (bool, YES), _referenceNode
+// (obj, nil).  Concrete constraints (e.g. SKPositionConstraint) append their
+// own fields; the archived class chain is the full runtime hierarchy.
+@interface SKConstraint : NSObject
++ (instancetype)positionX:(SKRange *)xRange;
++ (instancetype)positionX:(SKRange *)xRange Y:(SKRange *)yRange;
+@property (nonatomic) BOOL enabled;
+@end
+
+@interface SKPositionConstraint : SKConstraint
+@property (nonatomic, copy, nullable) SKRange *xRange;
+@property (nonatomic, copy, nullable) SKRange *yRange;
+@end
+
 NS_ASSUME_NONNULL_END

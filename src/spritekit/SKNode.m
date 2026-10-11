@@ -9,6 +9,7 @@
 // with -encodeObject:forKey:; there is no [super encodeWithCoder:] call.
 
 #import "SKNode.h"
+#include <float.h>
 
 // Apple reuses one shared NSNumber-zero instance across a node archive (e.g.
 // SKEffectNode._blendMode and SKAttributeValue._type collapse to a single
@@ -66,6 +67,10 @@ static NSValue *SKValueSize(CGSize s) {
 @property (nonatomic, nullable) id keyedSubSprites;
 @property (nonatomic, nullable) id PKPhysicsBody;
 @property (nonatomic, copy, nullable) NSString *originalClass;
+@end
+
+@interface SKConstraint ()
+@property (nonatomic, nullable) SKNode *referenceNode;
 @end
 
 @implementation SKNode
@@ -1471,6 +1476,180 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
         _isRotated = [coder decodeBoolForKey:@"_isRotated"];
         _isFlipped = [coder decodeBoolForKey:@"_isFlipped"];
         _filteringMode = [coder decodeIntegerForKey:@"_filteringMode"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - SKRange
+
+@implementation SKRange {
+    double _lowerLimit;
+    double _upperLimit;
+}
+
++ (instancetype)rangeWithConstantValue:(double)value {
+    SKRange *r = [[SKRange alloc] init];
+    r->_lowerLimit = r->_upperLimit = value;
+    return r;
+}
+
++ (instancetype)rangeWithLowerLimit:(double)lower upperLimit:(double)upper {
+    SKRange *r = [[SKRange alloc] init];
+    r->_lowerLimit = lower;
+    r->_upperLimit = upper;
+    return r;
+}
+
++ (instancetype)rangeWithValue:(double)value variance:(double)variance {
+    double l = value - variance;
+    double u = value + variance;
+    return [self rangeWithLowerLimit:l upperLimit:u];
+}
+
+- (double)lowerLimit { return _lowerLimit; }
+- (void)setLowerLimit:(double)v { _lowerLimit = v; }
+- (double)upperLimit { return _upperLimit; }
+- (void)setUpperLimit:(double)v { _upperLimit = v; }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeDouble:_lowerLimit forKey:@"_lowerLimit"];
+    [coder encodeDouble:_upperLimit forKey:@"_upperLimit"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        _lowerLimit = [coder decodeDoubleForKey:@"_lowerLimit"];
+        _upperLimit = [coder decodeDoubleForKey:@"_upperLimit"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - SKKeyframeSequence
+
+@implementation SKKeyframeSequence {
+    NSInteger _interpolationMode;
+    NSInteger _repeatMode;
+    NSMutableArray *_values;
+    NSMutableArray *_times;
+}
+
+- (instancetype)initWithKeyframeValues:(NSArray *)values times:(NSArray *)times {
+    self = [super init];
+    if (self) {
+        _interpolationMode = 1;
+        _repeatMode = 1;
+        _values = [values mutableCopy];
+        _times = [times mutableCopy];
+    }
+    return self;
+}
+
+- (void)addKeyframeValue:(id)value time:(double)time {
+    [_values addObject:value];
+    [_times addObject:@(time)];
+}
+
+- (NSUInteger)count { return _values.count; }
+
+- (NSInteger)interpolationMode { return _interpolationMode; }
+- (void)setInterpolationMode:(NSInteger)v { _interpolationMode = v; }
+- (NSInteger)repeatMode { return _repeatMode; }
+- (void)setRepeatMode:(NSInteger)v { _repeatMode = v; }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeInteger:_interpolationMode forKey:@"_interpolationMode"];
+    [coder encodeInteger:_repeatMode forKey:@"_repeatMode"];
+    [coder encodeObject:_values forKey:@"_values"];
+    [coder encodeObject:_times forKey:@"_times"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        _interpolationMode = [coder decodeIntegerForKey:@"_interpolationMode"];
+        _repeatMode = [coder decodeIntegerForKey:@"_repeatMode"];
+        _values = [coder decodeObjectForKey:@"_values"];
+        _times = [coder decodeObjectForKey:@"_times"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - SKConstraint
+
+@implementation SKConstraint {
+    BOOL _enabled;
+    SKNode *_referenceNode;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _enabled = YES;
+    }
+    return self;
+}
+
++ (instancetype)positionX:(SKRange *)xRange {
+    return [self positionX:xRange Y:[SKRange rangeWithLowerLimit:-DBL_MAX
+                                                     upperLimit:DBL_MAX]];
+}
+
++ (instancetype)positionX:(SKRange *)xRange Y:(SKRange *)yRange {
+    SKPositionConstraint *c = [[SKPositionConstraint alloc] init];
+    c.xRange = xRange;
+    c.yRange = yRange;
+    return c;
+}
+
+- (BOOL)enabled { return _enabled; }
+- (void)setEnabled:(BOOL)v { _enabled = v; }
+- (SKNode *)referenceNode { return _referenceNode; }
+- (void)setReferenceNode:(SKNode *)v { _referenceNode = v; }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeBool:_enabled forKey:@"_enabled"];
+    [coder encodeObject:_referenceNode forKey:@"_referenceNode"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        _enabled = [coder decodeBoolForKey:@"_enabled"];
+        _referenceNode = [coder decodeObjectForKey:@"_referenceNode"];
+    }
+    return self;
+}
+
+@end
+
+@implementation SKPositionConstraint {
+    SKRange *_xRange;
+    SKRange *_yRange;
+}
+
+- (SKRange *)xRange { return _xRange; }
+- (void)setXRange:(SKRange *)v { _xRange = v; }
+- (SKRange *)yRange { return _yRange; }
+- (void)setYRange:(SKRange *)v { _yRange = v; }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_xRange forKey:@"_xRange"];
+    [coder encodeObject:_yRange forKey:@"_yRange"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _xRange = [coder decodeObjectForKey:@"_xRange"];
+        _yRange = [coder decodeObjectForKey:@"_yRange"];
     }
     return self;
 }
