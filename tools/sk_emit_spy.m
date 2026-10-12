@@ -144,6 +144,7 @@ int main(void) {
               initWithKeyframeValues:@[ @0, @1 ] times:@[ @0, @1 ]]);
         dump(@"SKRange(constant 1)", [SKRange rangeWithConstantValue:1]);
         dump(@"SKConstraint", [SKConstraint positionX:[SKRange rangeWithConstantValue:1]]);
+        dump(@"SKTextureAtlas(empty)", [[SKTextureAtlas alloc] init]);
     }
     return 0;
 }

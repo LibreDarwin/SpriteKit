@@ -1,0 +1,12 @@
+#import <Foundation/Foundation.h>
+#import "SKNode.h"
+int main(int argc,const char**argv){
+  @autoreleasepool{
+    if(argc<2){fprintf(stderr,"usage\n");return 2;}
+    SKTextureAtlas*a=[[SKTextureAtlas alloc] init];
+    NSData*d=[NSKeyedArchiver archivedDataWithRootObject:a];
+    NSData*g=[NSData dataWithContentsOfFile:[NSString stringWithUTF8String:argv[1]]];
+    if([d isEqualToData:g]){printf("PASS SKTextureAtlas(empty) parity (%lu bytes)\n",(unsigned long)d.length);return 0;}
+    fprintf(stderr,"FAIL SKTextureAtlas: got %lu bytes\n",(unsigned long)d.length);return 1;
+  }
+}

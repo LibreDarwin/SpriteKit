@@ -54,6 +54,33 @@ static NSValue *SKValueSize(CGSize s) {
 #endif
 }
 
+// Apple encodes SKTexture/SKMutableTexture image data as an AppKit TIFF built
+// from the underlying RGBA bitmap.  Reproduce the exact representation AppKit
+// emits for a device-RGB bitmap so mutable textures byte-match.
+static NSData *SKTIFFForSize(CGSize size) {
+    NSInteger w = (NSInteger)size.width;
+    NSInteger h = (NSInteger)size.height;
+    if (w < 1) w = 1;
+    if (h < 1) h = 1;
+    NSBitmapImageRep *rep = [[NSBitmapImageRep alloc]
+        initWithBitmapDataPlanes:NULL
+                      pixelsWide:w
+                      pixelsHigh:h
+                   bitsPerSample:8
+                 samplesPerPixel:4
+                        hasAlpha:YES
+                        isPlanar:NO
+                  colorSpaceName:NSDeviceRGBColorSpace
+                     bytesPerRow:w * 4
+                    bitsPerPixel:32];
+    if (rep.bitmapData) {
+        memset(rep.bitmapData, 0, (size_t)(w * h * 4));
+    }
+    NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(w, h)];
+    [image addRepresentation:rep];
+    return [image TIFFRepresentation];
+}
+
 #pragma mark - SKNode
 
 @interface SKNode ()
@@ -1433,6 +1460,20 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
     return t;
 }
 
+// Designated initializer shared with SKMutableTexture; fills the ivars on the
+// already-allocated concrete instance so the subclass class is preserved.
+- (instancetype)SK_textureWithSize:(CGSize)size {
+    _imageData = SKTIFFForSize(size);
+    _isData = YES;
+    _size = SKValueSize(size);
+    _pixelSize = SKValueSize(size);
+    _textRect = SKValueRect(CGRectMake(0, 0, 1, 1));
+    _cropOffset = SKValuePoint(CGPointMake(0, 0));
+    _cropScale = SKValuePoint(CGPointMake(1, 1));
+    _filteringMode = 1;
+    return self;
+}
+
 - (CGSize)size {
     NSSize s = _size.sizeValue;
     return CGSizeMake(s.width, s.height);
@@ -1476,6 +1517,59 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
         _isRotated = [coder decodeBoolForKey:@"_isRotated"];
         _isFlipped = [coder decodeBoolForKey:@"_isFlipped"];
         _filteringMode = [coder decodeIntegerForKey:@"_filteringMode"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - SKMutableTexture
+
+@implementation SKMutableTexture
+
+- (instancetype)SK_textureWithSize:(CGSize)size {
+    return [super SK_textureWithSize:size];
+}
+
+- (instancetype)initWithSize:(CGSize)size {
+    self = [super init];
+    return [self SK_textureWithSize:size];
+}
+
+@end
+
+#pragma mark - SKTextureAtlas
+
+@implementation SKTextureAtlas {
+    id _atlasName;
+    id _textureDict;
+    BOOL _isCUIImageAtlas;
+}
+
++ (instancetype)atlasNamed:(NSString *)name {
+    SKTextureAtlas *atlas = [[self alloc] init];
+    atlas->_atlasName = [name copy];
+    return atlas;
+}
+
+- (id)textureNamed:(NSString *)name {
+    return [_textureDict objectForKey:name];
+}
+
+- (NSArray *)textureNames {
+    return [[_textureDict allKeys] sortedArrayUsingSelector:@selector(compare:)];
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:_atlasName forKey:@"_atlasName"];
+    [coder encodeObject:_textureDict forKey:@"_textureDict"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        _atlasName = [coder decodeObjectForKey:@"_atlasName"];
+        _textureDict = [coder decodeObjectForKey:@"_textureDict"];
     }
     return self;
 }

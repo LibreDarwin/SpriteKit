@@ -132,6 +132,11 @@ int main(void) {
         save([SKConstraint positionX:[SKRange rangeWithConstantValue:1]],
              [dir stringByAppendingPathComponent:@"oracle_constraint_position.skeep"]);
 
+        save([[SKMutableTexture alloc] initWithSize:CGSizeMake(2, 2)],
+             [dir stringByAppendingPathComponent:@"oracle_mutable_texture.skeep"]);
+        save([[SKTextureAtlas alloc] init],
+             [dir stringByAppendingPathComponent:@"oracle_texture_atlas.skeep"]);
+
         // Canonical .sks form: the init+encode graph the runtime writer emits
         // for a scene with content (the decode->re-encode fixpoint loses a
         // deduped object, so this is the target, not a round-trip).

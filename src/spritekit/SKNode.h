@@ -420,6 +420,22 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) CGSize size;
 @end
 
+// SKMutableTexture encodes the same 16 fields as SKTexture; the only difference
+// is that _imageData is a TIFF synthesized from the (initially zeroed) RGBA
+// bitmap of the requested size.
+@interface SKMutableTexture : SKTexture
+- (instancetype)SK_textureWithSize:(CGSize)size;
+- (instancetype)initWithSize:(CGSize)size;
+@end
+
+// Root NSObject subclass.  Spy order (empty atlas): _atlasName (obj, nil),
+// _textureDict (obj, nil).  _isCUIImageAtlas is not encoded.
+@interface SKTextureAtlas : NSObject
++ (instancetype)atlasNamed:(NSString *)name;
+- (SKTexture *)textureNamed:(NSString *)name;
+@property (nonatomic, readonly) NSArray<NSString *> *textureNames;
+@end
+
 #pragma mark - SKRange
 
 // Root NSObject subclass.  Spy order: _lowerLimit (double), _upperLimit
