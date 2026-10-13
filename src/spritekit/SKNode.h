@@ -477,4 +477,67 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) SKRange *yRange;
 @end
 
+#pragma mark - Physics joints and reach constraints
+
+@interface SKReachConstraints : NSObject <NSCoding>
+@property (nonatomic) double lowerAngleLimit;
+@property (nonatomic) double upperAngleLimit;
+- (instancetype)initWithLowerAngleLimit:(double)lower upperAngleLimit:(double)upper;
+@end
+
+@interface PKPhysicsJoint : NSObject <NSCoding>
+@property (nonatomic, strong) PKPhysicsBody *bodyA;
+@property (nonatomic, strong) PKPhysicsBody *bodyB;
+@property (nonatomic, strong) NSNumber *implicit;
+@end
+
+@interface PKPhysicsJointRevolute : PKPhysicsJoint
+@property (nonatomic, copy) NSString *anchor;
+@property (nonatomic) BOOL enableLimits;
+@property (nonatomic) double lowerAngleLimit;
+@property (nonatomic) double upperAngleLimit;
+@property (nonatomic) double frictionTorque;
+@end
+
+@interface PKPhysicsJointWeld : PKPhysicsJoint
+@property (nonatomic, copy) NSString *anchor;
+@end
+
+@interface PKPhysicsJointDistance : PKPhysicsJoint
+@property (nonatomic, copy) NSString *anchorA;
+@property (nonatomic, copy) NSString *anchorB;
+@property (nonatomic) double damping;
+@property (nonatomic) double frequency;
+@end
+
+@interface PKPhysicsJointPrismatic : PKPhysicsJoint
+@property (nonatomic, copy) NSString *anchor;
+@property (nonatomic, copy) NSString *axis;
+@property (nonatomic) BOOL enableLimits;
+@property (nonatomic) double lowerDistanceLimit;
+@property (nonatomic) double upperDistanceLimit;
+@end
+
+@interface PKPhysicsJointRope : PKPhysicsJoint
+@property (nonatomic, copy) NSString *anchorA;
+@property (nonatomic, copy) NSString *anchorB;
+@property (nonatomic) double maxLength;
+@end
+
+@interface SKPhysicsJointPin : PKPhysicsJointRevolute
++ (instancetype)jointWithBodyA:(PKPhysicsBody *)bodyA bodyB:(PKPhysicsBody *)bodyB anchor:(CGPoint)anchor;
+@end
+@interface SKPhysicsJointFixed : PKPhysicsJointWeld
++ (instancetype)jointWithBodyA:(PKPhysicsBody *)bodyA bodyB:(PKPhysicsBody *)bodyB anchor:(CGPoint)anchor;
+@end
+@interface SKPhysicsJointSpring : PKPhysicsJointDistance
++ (instancetype)jointWithBodyA:(PKPhysicsBody *)bodyA bodyB:(PKPhysicsBody *)bodyB anchorA:(CGPoint)anchorA anchorB:(CGPoint)anchorB;
+@end
+@interface SKPhysicsJointSliding : PKPhysicsJointPrismatic
++ (instancetype)jointWithBodyA:(PKPhysicsBody *)bodyA bodyB:(PKPhysicsBody *)bodyB anchor:(CGPoint)anchor axis:(CGVector)axis;
+@end
+@interface SKPhysicsJointLimit : PKPhysicsJointRope
++ (instancetype)jointWithBodyA:(PKPhysicsBody *)bodyA bodyB:(PKPhysicsBody *)bodyB anchorA:(CGPoint)anchorA anchorB:(CGPoint)anchorB;
+@end
+
 NS_ASSUME_NONNULL_END

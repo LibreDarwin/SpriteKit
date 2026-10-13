@@ -145,6 +145,24 @@ int main(void) {
         dump(@"SKRange(constant 1)", [SKRange rangeWithConstantValue:1]);
         dump(@"SKConstraint", [SKConstraint positionX:[SKRange rangeWithConstantValue:1]]);
         dump(@"SKTextureAtlas(empty)", [[SKTextureAtlas alloc] init]);
+
+        dump(@"SKReachConstraints", [[SKReachConstraints alloc] initWithLowerAngleLimit:-1
+                                                                            upperAngleLimit:1]);
+        SKPhysicsBody *jba = [SKPhysicsBody bodyWithCircleOfRadius:2];
+        SKPhysicsBody *jbb = [SKPhysicsBody bodyWithCircleOfRadius:3];
+        dump(@"SKPhysicsJointPin", [SKPhysicsJointPin jointWithBodyA:jba bodyB:jbb
+                                                             anchor:CGPointMake(1, 2)]);
+        dump(@"SKPhysicsJointFixed", [SKPhysicsJointFixed jointWithBodyA:jba bodyB:jbb
+                                                                 anchor:CGPointMake(1, 2)]);
+        dump(@"SKPhysicsJointSpring", [SKPhysicsJointSpring jointWithBodyA:jba bodyB:jbb
+                                                                  anchorA:CGPointMake(1, 2)
+                                                                  anchorB:CGPointMake(3, 4)]);
+        dump(@"SKPhysicsJointSliding", [SKPhysicsJointSliding jointWithBodyA:jba bodyB:jbb
+                                                                     anchor:CGPointMake(1, 2)
+                                                                       axis:CGVectorMake(1, 0)]);
+        dump(@"SKPhysicsJointLimit", [SKPhysicsJointLimit jointWithBodyA:jba bodyB:jbb
+                                                                anchorA:CGPointMake(1, 2)
+                                                                anchorB:CGPointMake(3, 4)]);
     }
     return 0;
 }

@@ -1749,3 +1749,343 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
 }
 
 @end
+
+static inline NSString *NSStringFromCGVector(CGVector v){return [NSString stringWithFormat:@"{%g, %g}", v.dx, v.dy];}
+#pragma mark - SKReachConstraints
+
+@implementation SKReachConstraints {
+    double _lowerAngleLimit;
+    double _upperAngleLimit;
+}
+
+- (instancetype)initWithLowerAngleLimit:(double)lower upperAngleLimit:(double)upper {
+    self = [super init];
+    if (self) {
+        _lowerAngleLimit = lower;
+        _upperAngleLimit = upper;
+    }
+    return self;
+}
+
+- (double)lowerAngleLimit { return _lowerAngleLimit; }
+- (void)setLowerAngleLimit:(double)v { _lowerAngleLimit = v; }
+- (double)upperAngleLimit { return _upperAngleLimit; }
+- (void)setUpperAngleLimit:(double)v { _upperAngleLimit = v; }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeDouble:_lowerAngleLimit forKey:@"_lowerAngleLimit"];
+    [coder encodeDouble:_upperAngleLimit forKey:@"_upperAngleLimit"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        _lowerAngleLimit = [coder decodeDoubleForKey:@"_lowerAngleLimit"];
+        _upperAngleLimit = [coder decodeDoubleForKey:@"_upperAngleLimit"];
+    }
+    return self;
+}
+
++ (BOOL)supportsSecureCoding { return YES; }
+
+@end
+
+#pragma mark - PKPhysicsJoint base
+
+@implementation PKPhysicsJoint {
+    PKPhysicsBody *_bodyA;
+    PKPhysicsBody *_bodyB;
+    NSNumber *_implicit;
+}
+
+- (PKPhysicsBody *)bodyA { return _bodyA; }
+- (void)setBodyA:(PKPhysicsBody *)v { _bodyA = v; }
+- (PKPhysicsBody *)bodyB { return _bodyB; }
+- (void)setBodyB:(PKPhysicsBody *)v { _bodyB = v; }
+- (NSNumber *)implicit { return _implicit; }
+- (void)setImplicit:(NSNumber *)v { _implicit = v; }
+
++ (BOOL)supportsSecureCoding { return YES; }
+
+@end
+
+#pragma mark - PKPhysicsJointRevolute (Pin)
+
+@implementation PKPhysicsJointRevolute {
+    NSString *_anchor;
+    BOOL _enableLimits;
+    double _lowerAngleLimit;
+    double _upperAngleLimit;
+    double _frictionTorque;
+}
+
+- (NSString *)anchor { return _anchor; }
+- (void)setAnchor:(NSString *)v { _anchor = v; }
+- (BOOL)enableLimits { return _enableLimits; }
+- (void)setEnableLimits:(BOOL)v { _enableLimits = v; }
+- (double)lowerAngleLimit { return _lowerAngleLimit; }
+- (void)setLowerAngleLimit:(double)v { _lowerAngleLimit = v; }
+- (double)upperAngleLimit { return _upperAngleLimit; }
+- (void)setUpperAngleLimit:(double)v { _upperAngleLimit = v; }
+- (double)frictionTorque { return _frictionTorque; }
+- (void)setFrictionTorque:(double)v { _frictionTorque = v; }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:self.bodyB forKey:@"_bodyB"];
+    [coder encodeObject:self.bodyA forKey:@"_bodyA"];
+    [coder encodeDouble:_lowerAngleLimit forKey:@"lowerAngleLimit"];
+    [coder encodeBool:_enableLimits forKey:@"enableLimits"];
+    [coder encodeDouble:_frictionTorque forKey:@"frictionTorque"];
+    [coder encodeObject:self.implicit forKey:@"_implicit"];
+    [coder encodeObject:_anchor forKey:@"_anchor"];
+    [coder encodeDouble:_upperAngleLimit forKey:@"upperAngleLimit"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        self.bodyB = [coder decodeObjectForKey:@"_bodyB"];
+        self.bodyA = [coder decodeObjectForKey:@"_bodyA"];
+        _lowerAngleLimit = [coder decodeDoubleForKey:@"lowerAngleLimit"];
+        _enableLimits = [coder decodeBoolForKey:@"enableLimits"];
+        _frictionTorque = [coder decodeDoubleForKey:@"frictionTorque"];
+        self.implicit = [coder decodeObjectForKey:@"_implicit"];
+        _anchor = [coder decodeObjectForKey:@"_anchor"];
+        _upperAngleLimit = [coder decodeDoubleForKey:@"upperAngleLimit"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - PKPhysicsJointWeld
+
+@implementation PKPhysicsJointWeld {
+    NSString *_anchor;
+}
+
+- (NSString *)anchor { return _anchor; }
+- (void)setAnchor:(NSString *)v { _anchor = v; }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:self.bodyB forKey:@"_bodyB"];
+    [coder encodeObject:self.implicit forKey:@"_implicit"];
+    [coder encodeObject:_anchor forKey:@"_anchor"];
+    [coder encodeObject:self.bodyA forKey:@"_bodyA"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        self.bodyB = [coder decodeObjectForKey:@"_bodyB"];
+        self.implicit = [coder decodeObjectForKey:@"_implicit"];
+        _anchor = [coder decodeObjectForKey:@"_anchor"];
+        self.bodyA = [coder decodeObjectForKey:@"_bodyA"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - PKPhysicsJointDistance
+
+@implementation PKPhysicsJointDistance {
+    NSString *_anchorA;
+    NSString *_anchorB;
+    double _damping;
+    double _frequency;
+}
+
+- (NSString *)anchorA { return _anchorA; }
+- (void)setAnchorA:(NSString *)v { _anchorA = v; }
+- (NSString *)anchorB { return _anchorB; }
+- (void)setAnchorB:(NSString *)v { _anchorB = v; }
+- (double)damping { return _damping; }
+- (void)setDamping:(double)v { _damping = v; }
+- (double)frequency { return _frequency; }
+- (void)setFrequency:(double)v { _frequency = v; }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:self.bodyB forKey:@"_bodyB"];
+    [coder encodeDouble:_frequency forKey:@"frequency"];
+    [coder encodeObject:self.bodyA forKey:@"_bodyA"];
+    [coder encodeObject:self.implicit forKey:@"_implicit"];
+    [coder encodeDouble:_damping forKey:@"damping"];
+    [coder encodeObject:_anchorB forKey:@"_anchorB"];
+    [coder encodeObject:_anchorA forKey:@"_anchorA"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        self.bodyB = [coder decodeObjectForKey:@"_bodyB"];
+        _frequency = [coder decodeDoubleForKey:@"frequency"];
+        self.bodyA = [coder decodeObjectForKey:@"_bodyA"];
+        self.implicit = [coder decodeObjectForKey:@"_implicit"];
+        _damping = [coder decodeDoubleForKey:@"damping"];
+        _anchorB = [coder decodeObjectForKey:@"_anchorB"];
+        _anchorA = [coder decodeObjectForKey:@"_anchorA"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - PKPhysicsJointPrismatic
+
+@implementation PKPhysicsJointPrismatic {
+    NSString *_anchor;
+    NSString *_axis;
+    BOOL _enableLimits;
+    double _lowerDistanceLimit;
+    double _upperDistanceLimit;
+}
+
+- (NSString *)anchor { return _anchor; }
+- (void)setAnchor:(NSString *)v { _anchor = v; }
+- (NSString *)axis { return _axis; }
+- (void)setAxis:(NSString *)v { _axis = v; }
+- (BOOL)enableLimits { return _enableLimits; }
+- (void)setEnableLimits:(BOOL)v { _enableLimits = v; }
+- (double)lowerDistanceLimit { return _lowerDistanceLimit; }
+- (void)setLowerDistanceLimit:(double)v { _lowerDistanceLimit = v; }
+- (double)upperDistanceLimit { return _upperDistanceLimit; }
+- (void)setUpperDistanceLimit:(double)v { _upperDistanceLimit = v; }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:self.bodyA forKey:@"_bodyA"];
+    [coder encodeObject:self.bodyB forKey:@"_bodyB"];
+    [coder encodeDouble:_lowerDistanceLimit forKey:@"lowerDistanceLimit"];
+    [coder encodeBool:_enableLimits forKey:@"enableLimits"];
+    [coder encodeObject:self.implicit forKey:@"_implicit"];
+    [coder encodeObject:_axis forKey:@"_axis"];
+    [coder encodeObject:_anchor forKey:@"_anchor"];
+    [coder encodeDouble:_upperDistanceLimit forKey:@"upperDistanceLimit"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        self.bodyB = [coder decodeObjectForKey:@"_bodyB"];
+        self.bodyA = [coder decodeObjectForKey:@"_bodyA"];
+        _lowerDistanceLimit = [coder decodeDoubleForKey:@"lowerDistanceLimit"];
+        _enableLimits = [coder decodeBoolForKey:@"enableLimits"];
+        self.implicit = [coder decodeObjectForKey:@"_implicit"];
+        _axis = [coder decodeObjectForKey:@"_axis"];
+        _anchor = [coder decodeObjectForKey:@"_anchor"];
+        _upperDistanceLimit = [coder decodeDoubleForKey:@"upperDistanceLimit"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - PKPhysicsJointRope
+
+@implementation PKPhysicsJointRope {
+    NSString *_anchorA;
+    NSString *_anchorB;
+    double _maxLength;
+}
+
+- (NSString *)anchorA { return _anchorA; }
+- (void)setAnchorA:(NSString *)v { _anchorA = v; }
+- (NSString *)anchorB { return _anchorB; }
+- (void)setAnchorB:(NSString *)v { _anchorB = v; }
+- (double)maxLength { return _maxLength; }
+- (void)setMaxLength:(double)v { _maxLength = v; }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:self.bodyA forKey:@"_bodyA"];
+    [coder encodeObject:self.bodyB forKey:@"_bodyB"];
+    [coder encodeDouble:_maxLength forKey:@"maxLength"];
+    [coder encodeObject:self.implicit forKey:@"_implicit"];
+    [coder encodeObject:_anchorB forKey:@"_anchorB"];
+    [coder encodeObject:_anchorA forKey:@"_anchorA"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        self.bodyB = [coder decodeObjectForKey:@"_bodyB"];
+        self.bodyA = [coder decodeObjectForKey:@"_bodyA"];
+        _maxLength = [coder decodeDoubleForKey:@"maxLength"];
+        self.implicit = [coder decodeObjectForKey:@"_implicit"];
+        _anchorB = [coder decodeObjectForKey:@"_anchorB"];
+        _anchorA = [coder decodeObjectForKey:@"_anchorA"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - SKPhysicsJoint convenience
+
+@implementation SKPhysicsJointPin
++ (instancetype)jointWithBodyA:(PKPhysicsBody *)bodyA bodyB:(PKPhysicsBody *)bodyB anchor:(CGPoint)anchor {
+    SKPhysicsJointPin *j = [[self alloc] init];
+    j.bodyA = bodyA; j.bodyB = bodyB;
+    j.implicit = [NSNumber numberWithBool:NO];
+    j.anchor = NSStringFromPoint(anchor);
+    j.enableLimits = NO;
+    j.lowerAngleLimit = 0; j.upperAngleLimit = 0; j.frictionTorque = 0;
+    return j;
+}
++ (Class)classForCoder { return [PKPhysicsJointRevolute class]; }
+- (Class)classForCoder { return [PKPhysicsJointRevolute class]; }
+@end
+
+@implementation SKPhysicsJointFixed
++ (instancetype)jointWithBodyA:(PKPhysicsBody *)bodyA bodyB:(PKPhysicsBody *)bodyB anchor:(CGPoint)anchor {
+    SKPhysicsJointFixed *j = [[self alloc] init];
+    j.bodyA = bodyA; j.bodyB = bodyB;
+    j.implicit = [NSNumber numberWithBool:NO];
+    j.anchor = NSStringFromPoint(anchor);
+    return j;
+}
++ (Class)classForCoder { return [PKPhysicsJointWeld class]; }
+- (Class)classForCoder { return [PKPhysicsJointWeld class]; }
+@end
+
+@implementation SKPhysicsJointSpring
++ (instancetype)jointWithBodyA:(PKPhysicsBody *)bodyA bodyB:(PKPhysicsBody *)bodyB anchorA:(CGPoint)anchorA anchorB:(CGPoint)anchorB {
+    SKPhysicsJointSpring *j = [[self alloc] init];
+    j.bodyA = bodyA; j.bodyB = bodyB;
+    j.implicit = [NSNumber numberWithBool:NO];
+    j.anchorA = NSStringFromPoint(anchorA);
+    j.anchorB = NSStringFromPoint(anchorB);
+    j.damping = 0; j.frequency = 0;
+    return j;
+}
++ (Class)classForCoder { return [PKPhysicsJointDistance class]; }
+- (Class)classForCoder { return [PKPhysicsJointDistance class]; }
+@end
+
+@implementation SKPhysicsJointSliding
++ (instancetype)jointWithBodyA:(PKPhysicsBody *)bodyA bodyB:(PKPhysicsBody *)bodyB anchor:(CGPoint)anchor axis:(CGVector)axis {
+    SKPhysicsJointSliding *j = [[self alloc] init];
+    j.bodyA = bodyA; j.bodyB = bodyB;
+    j.implicit = [NSNumber numberWithBool:NO];
+    j.anchor = NSStringFromPoint(anchor);
+    j.axis = NSStringFromCGVector(axis);
+    j.enableLimits = NO;
+    j.lowerDistanceLimit = 0; j.upperDistanceLimit = 0;
+    return j;
+}
++ (Class)classForCoder { return [PKPhysicsJointPrismatic class]; }
+- (Class)classForCoder { return [PKPhysicsJointPrismatic class]; }
+@end
+
+@implementation SKPhysicsJointLimit
++ (instancetype)jointWithBodyA:(PKPhysicsBody *)bodyA bodyB:(PKPhysicsBody *)bodyB anchorA:(CGPoint)anchorA anchorB:(CGPoint)anchorB {
+    SKPhysicsJointLimit *j = [[self alloc] init];
+    j.bodyA = bodyA; j.bodyB = bodyB;
+    j.implicit = [NSNumber numberWithBool:NO];
+    j.anchorA = NSStringFromPoint(anchorA);
+    j.anchorB = NSStringFromPoint(anchorB);
+    j.maxLength = 0;
+    return j;
+}
++ (Class)classForCoder { return [PKPhysicsJointRope class]; }
+- (Class)classForCoder { return [PKPhysicsJointRope class]; }
+@end
