@@ -1831,14 +1831,14 @@ static inline NSString *NSStringFromCGVector(CGVector v){return [NSString string
 - (void)setFrictionTorque:(double)v { _frictionTorque = v; }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-    [coder encodeObject:self.bodyB forKey:@"_bodyB"];
     [coder encodeObject:self.bodyA forKey:@"_bodyA"];
+    [coder encodeObject:self.bodyB forKey:@"_bodyB"];
     [coder encodeDouble:_lowerAngleLimit forKey:@"lowerAngleLimit"];
     [coder encodeBool:_enableLimits forKey:@"enableLimits"];
-    [coder encodeDouble:_frictionTorque forKey:@"frictionTorque"];
+    [coder encodeDouble:_upperAngleLimit forKey:@"upperAngleLimit"];
     [coder encodeObject:self.implicit forKey:@"_implicit"];
     [coder encodeObject:_anchor forKey:@"_anchor"];
-    [coder encodeDouble:_upperAngleLimit forKey:@"upperAngleLimit"];
+    [coder encodeDouble:_frictionTorque forKey:@"frictionTorque"];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
@@ -1868,10 +1868,10 @@ static inline NSString *NSStringFromCGVector(CGVector v){return [NSString string
 - (void)setAnchor:(NSString *)v { _anchor = v; }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-    [coder encodeObject:self.bodyB forKey:@"_bodyB"];
-    [coder encodeObject:_anchor forKey:@"_anchor"];
     [coder encodeObject:self.bodyA forKey:@"_bodyA"];
+    [coder encodeObject:self.bodyB forKey:@"_bodyB"];
     [coder encodeObject:self.implicit forKey:@"_implicit"];
+    [coder encodeObject:_anchor forKey:@"_anchor"];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
@@ -1906,13 +1906,13 @@ static inline NSString *NSStringFromCGVector(CGVector v){return [NSString string
 - (void)setFrequency:(double)v { _frequency = v; }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:self.bodyA forKey:@"_bodyA"];
     [coder encodeObject:self.bodyB forKey:@"_bodyB"];
     [coder encodeDouble:_frequency forKey:@"frequency"];
-    [coder encodeObject:self.bodyA forKey:@"_bodyA"];
     [coder encodeObject:self.implicit forKey:@"_implicit"];
     [coder encodeDouble:_damping forKey:@"damping"];
-    [coder encodeObject:_anchorB forKey:@"_anchorB"];
     [coder encodeObject:_anchorA forKey:@"_anchorA"];
+    [coder encodeObject:_anchorB forKey:@"_anchorB"];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
@@ -1958,8 +1958,8 @@ static inline NSString *NSStringFromCGVector(CGVector v){return [NSString string
     [coder encodeDouble:_lowerDistanceLimit forKey:@"lowerDistanceLimit"];
     [coder encodeBool:_enableLimits forKey:@"enableLimits"];
     [coder encodeObject:self.implicit forKey:@"_implicit"];
-    [coder encodeObject:_axis forKey:@"_axis"];
     [coder encodeObject:_anchor forKey:@"_anchor"];
+    [coder encodeObject:_axis forKey:@"_axis"];
     [coder encodeDouble:_upperDistanceLimit forKey:@"upperDistanceLimit"];
 }
 
@@ -1996,12 +1996,12 @@ static inline NSString *NSStringFromCGVector(CGVector v){return [NSString string
 - (void)setMaxLength:(double)v { _maxLength = v; }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-    [coder encodeObject:self.bodyB forKey:@"_bodyB"];
     [coder encodeObject:self.bodyA forKey:@"_bodyA"];
+    [coder encodeObject:self.bodyB forKey:@"_bodyB"];
     [coder encodeDouble:_maxLength forKey:@"maxLength"];
     [coder encodeObject:self.implicit forKey:@"_implicit"];
-    [coder encodeObject:_anchorB forKey:@"_anchorB"];
     [coder encodeObject:_anchorA forKey:@"_anchorA"];
+    [coder encodeObject:_anchorB forKey:@"_anchorB"];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
@@ -2083,7 +2083,7 @@ static inline NSString *NSStringFromCGVector(CGVector v){return [NSString string
     j.implicit = [NSNumber numberWithBool:NO];
     j.anchorA = NSStringFromPoint(anchorA);
     j.anchorB = NSStringFromPoint(anchorB);
-    j.maxLength = 0;
+    j.maxLength = (double)(float)hypot(anchorB.x - anchorA.x, anchorB.y - anchorA.y);
     return j;
 }
 + (Class)classForCoder { return [PKPhysicsJointRope class]; }

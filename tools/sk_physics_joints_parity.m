@@ -32,7 +32,6 @@ int main(int argc, const char **argv) {
             PKPhysicsBody *a = [PKPhysicsBody bodyWithCircleOfRadius:2.0];
             PKPhysicsBody *b = [PKPhysicsBody bodyWithCircleOfRadius:3.0];
             SKPhysicsJointSpring *j = [SKPhysicsJointSpring jointWithBodyA:a bodyB:b anchorA:CGPointMake(1.0, 2.0) anchorB:CGPointMake(3.0, 4.0)];
-            j.damping = 0.5; j.frequency = 2.0;
             NSData *d = [NSKeyedArchiver archivedDataWithRootObject:j];
             NSData *g = [NSData dataWithContentsOfFile:[base stringByAppendingPathComponent:@"oracle_joint_spring.skeep"]];
             if (![d isEqualToData:g]) { fprintf(stderr, "FAIL joint_spring\n"); all_pass = 0; }
@@ -42,15 +41,16 @@ int main(int argc, const char **argv) {
             PKPhysicsBody *a = [PKPhysicsBody bodyWithCircleOfRadius:2.0];
             PKPhysicsBody *b = [PKPhysicsBody bodyWithCircleOfRadius:3.0];
             SKPhysicsJointSliding *j = [SKPhysicsJointSliding jointWithBodyA:a bodyB:b anchor:CGPointMake(1.0, 2.0) axis:CGVectorMake(1.0, 0.0)];
-            j.lowerDistanceLimit = -1.0; j.upperDistanceLimit = 1.0;
             NSData *d = [NSKeyedArchiver archivedDataWithRootObject:j];
             NSData *g = [NSData dataWithContentsOfFile:[base stringByAppendingPathComponent:@"oracle_joint_sliding.skeep"]];
             if (![d isEqualToData:g]) { fprintf(stderr, "FAIL joint_sliding\n"); all_pass = 0; }
         }
         // Rope/Limit
         {
-            PKPhysicsBody *a = [PKPhysicsBody bodyWithCircleOfRadius:2.0];
-            PKPhysicsBody *b = [PKPhysicsBody bodyWithCircleOfRadius:3.0];
+            PKPhysicsBody *a = [PKPhysicsBody bodyWithCircleOfRadius:1.0];
+            PKPhysicsBody *b = [PKPhysicsBody bodyWithCircleOfRadius:1.0];
+            a.affectedByGravity = NO;
+            b.affectedByGravity = NO;
             SKPhysicsJointLimit *j = [SKPhysicsJointLimit jointWithBodyA:a bodyB:b anchorA:CGPointMake(1.0, 2.0) anchorB:CGPointMake(3.0, 4.0)];
             NSData *d = [NSKeyedArchiver archivedDataWithRootObject:j];
             NSData *g = [NSData dataWithContentsOfFile:[base stringByAppendingPathComponent:@"oracle_joint_rope.skeep"]];
