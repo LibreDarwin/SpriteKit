@@ -1869,9 +1869,9 @@ static inline NSString *NSStringFromCGVector(CGVector v){return [NSString string
 
 - (void)encodeWithCoder:(NSCoder *)coder {
     [coder encodeObject:self.bodyB forKey:@"_bodyB"];
-    [coder encodeObject:self.implicit forKey:@"_implicit"];
     [coder encodeObject:_anchor forKey:@"_anchor"];
     [coder encodeObject:self.bodyA forKey:@"_bodyA"];
+    [coder encodeObject:self.implicit forKey:@"_implicit"];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
@@ -1996,8 +1996,8 @@ static inline NSString *NSStringFromCGVector(CGVector v){return [NSString string
 - (void)setMaxLength:(double)v { _maxLength = v; }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-    [coder encodeObject:self.bodyA forKey:@"_bodyA"];
     [coder encodeObject:self.bodyB forKey:@"_bodyB"];
+    [coder encodeObject:self.bodyA forKey:@"_bodyA"];
     [coder encodeDouble:_maxLength forKey:@"maxLength"];
     [coder encodeObject:self.implicit forKey:@"_implicit"];
     [coder encodeObject:_anchorB forKey:@"_anchorB"];
