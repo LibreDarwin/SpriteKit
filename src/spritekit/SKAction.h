@@ -33,6 +33,35 @@ typedef NS_ENUM(NSInteger, SKActionTimingMode) {
 + (instancetype)sequence:(NSArray<SKAction *> *)actions;
 + (instancetype)group:(NSArray<SKAction *> *)actions;
 
++ (instancetype)waitForDuration:(NSTimeInterval)sec;
++ (instancetype)hide;
++ (instancetype)unhide;
++ (instancetype)playSoundFileNamed:(NSString *)soundFile waitForCompletion:(BOOL)wait;
++ (instancetype)performSelector:(SEL)selector onTarget:(id)target;
++ (instancetype)runAction:(SKAction *)action onChildWithName:(NSString *)name;
++ (instancetype)speedTo:(CGFloat)speed duration:(NSTimeInterval)sec;
++ (instancetype)speedBy:(CGFloat)speed duration:(NSTimeInterval)sec;
++ (instancetype)falloffTo:(float)falloff duration:(NSTimeInterval)sec;
++ (instancetype)falloffBy:(float)falloff duration:(NSTimeInterval)sec;
++ (instancetype)strengthTo:(float)strength duration:(NSTimeInterval)sec;
++ (instancetype)strengthBy:(float)strength duration:(NSTimeInterval)sec;
++ (instancetype)followPath:(CGPathRef)path duration:(NSTimeInterval)sec;
++ (instancetype)followPath:(CGPathRef)path
+                  asOffset:(BOOL)offset
+              orientToPath:(BOOL)orient
+                  duration:(NSTimeInterval)sec;
++ (instancetype)followPath:(CGPathRef)path speed:(CGFloat)speed;
++ (instancetype)followPath:(CGPathRef)path
+                  asOffset:(BOOL)offset
+              orientToPath:(BOOL)orient
+                     speed:(CGFloat)speed;
++ (nullable instancetype)actionNamed:(NSString *)name;
++ (nullable instancetype)animateWithWarps:(NSArray *)warps
+                                    times:(NSArray<NSNumber *> *)times;
++ (nullable instancetype)animateWithWarps:(NSArray *)warps
+                                    times:(NSArray<NSNumber *> *)times
+                                  restore:(BOOL)restore;
+
 @end
 
 #pragma mark - Concrete subclasses (one per archived class name)
@@ -64,6 +93,26 @@ typedef NS_ENUM(NSInteger, SKActionTimingMode) {
 @interface SKRunBlock : SKAction
 @end
 @interface SKAnimate : SKAction
+@end
+@interface SKFalloff : SKAction
+@end
+@interface SKSpeed : SKAction
+@end
+@interface SKStrength : SKAction
+@end
+@interface SKFollowPath : SKAction
+@end
+@interface SKHide : SKAction
+@end
+@interface SKPerformSelector : SKAction
+@end
+@interface SKPlaySound : SKAction
+@end
+@interface SKReferencedAction : SKAction
+@end
+@interface SKRunAction : SKAction
+@end
+@interface SKAnimateWarp : SKAction
 @end
 
 NS_ASSUME_NONNULL_END

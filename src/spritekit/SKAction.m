@@ -28,6 +28,53 @@
 @interface SKGroup (Internal)
 + (instancetype)actionWithActions:(NSArray<SKAction *> *)actions;
 @end
+@interface SKWait (Internal)
++ (instancetype)actionWaitingFor:(NSTimeInterval)sec;
+@end
+@interface SKHide (Internal)
++ (instancetype)actionHidden:(BOOL)hidden;
+@end
+@interface SKPlaySound (Internal)
++ (instancetype)actionPlayingFile:(nullable NSString *)file wait:(BOOL)wait;
+@end
+@interface SKPerformSelector (Internal)
++ (instancetype)actionPerforming:(SEL)selector;
+@end
+@interface SKRunAction (Internal)
++ (instancetype)actionRunning:(SKAction *)action onChild:(nullable NSString *)name;
+@end
+@interface SKSpeed (Internal)
++ (instancetype)actionSpeed:(double)speed
+                   reversed:(double)reversed
+                   relative:(BOOL)relative
+                   duration:(NSTimeInterval)sec;
+@end
+@interface SKStrength (Internal)
++ (instancetype)actionStrength:(double)strength
+                      reversed:(double)reversed
+                      relative:(BOOL)relative
+                      duration:(NSTimeInterval)sec;
+@end
+@interface SKFalloff (Internal)
++ (instancetype)actionFalloff:(double)falloff
+                     reversed:(double)reversed
+                     relative:(BOOL)relative
+                     duration:(NSTimeInterval)sec;
+@end
+@interface SKFollowPath (Internal)
++ (instancetype)actionFollowingPath:(nullable CGPathRef)path
+                             offset:(BOOL)offset
+                             orient:(BOOL)orient
+                           duration:(NSTimeInterval)sec;
+@end
+@interface SKReferencedAction (Internal)
++ (instancetype)actionReferencing:(nullable NSString *)name;
+@end
+@interface SKAnimateWarp (Internal)
++ (instancetype)actionWithWarps:(NSArray *)warps
+                          times:(NSArray<NSNumber *> *)times
+                        restore:(BOOL)restore;
+@end
 
 @implementation SKAction
 
@@ -51,6 +98,93 @@
 
 + (instancetype)group:(NSArray<SKAction *> *)actions {
     return [SKGroup actionWithActions:actions];
+}
+
++ (instancetype)waitForDuration:(NSTimeInterval)sec {
+    return [SKWait actionWaitingFor:sec];
+}
+
++ (instancetype)hide {
+    return [SKHide actionHidden:YES];
+}
+
++ (instancetype)unhide {
+    return [SKHide actionHidden:NO];
+}
+
++ (instancetype)playSoundFileNamed:(NSString *)soundFile waitForCompletion:(BOOL)wait {
+    return [SKPlaySound actionPlayingFile:soundFile wait:wait];
+}
+
++ (instancetype)performSelector:(SEL)selector onTarget:(id)target {
+    return [SKPerformSelector actionPerforming:selector];
+}
+
++ (instancetype)runAction:(SKAction *)action onChildWithName:(NSString *)name {
+    return [SKRunAction actionRunning:action onChild:name];
+}
+
++ (instancetype)speedTo:(CGFloat)speed duration:(NSTimeInterval)sec {
+    return [SKSpeed actionSpeed:speed reversed:speed relative:NO duration:sec];
+}
+
++ (instancetype)speedBy:(CGFloat)speed duration:(NSTimeInterval)sec {
+    return [SKSpeed actionSpeed:speed reversed:(speed == 0 ? 0 : 1.0 / speed)
+                       relative:YES duration:sec];
+}
+
++ (instancetype)falloffTo:(float)falloff duration:(NSTimeInterval)sec {
+    return [SKFalloff actionFalloff:falloff reversed:falloff relative:NO duration:sec];
+}
+
++ (instancetype)falloffBy:(float)falloff duration:(NSTimeInterval)sec {
+    return [SKFalloff actionFalloff:falloff reversed:(falloff == 0 ? 0 : 1.0 / falloff)
+                           relative:YES duration:sec];
+}
+
++ (instancetype)strengthTo:(float)strength duration:(NSTimeInterval)sec {
+    return [SKStrength actionStrength:strength reversed:strength relative:NO duration:sec];
+}
+
++ (instancetype)strengthBy:(float)strength duration:(NSTimeInterval)sec {
+    return [SKStrength actionStrength:strength reversed:(strength == 0 ? 0 : 1.0 / strength)
+                             relative:YES duration:sec];
+}
+
++ (instancetype)followPath:(CGPathRef)path duration:(NSTimeInterval)sec {
+    return [SKFollowPath actionFollowingPath:path offset:YES orient:YES duration:sec];
+}
+
++ (instancetype)followPath:(CGPathRef)path
+                  asOffset:(BOOL)offset
+              orientToPath:(BOOL)orient
+                  duration:(NSTimeInterval)sec {
+    return [SKFollowPath actionFollowingPath:path offset:offset orient:orient duration:sec];
+}
+
++ (instancetype)followPath:(CGPathRef)path speed:(CGFloat)speed {
+    return [SKFollowPath actionFollowingPath:path offset:YES orient:YES duration:0];
+}
+
++ (instancetype)followPath:(CGPathRef)path
+                  asOffset:(BOOL)offset
+              orientToPath:(BOOL)orient
+                     speed:(CGFloat)speed {
+    return [SKFollowPath actionFollowingPath:path offset:offset orient:orient duration:0];
+}
+
++ (instancetype)actionNamed:(NSString *)name {
+    return [SKReferencedAction actionReferencing:name];
+}
+
++ (instancetype)animateWithWarps:(NSArray *)warps times:(NSArray<NSNumber *> *)times {
+    return [SKAnimateWarp actionWithWarps:warps times:times restore:NO];
+}
+
++ (instancetype)animateWithWarps:(NSArray *)warps
+                           times:(NSArray<NSNumber *> *)times
+                         restore:(BOOL)restore {
+    return [SKAnimateWarp actionWithWarps:warps times:times restore:restore];
 }
 
 #pragma mark - NSCoding
@@ -372,6 +506,11 @@
 @end
 
 @implementation SKWait
++ (instancetype)actionWaitingFor:(NSTimeInterval)sec {
+    SKWait *a = [[SKWait alloc] init];
+    a.duration = sec;
+    return a;
+}
 @end
 
 @implementation SKRemove {
@@ -494,4 +633,424 @@
 @end
 
 @implementation SKAnimate
+@end
+
+#pragma mark - SKFalloff
+
+@implementation SKFalloff {
+    double _isRelative;
+    double _isReversed;
+    double _lastRatio;
+    double _target;
+    double _targetReversed;
+    double _deltafalloff;
+}
+
+- (instancetype)init {
+    if ((self = [super init])) {
+        _isRelative = 1.0;
+        _target = 1.0;
+    }
+    return self;
+}
+
++ (instancetype)actionFalloff:(double)falloff
+                     reversed:(double)reversed
+                     relative:(BOOL)relative
+                     duration:(NSTimeInterval)sec {
+    SKFalloff *a = [[SKFalloff alloc] init];
+    a.duration = sec;
+    a->_target = falloff;
+    a->_targetReversed = reversed;
+    a->_isRelative = relative ? 1.0 : 0.0;
+    return a;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:@(_target) forKey:@"_target"];
+    [coder encodeObject:@(_targetReversed) forKey:@"_targetReversed"];
+    [coder encodeObject:@(_deltafalloff) forKey:@"_deltafalloff"];
+    [coder encodeObject:@(_lastRatio) forKey:@"_lastRatio"];
+    [coder encodeObject:@(_isReversed) forKey:@"_isReversed"];
+    [coder encodeObject:@(_isRelative) forKey:@"_isRelative"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _isRelative = [coder decodeDoubleForKey:@"_isRelative"];
+        _isReversed = [coder decodeDoubleForKey:@"_isReversed"];
+        _lastRatio = [coder decodeDoubleForKey:@"_lastRatio"];
+        _target = [coder decodeDoubleForKey:@"_target"];
+        _targetReversed = [coder decodeDoubleForKey:@"_targetReversed"];
+        _deltafalloff = [coder decodeDoubleForKey:@"_deltafalloff"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - SKSpeed
+
+@implementation SKSpeed {
+    double _isRelative;
+    double _isReversed;
+    double _lastRatio;
+    double _speedTarget;
+    double _speedTargetReversed;
+    double _deltaSpeed;
+}
+
+- (instancetype)init {
+    if ((self = [super init])) {
+        _isRelative = 1.0;
+        _speedTarget = 1.0;
+    }
+    return self;
+}
+
++ (instancetype)actionSpeed:(double)speed
+                   reversed:(double)reversed
+                   relative:(BOOL)relative
+                   duration:(NSTimeInterval)sec {
+    SKSpeed *a = [[SKSpeed alloc] init];
+    a.duration = sec;
+    a->_speedTarget = speed;
+    a->_speedTargetReversed = reversed;
+    a->_isRelative = relative ? 1.0 : 0.0;
+    return a;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:@(_speedTarget) forKey:@"_speedTarget"];
+    [coder encodeObject:@(_speedTargetReversed) forKey:@"_speedTargetReversed"];
+    [coder encodeObject:@(_deltaSpeed) forKey:@"_deltaSpeed"];
+    [coder encodeObject:@(_lastRatio) forKey:@"_lastRatio"];
+    [coder encodeObject:@(_isReversed) forKey:@"_isReversed"];
+    [coder encodeObject:@(_isRelative) forKey:@"_isRelative"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _isRelative = [coder decodeDoubleForKey:@"_isRelative"];
+        _isReversed = [coder decodeDoubleForKey:@"_isReversed"];
+        _lastRatio = [coder decodeDoubleForKey:@"_lastRatio"];
+        _speedTarget = [coder decodeDoubleForKey:@"_speedTarget"];
+        _speedTargetReversed = [coder decodeDoubleForKey:@"_speedTargetReversed"];
+        _deltaSpeed = [coder decodeDoubleForKey:@"_deltaSpeed"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - SKStrength
+
+@implementation SKStrength {
+    double _isRelative;
+    double _isReversed;
+    double _lastRatio;
+    double _strengthTarget;
+    double _strengthTargetReversed;
+    double _deltastrength;
+}
+
+- (instancetype)init {
+    if ((self = [super init])) {
+        _isRelative = 1.0;
+        _strengthTarget = 1.0;
+    }
+    return self;
+}
+
++ (instancetype)actionStrength:(double)strength
+                      reversed:(double)reversed
+                      relative:(BOOL)relative
+                      duration:(NSTimeInterval)sec {
+    SKStrength *a = [[SKStrength alloc] init];
+    a.duration = sec;
+    a->_strengthTarget = strength;
+    a->_strengthTargetReversed = reversed;
+    a->_isRelative = relative ? 1.0 : 0.0;
+    return a;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:@(_strengthTarget) forKey:@"_strengthTarget"];
+    [coder encodeObject:@(_strengthTargetReversed) forKey:@"_strengthTargetReversed"];
+    [coder encodeObject:@(_deltastrength) forKey:@"_deltastrength"];
+    [coder encodeObject:@(_lastRatio) forKey:@"_lastRatio"];
+    [coder encodeObject:@(_isReversed) forKey:@"_isReversed"];
+    [coder encodeObject:@(_isRelative) forKey:@"_isRelative"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _isRelative = [coder decodeDoubleForKey:@"_isRelative"];
+        _isReversed = [coder decodeDoubleForKey:@"_isReversed"];
+        _lastRatio = [coder decodeDoubleForKey:@"_lastRatio"];
+        _strengthTarget = [coder decodeDoubleForKey:@"_strengthTarget"];
+        _strengthTargetReversed = [coder decodeDoubleForKey:@"_strengthTargetReversed"];
+        _deltastrength = [coder decodeDoubleForKey:@"_deltastrength"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - SKFollowPath
+
+@implementation SKFollowPath {
+    CGPathRef _cgPath;
+    BOOL _isOffset;
+    BOOL _orient;
+}
+
++ (instancetype)actionFollowingPath:(nullable CGPathRef)path
+                             offset:(BOOL)offset
+                             orient:(BOOL)orient
+                           duration:(NSTimeInterval)sec {
+    SKFollowPath *a = [[SKFollowPath alloc] init];
+    a.duration = sec;
+    a->_cgPath = path;
+    a->_isOffset = offset;
+    a->_orient = orient;
+    return a;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:(__bridge id)_cgPath forKey:@"_cgPath"];
+    [coder encodeObject:@(_isOffset) forKey:@"_isOffset"];
+    [coder encodeObject:@(_orient) forKey:@"_orient"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _cgPath = (__bridge CGPathRef)[coder decodeObjectForKey:@"_cgPath"];
+        _isOffset = [coder decodeBoolForKey:@"_isOffset"];
+        _orient = [coder decodeBoolForKey:@"_orient"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - SKHide
+
+@implementation SKHide {
+    BOOL _hiddenValue;
+}
+
+- (instancetype)init {
+    if ((self = [super init])) {
+        _hiddenValue = YES;
+    }
+    return self;
+}
+
++ (instancetype)actionHidden:(BOOL)hidden {
+    SKHide *a = [[SKHide alloc] init];
+    a->_hiddenValue = hidden;
+    return a;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeBool:_hiddenValue forKey:@"_hiddenValue"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self)
+        _hiddenValue = [coder decodeBoolForKey:@"_hiddenValue"];
+    return self;
+}
+
+@end
+
+#pragma mark - SKPerformSelector
+
+@implementation SKPerformSelector {
+    SEL _selector;
+}
+
++ (instancetype)actionPerforming:(SEL)selector {
+    SKPerformSelector *a = [[SKPerformSelector alloc] init];
+    a->_selector = selector;
+    return a;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:(_selector ? NSStringFromSelector(_selector) : nil)
+                 forKey:@"_selector"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        NSString *name = [coder decodeObjectOfClass:[NSString class] forKey:@"_selector"];
+        _selector = name ? NSSelectorFromString(name) : NULL;
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - SKPlaySound
+
+@implementation SKPlaySound {
+    BOOL _wait;
+    NSString *_fileName;
+    CGPoint _position;
+}
+
++ (instancetype)actionPlayingFile:(nullable NSString *)file wait:(BOOL)wait {
+    SKPlaySound *a = [[SKPlaySound alloc] init];
+    a->_fileName = file;
+    a->_wait = wait;
+    a->_position = CGPointZero;
+    return a;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeBool:_wait forKey:@"_wait"];
+    [coder encodeObject:_fileName forKey:@"_fileName"];
+    [coder encodePoint:_position forKey:@"_position"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _wait = [coder decodeBoolForKey:@"_wait"];
+        _fileName = [coder decodeObjectOfClass:[NSString class] forKey:@"_fileName"];
+        _position = [coder decodePointForKey:@"_position"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - SKReferencedAction
+
+@implementation SKReferencedAction {
+    NSString *_referencedActionName;
+}
+
++ (instancetype)actionReferencing:(nullable NSString *)name {
+    SKReferencedAction *a = [[SKReferencedAction alloc] init];
+    a->_referencedActionName = name;
+    return a;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_referencedActionName forKey:@"_referencedActionName"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self)
+        _referencedActionName = [coder decodeObjectOfClass:[NSString class]
+                                                    forKey:@"_referencedActionName"];
+    return self;
+}
+
+@end
+
+#pragma mark - SKRunAction
+
+@implementation SKRunAction {
+    SKAction *_action;
+    NSString *_actionKey;
+    NSString *_subSpriteKey;
+    BOOL _waitForKeyedAction;
+    BOOL _runOnSubSprite;
+}
+
++ (instancetype)actionRunning:(SKAction *)action onChild:(nullable NSString *)name {
+    SKRunAction *a = [[SKRunAction alloc] init];
+    a->_action = action;
+    a->_subSpriteKey = name;
+    a->_runOnSubSprite = YES;
+    return a;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_action forKey:@"_action"];
+    [coder encodeObject:_actionKey forKey:@"_actionKey"];
+    [coder encodeObject:_subSpriteKey forKey:@"_subSpriteKey"];
+    [coder encodeObject:@(_waitForKeyedAction) forKey:@"_waitForKeyedAction"];
+    [coder encodeObject:@(_runOnSubSprite) forKey:@"_runOnSubSprite"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _action = [coder decodeObjectOfClass:[SKAction class] forKey:@"_action"];
+        _actionKey = [coder decodeObjectOfClass:[NSString class] forKey:@"_actionKey"];
+        _subSpriteKey = [coder decodeObjectOfClass:[NSString class] forKey:@"_subSpriteKey"];
+        _waitForKeyedAction = [coder decodeBoolForKey:@"_waitForKeyedAction"];
+        _runOnSubSprite = [coder decodeBoolForKey:@"_runOnSubSprite"];
+    }
+    return self;
+}
+
+@end
+
+#pragma mark - SKAnimateWarp
+
+@implementation SKAnimateWarp {
+    BOOL _restore;
+    NSArray *_grids;
+    NSArray<NSNumber *> *_times;
+}
+
+- (instancetype)init {
+    if ((self = [super init])) {
+        _restore = YES;
+    }
+    return self;
+}
+
++ (instancetype)actionWithWarps:(NSArray *)warps
+                          times:(NSArray<NSNumber *> *)times
+                        restore:(BOOL)restore {
+    if (warps.count == 0 || warps.count != times.count) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"SKAction: 'warps' and 'times' arrays must have non-zero and equal counts"];
+    }
+    SKAnimateWarp *a = [[SKAnimateWarp alloc] init];
+    a->_grids = [warps mutableCopy];
+    a->_times = [times copy];
+    a->_restore = restore;
+    return a;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeBool:_restore forKey:@"_restore"];
+    [coder encodeObject:_grids forKey:@"_grids"];
+    [coder encodeObject:_times forKey:@"_times"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _restore = [coder decodeBoolForKey:@"_restore"];
+        _grids = [coder decodeObjectOfClass:[NSArray class] forKey:@"_grids"];
+        _times = [coder decodeObjectOfClass:[NSArray class] forKey:@"_times"];
+    }
+    return self;
+}
+
 @end
