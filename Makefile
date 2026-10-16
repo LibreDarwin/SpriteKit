@@ -162,7 +162,24 @@ REACH_CONSTRAINTS_GOLDEN := tools/conformance/SpriteKit/oracle_reach_constraints
 PARITY_PHYSICS_JOINTS := $(BUILD_DIR)/sk_physics_joints_parity
 PARITY_PHYSICS_JOINTS_OBJ := $(OBJDIR)/spritekit/sk_physics_joints_parity.o
 JOINTS_GOLDEN_DIR := tools/conformance/SpriteKit
-all: $(TOOL) $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP) $(PARITY_EMITTER) $(PARITY_TRANSFORM) $(PARITY_VIDEO) $(PARITY_AUDIO) $(PARITY_REFERENCE) $(PARITY_LIGHT) $(PARITY_FIELD) $(PARITY_WARP_GRID) $(PARITY_SPRITE_WARP) $(PARITY_SHADER) $(PARITY_EFFECT_SHADER) $(PARITY_ATTRIBUTE_VALUE) $(PARITY_SPRITE_ATTR) $(PARITY_TEXTURE) $(PARITY_RANGE) $(PARITY_KEYFRAME_SEQ) $(PARITY_CONSTRAINT_POS) $(PARITY_MUTABLE_TEXTURE) $(PARITY_TEXTURE_ATLAS)
+
+PARITY_UNIFORM := $(BUILD_DIR)/sk_uniform_parity
+PARITY_UNIFORM_OBJ := $(OBJDIR)/spritekit/sk_uniform_parity.o
+UNIFORM_GOLDEN := tools/conformance/SpriteKit/oracle_uniform_none.skeep tools/conformance/SpriteKit/oracle_uniform_float.skeep tools/conformance/SpriteKit/oracle_uniform_v2.skeep tools/conformance/SpriteKit/oracle_uniform_v3.skeep tools/conformance/SpriteKit/oracle_uniform_v4.skeep tools/conformance/SpriteKit/oracle_uniform_m2.skeep tools/conformance/SpriteKit/oracle_uniform_m3.skeep tools/conformance/SpriteKit/oracle_uniform_m4.skeep tools/conformance/SpriteKit/oracle_uniform_tex.skeep
+
+PARITY_ATTRIBUTE := $(BUILD_DIR)/sk_attribute_parity
+PARITY_ATTRIBUTE_OBJ := $(OBJDIR)/spritekit/sk_attribute_parity.o
+ATTRIBUTE_GOLDEN := tools/conformance/SpriteKit/oracle_attribute_float.skeep tools/conformance/SpriteKit/oracle_attribute_v2.skeep tools/conformance/SpriteKit/oracle_attribute_v3.skeep tools/conformance/SpriteKit/oracle_attribute_v4.skeep
+
+PARITY_SHADER_UNI := $(BUILD_DIR)/sk_shader_uni_parity
+PARITY_SHADER_UNI_OBJ := $(OBJDIR)/spritekit/sk_shader_uni_parity.o
+SHADER_UNI_GOLDEN := tools/conformance/SpriteKit/oracle_shader_uni.skeep
+
+PARITY_SHADER_MIX := $(BUILD_DIR)/sk_shader_mix_parity
+PARITY_SHADER_MIX_OBJ := $(OBJDIR)/spritekit/sk_shader_mix_parity.o
+SHADER_MIX_GOLDEN := tools/conformance/SpriteKit/oracle_shader_mix.skeep
+
+all: $(TOOL) $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP) $(PARITY_EMITTER) $(PARITY_TRANSFORM) $(PARITY_VIDEO) $(PARITY_AUDIO) $(PARITY_REFERENCE) $(PARITY_LIGHT) $(PARITY_FIELD) $(PARITY_WARP_GRID) $(PARITY_SPRITE_WARP) $(PARITY_SHADER) $(PARITY_EFFECT_SHADER) $(PARITY_ATTRIBUTE_VALUE) $(PARITY_SPRITE_ATTR) $(PARITY_TEXTURE) $(PARITY_RANGE) $(PARITY_KEYFRAME_SEQ) $(PARITY_CONSTRAINT_POS) $(PARITY_MUTABLE_TEXTURE) $(PARITY_TEXTURE_ATLAS) $(PARITY_UNIFORM) $(PARITY_ATTRIBUTE) $(PARITY_SHADER_UNI) $(PARITY_SHADER_MIX)
 
 $(TOOL): $(TOOL_OBJS)
 	@mkdir -p $(BUILD_DIR)
@@ -464,7 +481,7 @@ test-atlasc: $(TOOL)
 	$(TEST_PY) tools/conformance/run_tests.py TextureAtlas --build-dir $(BUILD_DIR)
 
 # Byte-identical archive parity against Apple-recorded SpriteKit goldens.
-test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP) $(PARITY_EMITTER) $(PARITY_TRANSFORM) $(PARITY_VIDEO) $(PARITY_AUDIO) $(PARITY_REFERENCE) $(PARITY_LIGHT) $(PARITY_FIELD) $(PARITY_WARP_GRID) $(PARITY_SPRITE_WARP) $(PARITY_SHADER) $(PARITY_EFFECT_SHADER) $(PARITY_ATTRIBUTE_VALUE) $(PARITY_SPRITE_ATTR) $(PARITY_TEXTURE) $(PARITY_RANGE) $(PARITY_KEYFRAME_SEQ) $(PARITY_CONSTRAINT_POS) $(PARITY_MUTABLE_TEXTURE) $(PARITY_TEXTURE_ATLAS) $(PARITY_REACH_CONSTRAINTS) $(PARITY_PHYSICS_JOINTS)
+test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP) $(PARITY_EMITTER) $(PARITY_TRANSFORM) $(PARITY_VIDEO) $(PARITY_AUDIO) $(PARITY_REFERENCE) $(PARITY_LIGHT) $(PARITY_FIELD) $(PARITY_WARP_GRID) $(PARITY_SPRITE_WARP) $(PARITY_SHADER) $(PARITY_EFFECT_SHADER) $(PARITY_ATTRIBUTE_VALUE) $(PARITY_SPRITE_ATTR) $(PARITY_TEXTURE) $(PARITY_RANGE) $(PARITY_KEYFRAME_SEQ) $(PARITY_CONSTRAINT_POS) $(PARITY_MUTABLE_TEXTURE) $(PARITY_TEXTURE_ATLAS) $(PARITY_REACH_CONSTRAINTS) $(PARITY_PHYSICS_JOINTS) $(PARITY_UNIFORM) $(PARITY_ATTRIBUTE) $(PARITY_SHADER_UNI) $(PARITY_SHADER_MIX)
 	$(PARITY_ACTIONS) $(ACTIONS_GOLDEN)
 	$(PARITY_NODE) $(NODE_GOLDEN)
 	$(PARITY_SPRITE) $(SPRITE_GOLDEN)
@@ -496,6 +513,10 @@ test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL
 	$(PARITY_TEXTURE_ATLAS) $(TEXTURE_ATLAS_GOLDEN)
 	$(PARITY_REACH_CONSTRAINTS) $(REACH_CONSTRAINTS_GOLDEN)
 	$(PARITY_PHYSICS_JOINTS) $(JOINTS_GOLDEN_DIR)
+	$(PARITY_UNIFORM) $(UNIFORM_GOLDEN)
+	$(PARITY_ATTRIBUTE) $(ATTRIBUTE_GOLDEN)
+	$(PARITY_SHADER_UNI) $(SHADER_UNI_GOLDEN)
+	$(PARITY_SHADER_MIX) $(SHADER_MIX_GOLDEN)
 
 # Re-record the Apple goldens (development aid; links the real SpriteKit).
 # Not part of `all` -- run by hand when adding a new node class to the suite.
@@ -525,4 +546,40 @@ $(PARITY_PHYSICS_JOINTS_OBJ): tools/sk_physics_joints_parity.m src/spritekit/SKN
 $(PARITY_PHYSICS_JOINTS): $(PARITY_PHYSICS_JOINTS_OBJ) $(SK_OBJS)
 	@mkdir -p $(BUILD_DIR)
 	$(CC) $(MFLAGS) -o $@ $(PARITY_PHYSICS_JOINTS_OBJ) $(SK_OBJS) \
+	    -framework Foundation -framework CoreGraphics -framework AppKit
+
+$(PARITY_UNIFORM_OBJ): tools/sk_uniform_parity.m src/spritekit/SKNode.h
+	@mkdir -p $(OBJDIR)/spritekit
+	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ tools/sk_uniform_parity.m
+
+$(PARITY_UNIFORM): $(PARITY_UNIFORM_OBJ) $(SK_OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(MFLAGS) -o $@ $(PARITY_UNIFORM_OBJ) $(SK_OBJS) \
+	    -framework Foundation -framework CoreGraphics -framework AppKit
+
+$(PARITY_ATTRIBUTE_OBJ): tools/sk_attribute_parity.m src/spritekit/SKNode.h
+	@mkdir -p $(OBJDIR)/spritekit
+	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ tools/sk_attribute_parity.m
+
+$(PARITY_ATTRIBUTE): $(PARITY_ATTRIBUTE_OBJ) $(SK_OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(MFLAGS) -o $@ $(PARITY_ATTRIBUTE_OBJ) $(SK_OBJS) \
+	    -framework Foundation -framework CoreGraphics -framework AppKit
+
+$(PARITY_SHADER_UNI_OBJ): tools/sk_shader_uni_parity.m src/spritekit/SKNode.h
+	@mkdir -p $(OBJDIR)/spritekit
+	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ tools/sk_shader_uni_parity.m
+
+$(PARITY_SHADER_UNI): $(PARITY_SHADER_UNI_OBJ) $(SK_OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(MFLAGS) -o $@ $(PARITY_SHADER_UNI_OBJ) $(SK_OBJS) \
+	    -framework Foundation -framework CoreGraphics -framework AppKit
+
+$(PARITY_SHADER_MIX_OBJ): tools/sk_shader_mix_parity.m src/spritekit/SKNode.h
+	@mkdir -p $(OBJDIR)/spritekit
+	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ tools/sk_shader_mix_parity.m
+
+$(PARITY_SHADER_MIX): $(PARITY_SHADER_MIX_OBJ) $(SK_OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(MFLAGS) -o $@ $(PARITY_SHADER_MIX_OBJ) $(SK_OBJS) \
 	    -framework Foundation -framework CoreGraphics -framework AppKit

@@ -1425,6 +1425,288 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
 
 @end
 
+#pragma mark - SKUniform
+
+@implementation SKUniform {
+    NSString *_name;
+    SKUniformType _type;
+    float _floatValue;
+    vector_float2 _vectorFloat2Value;
+    vector_float3 _vectorFloat3Value;
+    vector_float4 _vectorFloat4Value;
+    matrix_float2x2 _matrixFloat2x2Value;
+    matrix_float3x3 _matrixFloat3x3Value;
+    matrix_float4x4 _matrixFloat4x4Value;
+    SKTexture *_textureValue;
+}
+
++ (instancetype)uniformWithName:(NSString *)name {
+    return [[self alloc] initWithName:name];
+}
++ (instancetype)uniformWithName:(NSString *)name float:(float)value {
+    return [[self alloc] initWithName:name float:value];
+}
++ (instancetype)uniformWithName:(NSString *)name vectorFloat2:(vector_float2)value {
+    return [[self alloc] initWithName:name vectorFloat2:value];
+}
++ (instancetype)uniformWithName:(NSString *)name vectorFloat3:(vector_float3)value {
+    return [[self alloc] initWithName:name vectorFloat3:value];
+}
++ (instancetype)uniformWithName:(NSString *)name vectorFloat4:(vector_float4)value {
+    return [[self alloc] initWithName:name vectorFloat4:value];
+}
++ (instancetype)uniformWithName:(NSString *)name matrixFloat2x2:(matrix_float2x2)value {
+    return [[self alloc] initWithName:name matrixFloat2x2:value];
+}
++ (instancetype)uniformWithName:(NSString *)name matrixFloat3x3:(matrix_float3x3)value {
+    return [[self alloc] initWithName:name matrixFloat3x3:value];
+}
++ (instancetype)uniformWithName:(NSString *)name matrixFloat4x4:(matrix_float4x4)value {
+    return [[self alloc] initWithName:name matrixFloat4x4:value];
+}
++ (instancetype)uniformWithName:(NSString *)name texture:(SKTexture *)value {
+    return [[self alloc] initWithName:name texture:value];
+}
+
+- (instancetype)initWithName:(NSString *)name {
+    self = [super init];
+    if (self) {
+        _name = [name copy];
+        _type = SKUniformTypeNone;
+    }
+    return self;
+}
+- (instancetype)initWithName:(NSString *)name float:(float)value {
+    self = [self initWithName:name];
+    if (self) { _type = SKUniformTypeFloat; _floatValue = value; }
+    return self;
+}
+- (instancetype)initWithName:(NSString *)name vectorFloat2:(vector_float2)value {
+    self = [self initWithName:name];
+    if (self) { _type = SKUniformTypeFloatVector2; _vectorFloat2Value = value; }
+    return self;
+}
+- (instancetype)initWithName:(NSString *)name vectorFloat3:(vector_float3)value {
+    self = [self initWithName:name];
+    if (self) { _type = SKUniformTypeFloatVector3; _vectorFloat3Value = value; }
+    return self;
+}
+- (instancetype)initWithName:(NSString *)name vectorFloat4:(vector_float4)value {
+    self = [self initWithName:name];
+    if (self) { _type = SKUniformTypeFloatVector4; _vectorFloat4Value = value; }
+    return self;
+}
+- (instancetype)initWithName:(NSString *)name matrixFloat2x2:(matrix_float2x2)value {
+    self = [self initWithName:name];
+    if (self) { _type = SKUniformTypeFloatMatrix2; _matrixFloat2x2Value = value; }
+    return self;
+}
+- (instancetype)initWithName:(NSString *)name matrixFloat3x3:(matrix_float3x3)value {
+    self = [self initWithName:name];
+    if (self) { _type = SKUniformTypeFloatMatrix3; _matrixFloat3x3Value = value; }
+    return self;
+}
+- (instancetype)initWithName:(NSString *)name matrixFloat4x4:(matrix_float4x4)value {
+    self = [self initWithName:name];
+    if (self) { _type = SKUniformTypeFloatMatrix4; _matrixFloat4x4Value = value; }
+    return self;
+}
+- (instancetype)initWithName:(NSString *)name texture:(SKTexture *)value {
+    self = [self initWithName:name];
+    if (self) { _type = SKUniformTypeTexture; _textureValue = value; }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:_name forKey:@"_name"];
+    [coder encodeInt32:(int32_t)_type forKey:@"_type"];
+    switch (_type) {
+        case SKUniformTypeFloat:
+            [coder encodeFloat:_floatValue forKey:@"_floatValue"];
+            break;
+        case SKUniformTypeFloatVector2:
+            [coder encodeObject:@[@(_vectorFloat2Value.x), @(_vectorFloat2Value.y)]
+                         forKey:@"_floatVector2Value"];
+            break;
+        case SKUniformTypeFloatVector3:
+            [coder encodeObject:@[@(_vectorFloat3Value.x), @(_vectorFloat3Value.y),
+                                   @(_vectorFloat3Value.z)]
+                         forKey:@"_floatVector3Value"];
+            break;
+        case SKUniformTypeFloatVector4:
+            [coder encodeObject:@[@(_vectorFloat4Value.x), @(_vectorFloat4Value.y),
+                                   @(_vectorFloat4Value.z), @(_vectorFloat4Value.w)]
+                         forKey:@"_floatVector4Value"];
+            break;
+        case SKUniformTypeFloatMatrix2: {
+            matrix_float2x2 m = _matrixFloat2x2Value;
+            [coder encodeObject:[NSMutableArray arrayWithObjects:
+                    @(m.columns[0].x), @(m.columns[0].y),
+                    @(m.columns[1].x), @(m.columns[1].y), nil]
+                         forKey:@"_floatMatrix2Value"];
+            break;
+        }
+        case SKUniformTypeFloatMatrix3: {
+            matrix_float3x3 m = _matrixFloat3x3Value;
+            NSMutableArray *a = [NSMutableArray arrayWithCapacity:9];
+            for (int c = 0; c < 3; c++)
+                for (int r = 0; r < 3; r++) [a addObject:@(m.columns[c][r])];
+            [coder encodeObject:a forKey:@"_floatMatrix3Value"];
+            break;
+        }
+        case SKUniformTypeFloatMatrix4: {
+            matrix_float4x4 m = _matrixFloat4x4Value;
+            NSMutableArray *a = [NSMutableArray arrayWithCapacity:16];
+            for (int c = 0; c < 4; c++)
+                for (int r = 0; r < 4; r++) [a addObject:@(m.columns[c][r])];
+            [coder encodeObject:a forKey:@"_floatMatrix4Value"];
+            break;
+        }
+        case SKUniformTypeTexture:
+            [coder encodeObject:_textureValue forKey:@"_textureValue"];
+            break;
+        default:
+            break;
+    }
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        _name = [coder decodeObjectForKey:@"_name"];
+        _type = (SKUniformType)[coder decodeInt32ForKey:@"_type"];
+        switch (_type) {
+            case SKUniformTypeFloat:
+                _floatValue = [coder decodeFloatForKey:@"_floatValue"];
+                break;
+            case SKUniformTypeFloatVector2: {
+                NSArray *a = [coder decodeObjectForKey:@"_floatVector2Value"];
+                _vectorFloat2Value = (vector_float2){[a[0] floatValue], [a[1] floatValue]};
+                break;
+            }
+            case SKUniformTypeFloatVector3: {
+                NSArray *a = [coder decodeObjectForKey:@"_floatVector3Value"];
+                _vectorFloat3Value = (vector_float3){[a[0] floatValue], [a[1] floatValue], [a[2] floatValue]};
+                break;
+            }
+            case SKUniformTypeFloatVector4: {
+                NSArray *a = [coder decodeObjectForKey:@"_floatVector4Value"];
+                _vectorFloat4Value = (vector_float4){[a[0] floatValue], [a[1] floatValue], [a[2] floatValue], [a[3] floatValue]};
+                break;
+            }
+            case SKUniformTypeFloatMatrix2: {
+                NSArray *a = [coder decodeObjectForKey:@"_floatMatrix2Value"];
+                matrix_float2x2 m;
+                m.columns[0] = (vector_float2){[a[0] floatValue], [a[1] floatValue]};
+                m.columns[1] = (vector_float2){[a[2] floatValue], [a[3] floatValue]};
+                _matrixFloat2x2Value = m;
+                break;
+            }
+            case SKUniformTypeFloatMatrix3: {
+                NSArray *a = [coder decodeObjectForKey:@"_floatMatrix3Value"];
+                matrix_float3x3 m;
+                for (int c = 0; c < 3; c++)
+                    for (int r = 0; r < 3; r++) m.columns[c][r] = [a[c * 3 + r] floatValue];
+                _matrixFloat3x3Value = m;
+                break;
+            }
+            case SKUniformTypeFloatMatrix4: {
+                NSArray *a = [coder decodeObjectForKey:@"_floatMatrix4Value"];
+                matrix_float4x4 m;
+                for (int c = 0; c < 4; c++)
+                    for (int r = 0; r < 4; r++) m.columns[c][r] = [a[c * 4 + r] floatValue];
+                _matrixFloat4x4Value = m;
+                break;
+            }
+            case SKUniformTypeTexture:
+                _textureValue = [coder decodeObjectForKey:@"_textureValue"];
+                break;
+            default:
+                break;
+        }
+    }
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    SKUniform *u = [[SKUniform allocWithZone:zone] initWithName:_name];
+    u->_type = _type;
+    u->_floatValue = _floatValue;
+    u->_vectorFloat2Value = _vectorFloat2Value;
+    u->_vectorFloat3Value = _vectorFloat3Value;
+    u->_vectorFloat4Value = _vectorFloat4Value;
+    u->_matrixFloat2x2Value = _matrixFloat2x2Value;
+    u->_matrixFloat3x3Value = _matrixFloat3x3Value;
+    u->_matrixFloat4x4Value = _matrixFloat4x4Value;
+    u->_textureValue = _textureValue;
+    return u;
+}
+
+- (NSString *)name { return _name; }
+- (SKUniformType)uniformType { return _type; }
+- (float)floatValue { return _floatValue; }
+- (void)setFloatValue:(float)value { _floatValue = value; }
+- (vector_float2)vectorFloat2Value { return _vectorFloat2Value; }
+- (void)setVectorFloat2Value:(vector_float2)value { _vectorFloat2Value = value; }
+- (vector_float3)vectorFloat3Value { return _vectorFloat3Value; }
+- (void)setVectorFloat3Value:(vector_float3)value { _vectorFloat3Value = value; }
+- (vector_float4)vectorFloat4Value { return _vectorFloat4Value; }
+- (void)setVectorFloat4Value:(vector_float4)value { _vectorFloat4Value = value; }
+- (matrix_float2x2)matrixFloat2x2Value { return _matrixFloat2x2Value; }
+- (void)setMatrixFloat2x2Value:(matrix_float2x2)value { _matrixFloat2x2Value = value; }
+- (matrix_float3x3)matrixFloat3x3Value { return _matrixFloat3x3Value; }
+- (void)setMatrixFloat3x3Value:(matrix_float3x3)value { _matrixFloat3x3Value = value; }
+- (matrix_float4x4)matrixFloat4x4Value { return _matrixFloat4x4Value; }
+- (void)setMatrixFloat4x4Value:(matrix_float4x4)value { _matrixFloat4x4Value = value; }
+- (SKTexture *)textureValue { return _textureValue; }
+- (void)setTextureValue:(SKTexture *)value { _textureValue = value; }
+
+@end
+
+#pragma mark - SKAttribute
+
+@implementation SKAttribute {
+    NSString *_name;
+    NSNumber *_type;
+}
+
++ (instancetype)attributeWithName:(NSString *)name type:(SKAttributeType)type {
+    return [[self alloc] initWithName:name type:type];
+}
+
+- (instancetype)initWithName:(NSString *)name type:(SKAttributeType)type {
+    self = [super init];
+    if (self) {
+        _name = [name copy];
+        _type = @(type);
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:_name forKey:@"_name"];
+    [coder encodeObject:_type forKey:@"_type"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        _name = [coder decodeObjectForKey:@"_name"];
+        _type = [coder decodeObjectForKey:@"_type"];
+    }
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    SKAttribute *a = [[SKAttribute allocWithZone:zone] initWithName:_name type:(SKAttributeType)_type.integerValue];
+    return a;
+}
+
+- (NSString *)name { return _name; }
+- (SKAttributeType)type { return (SKAttributeType)_type.integerValue; }
+
+@end
+
 #pragma mark - SKTexture
 
 @implementation SKTexture {
@@ -1444,6 +1726,19 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
     BOOL _isRotated;
     BOOL _isFlipped;
     NSInteger _filteringMode;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _size = SKValueSize(CGSizeMake(0, 0));
+        _pixelSize = SKValueSize(CGSizeMake(0, 0));
+        _textRect = SKValueRect(CGRectMake(0, 0, 1, 1));
+        _cropOffset = SKValuePoint(CGPointMake(0, 0));
+        _cropScale = SKValuePoint(CGPointMake(1, 1));
+        _filteringMode = 1;
+    }
+    return self;
 }
 
 + (instancetype)textureWithImage:(NSImage *)image {
@@ -1485,7 +1780,9 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
     [coder encodeBool:_isPath forKey:@"_isPath"];
     [coder encodeBool:_isCapture forKey:@"_isCapture"];
     [coder encodeBool:_isData forKey:@"_isData"];
-    [coder encodeObject:_imageData forKey:@"_imageData"];
+    if (_isData) {
+        [coder encodeObject:_imageData forKey:@"_imageData"];
+    }
     [coder encodeObject:_imgName forKey:@"_imgName"];
     [coder encodeBool:_disableAlpha forKey:@"_disableAlpha"];
     [coder encodeObject:_size forKey:@"_size"];

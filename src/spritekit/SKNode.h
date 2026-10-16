@@ -406,6 +406,73 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) vector_float4 vectorFloat4Value;
 @end
 
+#pragma mark - SKUniform
+
+typedef NS_ENUM(NSInteger, SKUniformType) {
+    SKUniformTypeNone         = 0,
+    SKUniformTypeFloat        = 1,
+    SKUniformTypeFloatVector2 = 2,
+    SKUniformTypeFloatVector3 = 3,
+    SKUniformTypeFloatVector4 = 4,
+    SKUniformTypeFloatMatrix2 = 5,
+    SKUniformTypeFloatMatrix3 = 6,
+    SKUniformTypeFloatMatrix4 = 7,
+    SKUniformTypeTexture      = 8,
+};
+
+// Root NSObject subclass.  Encode order (from Apple golden): _name (obj),
+// _type (inline int32), then exactly one value key selected by type:
+//   Float        _floatValue          (inline float, 4-byte real)
+//   FloatVectorN _floatVectorNValue   (immutable NSArray of float NSNumbers)
+//   FloatMatrixN _floatMatrixNValue   (MUTABLE NSMutableArray of float NSNumber,
+//                                      column-major) -- Apple quirk: vectors are
+//                                      NSArray, matrices are NSMutableArray.
+//   Texture      _textureValue        (SKTexture)
+@interface SKUniform : NSObject <NSCoding, NSCopying>
++ (instancetype)uniformWithName:(NSString *)name;
++ (instancetype)uniformWithName:(NSString *)name float:(float)value;
++ (instancetype)uniformWithName:(NSString *)name vectorFloat2:(vector_float2)value;
++ (instancetype)uniformWithName:(NSString *)name vectorFloat3:(vector_float3)value;
++ (instancetype)uniformWithName:(NSString *)name vectorFloat4:(vector_float4)value;
++ (instancetype)uniformWithName:(NSString *)name matrixFloat2x2:(matrix_float2x2)value;
++ (instancetype)uniformWithName:(NSString *)name matrixFloat3x3:(matrix_float3x3)value;
++ (instancetype)uniformWithName:(NSString *)name matrixFloat4x4:(matrix_float4x4)value;
++ (instancetype)uniformWithName:(NSString *)name texture:(nullable SKTexture *)value;
+@property (nonatomic, readonly, copy) NSString *name;
+@property (nonatomic, readonly) SKUniformType uniformType;
+@property (nonatomic) float floatValue;
+@property (nonatomic) vector_float2 vectorFloat2Value;
+@property (nonatomic) vector_float3 vectorFloat3Value;
+@property (nonatomic) vector_float4 vectorFloat4Value;
+@property (nonatomic) matrix_float2x2 matrixFloat2x2Value;
+@property (nonatomic) matrix_float3x3 matrixFloat3x3Value;
+@property (nonatomic) matrix_float4x4 matrixFloat4x4Value;
+@property (nonatomic, retain, nullable) SKTexture *textureValue;
+@end
+
+#pragma mark - SKAttribute
+
+typedef NS_ENUM(NSInteger, SKAttributeType) {
+    SKAttributeTypeNone             = 0,
+    SKAttributeTypeFloat            = 1,
+    SKAttributeTypeVectorFloat2     = 2,
+    SKAttributeTypeVectorFloat3     = 3,
+    SKAttributeTypeVectorFloat4     = 4,
+    SKAttributeTypeHalfFloat        = 5,
+    SKAttributeTypeVectorHalfFloat2 = 6,
+    SKAttributeTypeVectorHalfFloat3 = 7,
+    SKAttributeTypeVectorHalfFloat4 = 8,
+};
+
+// Root NSObject subclass.  Encode order (from Apple golden): _name (obj),
+// _type (obj, NSNumber -- note: unlike SKUniform, the type is an object).
+@interface SKAttribute : NSObject <NSCoding, NSCopying>
++ (instancetype)attributeWithName:(NSString *)name type:(SKAttributeType)type;
+- (instancetype)initWithName:(NSString *)name type:(SKAttributeType)type;
+@property (nonatomic, readonly, copy) NSString *name;
+@property (nonatomic, readonly) SKAttributeType type;
+@end
+
 #pragma mark - SKTexture
 
 // Root NSObject subclass.  Spy order: _originalAtlasName (nil),
