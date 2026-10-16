@@ -1999,6 +1999,56 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
     return c;
 }
 
++ (instancetype)distance:(SKRange *)range toNode:(SKNode *)node {
+    SKDistanceConstraint *c = [[SKDistanceConstraint alloc] init];
+    c.distanceRange = range;
+    c.node = node;
+    return c;
+}
+
++ (instancetype)distance:(SKRange *)range toPoint:(CGPoint)point {
+    SKDistanceConstraint *c = [[SKDistanceConstraint alloc] init];
+    c.distanceRange = range;
+    c.point = point;
+    return c;
+}
+
++ (instancetype)distance:(SKRange *)range toPoint:(CGPoint)point inNode:(SKNode *)node {
+    SKDistanceConstraint *c = [[SKDistanceConstraint alloc] init];
+    c.distanceRange = range;
+    c.point = point;
+    c.node = node;
+    return c;
+}
+
++ (instancetype)zRotation:(SKRange *)zRange {
+    SKRotationConstraint *c = [[SKRotationConstraint alloc] init];
+    c.zRotationRange = zRange;
+    return c;
+}
+
++ (instancetype)orientToNode:(SKNode *)node offset:(SKRange *)radians {
+    SKOrientationConstraint *c = [[SKOrientationConstraint alloc] init];
+    c.node = node;
+    c.offset = radians;
+    return c;
+}
+
++ (instancetype)orientToPoint:(CGPoint)point offset:(SKRange *)radians {
+    SKOrientationConstraint *c = [[SKOrientationConstraint alloc] init];
+    c.point = point;
+    c.offset = radians;
+    return c;
+}
+
++ (instancetype)orientToPoint:(CGPoint)point inNode:(SKNode *)node offset:(SKRange *)radians {
+    SKOrientationConstraint *c = [[SKOrientationConstraint alloc] init];
+    c.point = point;
+    c.node = node;
+    c.offset = radians;
+    return c;
+}
+
 - (BOOL)enabled { return _enabled; }
 - (void)setEnabled:(BOOL)v { _enabled = v; }
 - (SKNode *)referenceNode { return _referenceNode; }
@@ -2048,6 +2098,146 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
 @end
 
 static inline NSString *NSStringFromCGVector(CGVector v){return [NSString stringWithFormat:@"{%g, %g}", v.dx, v.dy];}
+@implementation SKDistanceConstraint {
+    SKRange *_distanceRange;
+    CGPoint _point;
+    SKNode *_node;
+}
+
+- (SKRange *)distanceRange { return _distanceRange; }
+- (void)setDistanceRange:(SKRange *)v { _distanceRange = v; }
+- (CGPoint)point { return _point; }
+- (void)setPoint:(CGPoint)v { _point = v; }
+- (SKNode *)node { return _node; }
+- (void)setNode:(SKNode *)v { _node = v; }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_node forKey:@"_node"];
+    [coder encodeObject:_distanceRange forKey:@"_distanceRange"];
+    [coder encodePoint:_point forKey:@"_point"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _distanceRange = [coder decodeObjectForKey:@"_distanceRange"];
+        _point = [coder decodePointForKey:@"_point"];
+        _node = [coder decodeObjectForKey:@"_node"];
+    }
+    return self;
+}
+
+@end
+
+@implementation SKRotationConstraint {
+    SKRange *_zRotationRange;
+}
+
+- (SKRange *)zRotationRange { return _zRotationRange; }
+- (void)setZRotationRange:(SKRange *)v { _zRotationRange = v; }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_zRotationRange forKey:@"_zRotationRange"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _zRotationRange = [coder decodeObjectForKey:@"_zRotationRange"];
+    }
+    return self;
+}
+
+@end
+
+@implementation SKOrientationConstraint {
+    SKRange *_offset;
+    CGPoint _point;
+    SKNode *_node;
+}
+
+- (SKRange *)offset { return _offset; }
+- (void)setOffset:(SKRange *)v { _offset = v; }
+- (CGPoint)point { return _point; }
+- (void)setPoint:(CGPoint)v { _point = v; }
+- (SKNode *)node { return _node; }
+- (void)setNode:(SKNode *)v { _node = v; }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_node forKey:@"_node"];
+    [coder encodeObject:_offset forKey:@"_offset"];
+    [coder encodePoint:_point forKey:@"_point"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _offset = [coder decodeObjectForKey:@"_offset"];
+        _point = [coder decodePointForKey:@"_point"];
+        _node = [coder decodeObjectForKey:@"_node"];
+    }
+    return self;
+}
+
+@end
+
+@implementation SKScaleConstraint {
+    SKRange *_xRange;
+    SKRange *_yRange;
+}
+
+- (SKRange *)xRange { return _xRange; }
+- (void)setXRange:(SKRange *)v { _xRange = v; }
+- (SKRange *)yRange { return _yRange; }
+- (void)setYRange:(SKRange *)v { _yRange = v; }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_xRange forKey:@"_xRange"];
+    [coder encodeObject:_yRange forKey:@"_yRange"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _xRange = [coder decodeObjectForKey:@"_xRange"];
+        _yRange = [coder decodeObjectForKey:@"_yRange"];
+    }
+    return self;
+}
+
+@end
+
+@implementation SKSizeConstraint {
+    SKRange *_widthRange;
+    SKRange *_heightRange;
+}
+
+- (SKRange *)widthRange { return _widthRange; }
+- (void)setWidthRange:(SKRange *)v { _widthRange = v; }
+- (SKRange *)heightRange { return _heightRange; }
+- (void)setHeightRange:(SKRange *)v { _heightRange = v; }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_widthRange forKey:@"_widthRange"];
+    [coder encodeObject:_heightRange forKey:@"_heightRange"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _widthRange = [coder decodeObjectForKey:@"_widthRange"];
+        _heightRange = [coder decodeObjectForKey:@"_heightRange"];
+    }
+    return self;
+}
+
+@end
+
 #pragma mark - SKReachConstraints
 
 @implementation SKReachConstraints {

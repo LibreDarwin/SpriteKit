@@ -536,12 +536,56 @@ typedef NS_ENUM(NSInteger, SKAttributeType) {
 @interface SKConstraint : NSObject
 + (instancetype)positionX:(SKRange *)xRange;
 + (instancetype)positionX:(SKRange *)xRange Y:(SKRange *)yRange;
++ (instancetype)distance:(SKRange *)range toNode:(SKNode *)node;
++ (instancetype)distance:(SKRange *)range toPoint:(CGPoint)point;
++ (instancetype)distance:(SKRange *)range toPoint:(CGPoint)point inNode:(SKNode *)node;
++ (instancetype)zRotation:(SKRange *)zRange;
++ (instancetype)orientToNode:(SKNode *)node offset:(SKRange *)radians;
++ (instancetype)orientToPoint:(CGPoint)point offset:(SKRange *)radians;
++ (instancetype)orientToPoint:(CGPoint)point inNode:(SKNode *)node offset:(SKRange *)radians;
 @property (nonatomic) BOOL enabled;
 @end
 
 @interface SKPositionConstraint : SKConstraint
 @property (nonatomic, copy, nullable) SKRange *xRange;
 @property (nonatomic, copy, nullable) SKRange *yRange;
+@end
+
+// SKConstraint subclass.  Ivar order: base (_enabled bool, _referenceNode obj)
+// then _distanceRange (SKRange), _point (CGPoint), _node (SKNode).  Encode
+// order is base, then _node (nil -> $null), then _distanceRange, then _point
+// (encodePoint: -> geometry string).
+@interface SKDistanceConstraint : SKConstraint
+@property (nonatomic, copy, nullable) SKRange *distanceRange;
+@property (nonatomic) CGPoint point;
+@property (nonatomic, strong, nullable) SKNode *node;
+@end
+
+// SKConstraint subclass.  Spy order: base then _zRotationRange (SKRange).
+@interface SKRotationConstraint : SKConstraint
+@property (nonatomic, copy, nullable) SKRange *zRotationRange;
+@end
+
+// SKConstraint subclass.  Ivar order: base then _offset (SKRange), _point
+// (CGPoint), _node (SKNode).  Encode order is base, then _node, then _offset,
+// then _point (encodePoint:).
+@interface SKOrientationConstraint : SKConstraint
+@property (nonatomic, copy, nullable) SKRange *offset;
+@property (nonatomic) CGPoint point;
+@property (nonatomic, strong, nullable) SKNode *node;
+@end
+
+// SKConstraint subclass.  Spy order: base then _xRange, _yRange (SKRange).
+@interface SKScaleConstraint : SKConstraint
+@property (nonatomic, copy, nullable) SKRange *xRange;
+@property (nonatomic, copy, nullable) SKRange *yRange;
+@end
+
+// SKConstraint subclass.  Spy order: base then _widthRange, _heightRange
+// (SKRange).
+@interface SKSizeConstraint : SKConstraint
+@property (nonatomic, copy, nullable) SKRange *widthRange;
+@property (nonatomic, copy, nullable) SKRange *heightRange;
 @end
 
 #pragma mark - Physics joints and reach constraints
