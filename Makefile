@@ -183,7 +183,11 @@ PARITY_CONSTRAINT := $(BUILD_DIR)/sk_constraint_parity
 PARITY_CONSTRAINT_OBJ := $(OBJDIR)/spritekit/sk_constraint_parity.o
 CONSTRAINT_GOLDEN := tools/conformance/SpriteKit/oracle_constraint_rotation.skeep tools/conformance/SpriteKit/oracle_constraint_distance_point.skeep tools/conformance/SpriteKit/oracle_constraint_distance_node.skeep tools/conformance/SpriteKit/oracle_constraint_orient_point.skeep tools/conformance/SpriteKit/oracle_constraint_orient_node.skeep tools/conformance/SpriteKit/oracle_constraint_scale.skeep tools/conformance/SpriteKit/oracle_constraint_size.skeep
 
-all: $(TOOL) $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP) $(PARITY_EMITTER) $(PARITY_TRANSFORM) $(PARITY_VIDEO) $(PARITY_AUDIO) $(PARITY_REFERENCE) $(PARITY_LIGHT) $(PARITY_FIELD) $(PARITY_WARP_GRID) $(PARITY_SPRITE_WARP) $(PARITY_SHADER) $(PARITY_EFFECT_SHADER) $(PARITY_ATTRIBUTE_VALUE) $(PARITY_SPRITE_ATTR) $(PARITY_TEXTURE) $(PARITY_RANGE) $(PARITY_KEYFRAME_SEQ) $(PARITY_CONSTRAINT_POS) $(PARITY_MUTABLE_TEXTURE) $(PARITY_TEXTURE_ATLAS) $(PARITY_UNIFORM) $(PARITY_ATTRIBUTE) $(PARITY_SHADER_UNI) $(PARITY_SHADER_MIX) $(PARITY_CONSTRAINT)
+PARITY_FIELDSUB := $(BUILD_DIR)/sk_field_subclass_parity
+PARITY_FIELDSUB_OBJ := $(OBJDIR)/spritekit/sk_field_subclass_parity.o
+FIELDSUB_GOLDEN := tools/conformance/SpriteKit/oracle_fieldsub_drag.skeep tools/conformance/SpriteKit/oracle_fieldsub_vortex.skeep tools/conformance/SpriteKit/oracle_fieldsub_radial.skeep tools/conformance/SpriteKit/oracle_fieldsub_linear.skeep tools/conformance/SpriteKit/oracle_fieldsub_velocity_v.skeep tools/conformance/SpriteKit/oracle_fieldsub_velocity_t.skeep tools/conformance/SpriteKit/oracle_fieldsub_noise.skeep tools/conformance/SpriteKit/oracle_fieldsub_turbulence.skeep tools/conformance/SpriteKit/oracle_fieldsub_spring.skeep tools/conformance/SpriteKit/oracle_fieldsub_electric.skeep tools/conformance/SpriteKit/oracle_fieldsub_magnetic.skeep tools/conformance/SpriteKit/oracle_fieldsub_custom.skeep
+
+all: $(TOOL) $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP) $(PARITY_EMITTER) $(PARITY_TRANSFORM) $(PARITY_VIDEO) $(PARITY_AUDIO) $(PARITY_REFERENCE) $(PARITY_LIGHT) $(PARITY_FIELD) $(PARITY_WARP_GRID) $(PARITY_SPRITE_WARP) $(PARITY_SHADER) $(PARITY_EFFECT_SHADER) $(PARITY_ATTRIBUTE_VALUE) $(PARITY_SPRITE_ATTR) $(PARITY_TEXTURE) $(PARITY_RANGE) $(PARITY_KEYFRAME_SEQ) $(PARITY_CONSTRAINT_POS) $(PARITY_MUTABLE_TEXTURE) $(PARITY_TEXTURE_ATLAS) $(PARITY_UNIFORM) $(PARITY_ATTRIBUTE) $(PARITY_SHADER_UNI) $(PARITY_SHADER_MIX) $(PARITY_CONSTRAINT) $(PARITY_FIELDSUB)
 
 $(TOOL): $(TOOL_OBJS)
 	@mkdir -p $(BUILD_DIR)
@@ -458,6 +462,15 @@ $(PARITY_TEXTURE_ATLAS): $(PARITY_TEXTURE_ATLAS_OBJ) $(SK_OBJS)
 	$(CC) $(MFLAGS) -o $@ $(PARITY_TEXTURE_ATLAS_OBJ) $(SK_OBJS) \
 	    -framework Foundation -framework CoreGraphics -framework AppKit
 
+$(PARITY_FIELDSUB_OBJ): tools/sk_field_subclass_parity.m src/spritekit/SKNode.h
+	@mkdir -p $(OBJDIR)/spritekit
+	$(CC) $(OBJCFLAGS) $(SK_FLAGS) -c -o $@ tools/sk_field_subclass_parity.m
+
+$(PARITY_FIELDSUB): $(PARITY_FIELDSUB_OBJ) $(SK_OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(MFLAGS) -o $@ $(PARITY_FIELDSUB_OBJ) $(SK_OBJS) \
+	    -framework Foundation -framework CoreGraphics -framework AppKit
+
 $(OBJDIR)/atlasc/TextureAtlas.o: src/atlasc/TextureAtlas.m
 	@mkdir -p $(OBJDIR)/atlasc
 	$(CC) $(OBJCFLAGS) -c -o $@ src/atlasc/TextureAtlas.m
@@ -485,7 +498,7 @@ test-atlasc: $(TOOL)
 	$(TEST_PY) tools/conformance/run_tests.py TextureAtlas --build-dir $(BUILD_DIR)
 
 # Byte-identical archive parity against Apple-recorded SpriteKit goldens.
-test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP) $(PARITY_EMITTER) $(PARITY_TRANSFORM) $(PARITY_VIDEO) $(PARITY_AUDIO) $(PARITY_REFERENCE) $(PARITY_LIGHT) $(PARITY_FIELD) $(PARITY_WARP_GRID) $(PARITY_SPRITE_WARP) $(PARITY_SHADER) $(PARITY_EFFECT_SHADER) $(PARITY_ATTRIBUTE_VALUE) $(PARITY_SPRITE_ATTR) $(PARITY_TEXTURE) $(PARITY_RANGE) $(PARITY_KEYFRAME_SEQ) $(PARITY_CONSTRAINT_POS) $(PARITY_MUTABLE_TEXTURE) $(PARITY_TEXTURE_ATLAS) $(PARITY_REACH_CONSTRAINTS) $(PARITY_PHYSICS_JOINTS) $(PARITY_UNIFORM) $(PARITY_ATTRIBUTE) $(PARITY_SHADER_UNI) $(PARITY_SHADER_MIX) $(PARITY_CONSTRAINT)
+test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL) $(PARITY_EFFECT) $(PARITY_SHAPE) $(PARITY_SCENE) $(PARITY_SCENE_CANONICAL) $(PARITY_CAMERA) $(PARITY_CROP) $(PARITY_EMITTER) $(PARITY_TRANSFORM) $(PARITY_VIDEO) $(PARITY_AUDIO) $(PARITY_REFERENCE) $(PARITY_LIGHT) $(PARITY_FIELD) $(PARITY_WARP_GRID) $(PARITY_SPRITE_WARP) $(PARITY_SHADER) $(PARITY_EFFECT_SHADER) $(PARITY_ATTRIBUTE_VALUE) $(PARITY_SPRITE_ATTR) $(PARITY_TEXTURE) $(PARITY_RANGE) $(PARITY_KEYFRAME_SEQ) $(PARITY_CONSTRAINT_POS) $(PARITY_MUTABLE_TEXTURE) $(PARITY_TEXTURE_ATLAS) $(PARITY_REACH_CONSTRAINTS) $(PARITY_PHYSICS_JOINTS) $(PARITY_UNIFORM) $(PARITY_ATTRIBUTE) $(PARITY_SHADER_UNI) $(PARITY_SHADER_MIX) $(PARITY_CONSTRAINT) $(PARITY_FIELDSUB)
 	$(PARITY_ACTIONS) $(ACTIONS_GOLDEN)
 	$(PARITY_NODE) $(NODE_GOLDEN)
 	$(PARITY_SPRITE) $(SPRITE_GOLDEN)
@@ -523,6 +536,8 @@ test-spritekit: $(PARITY_ACTIONS) $(PARITY_NODE) $(PARITY_SPRITE) $(PARITY_LABEL
 	$(PARITY_SHADER_MIX) $(SHADER_MIX_GOLDEN)
 
 	$(PARITY_CONSTRAINT) $(CONSTRAINT_GOLDEN)
+
+	$(PARITY_FIELDSUB) $(FIELDSUB_GOLDEN)
 
 # Re-record the Apple goldens (development aid; links the real SpriteKit).
 # Not part of `all` -- run by hand when adding a new node class to the suite.

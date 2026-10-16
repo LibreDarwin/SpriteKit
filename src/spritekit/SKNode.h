@@ -360,6 +360,46 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) float smoothness;
 @property (nonatomic) float animationSpeed;
 - (void)setDirectionX:(float)x y:(float)y z:(float)z;
+
++ (SKFieldNode *)dragField;
++ (SKFieldNode *)vortexField;
++ (SKFieldNode *)radialGravityField;
++ (SKFieldNode *)linearGravityFieldWithVector:(vector_float3)direction;
++ (SKFieldNode *)velocityFieldWithVector:(vector_float3)direction;
++ (SKFieldNode *)velocityFieldWithTexture:(SKTexture *)velocityTexture;
++ (SKFieldNode *)noiseFieldWithSmoothness:(CGFloat)smoothness animationSpeed:(CGFloat)speed;
++ (SKFieldNode *)turbulenceFieldWithSmoothness:(CGFloat)smoothness animationSpeed:(CGFloat)speed;
++ (SKFieldNode *)springField;
++ (SKFieldNode *)electricField;
++ (SKFieldNode *)magneticField;
+typedef vector_float3 (^SKFieldForceEvaluator)(vector_float3 position, vector_float3 velocity,
+                                               float mass, float charge, NSTimeInterval deltaTime);
++ (SKFieldNode *)customFieldWithEvaluationBlock:(SKFieldForceEvaluator)block;
+@end
+
+// Concrete field nodes.  Each subclass adds NO fields of its own to the
+// archive; the only difference from the base is the archived class name (and
+// the class chain, e.g. SKTurbulenceFieldNode <- SKNoiseFieldNode).  Each
+// subclass -init installs the same non-default field values Apple uses
+// (strength 1, active YES, categoryBitMask 0xFFFFFFFF, minimumRadius
+// 0.00457763671875) plus a per-type falloff / direction / smoothness:
+//   drag/vortex/noise/turbulence/custom falloff 0; radial 2; spring -1;
+//   electric/magnetic 1.  linearGravity default direction (0,1,0); velocity
+//   default direction (FLT_MAX,FLT_MAX,FLT_MAX); noise default smoothness 0.5.
+@interface SKDragFieldNode : SKFieldNode @end
+@interface SKVortexFieldNode : SKFieldNode @end
+@interface SKRadialGravityFieldNode : SKFieldNode @end
+@interface SKLinearGravityFieldNode : SKFieldNode @end
+@interface SKVelocityFieldNode : SKFieldNode
+@property (nonatomic, strong, nullable) SKTexture *velocityTexture;
+@end
+@interface SKNoiseFieldNode : SKFieldNode @end
+@interface SKTurbulenceFieldNode : SKNoiseFieldNode @end
+@interface SKSpringFieldNode : SKFieldNode @end
+@interface SKElectricFieldNode : SKFieldNode @end
+@interface SKMagneticFieldNode : SKFieldNode @end
+@interface SKCustomFieldNode : SKFieldNode
+@property (nonatomic, copy, nullable) SKFieldForceEvaluator evaluationBlock;
 @end
 
 #pragma mark - SKWarpGeometry / SKWarpGeometryGrid

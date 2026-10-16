@@ -10,6 +10,7 @@
 
 #import "SKNode.h"
 #include <float.h>
+#include <libkern/OSByteOrder.h>
 
 // Apple reuses one shared NSNumber-zero instance across a node archive (e.g.
 // SKEffectNode._blendMode and SKAttributeValue._type collapse to a single
@@ -1171,8 +1172,62 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
 }
 
 - (void)setDirectionX:(float)x y:(float)y z:(float)z {
+    // Apple archives _direction as a 12-byte NSData of big-endian float32
+    // components (network byte order), not native little-endian.
     float v[3] = { x, y, z };
-    [_direction replaceBytesInRange:NSMakeRange(0, 12) withBytes:v];
+    uint32_t be[3];
+    for (int i = 0; i < 3; i++) {
+        uint32_t bits;
+        memcpy(&bits, &v[i], sizeof(bits));
+        be[i] = OSSwapHostToBigInt32(bits);
+    }
+    [_direction replaceBytesInRange:NSMakeRange(0, 12) withBytes:be];
+}
+
++ (SKFieldNode *)dragField { return [[SKDragFieldNode alloc] init]; }
++ (SKFieldNode *)vortexField { return [[SKVortexFieldNode alloc] init]; }
++ (SKFieldNode *)radialGravityField { return [[SKRadialGravityFieldNode alloc] init]; }
+
++ (SKFieldNode *)linearGravityFieldWithVector:(vector_float3)direction {
+    SKLinearGravityFieldNode *f = [[SKLinearGravityFieldNode alloc] init];
+    [f setDirectionX:direction.x y:direction.y z:direction.z];
+    return f;
+}
+
++ (SKFieldNode *)velocityFieldWithVector:(vector_float3)direction {
+    SKVelocityFieldNode *f = [[SKVelocityFieldNode alloc] init];
+    [f setDirectionX:direction.x y:direction.y z:direction.z];
+    return f;
+}
+
++ (SKFieldNode *)velocityFieldWithTexture:(SKTexture *)velocityTexture {
+    SKVelocityFieldNode *f = [[SKVelocityFieldNode alloc] init];
+    f.velocityTexture = velocityTexture;
+    return f;
+}
+
++ (SKFieldNode *)noiseFieldWithSmoothness:(CGFloat)smoothness animationSpeed:(CGFloat)speed {
+    SKNoiseFieldNode *f = [[SKNoiseFieldNode alloc] init];
+    f.smoothness = (float)smoothness;
+    f.animationSpeed = (float)speed;
+    return f;
+}
+
++ (SKFieldNode *)turbulenceFieldWithSmoothness:(CGFloat)smoothness animationSpeed:(CGFloat)speed {
+    SKTurbulenceFieldNode *f = [[SKTurbulenceFieldNode alloc] init];
+    f.smoothness = (float)smoothness;
+    f.animationSpeed = (float)speed;
+    return f;
+}
+
++ (SKFieldNode *)springField { return [[SKSpringFieldNode alloc] init]; }
++ (SKFieldNode *)electricField { return [[SKElectricFieldNode alloc] init]; }
++ (SKFieldNode *)magneticField { return [[SKMagneticFieldNode alloc] init]; }
+
++ (SKFieldNode *)customFieldWithEvaluationBlock:(SKFieldForceEvaluator)block {
+    SKCustomFieldNode *f = [[SKCustomFieldNode alloc] init];
+    f.evaluationBlock = block;
+    return f;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
@@ -1204,6 +1259,75 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
     return self;
 }
 
+@end
+
+#pragma mark - SKFieldNode concrete subclasses
+
+// Shared field-node factory defaults; each subclass -init runs this then
+// applies its per-type falloff / direction / smoothness.
+static void SKFieldSubclassDefaults(SKFieldNode *f, float falloff) {
+    f.strength = 1.0f;
+    f.falloff = falloff;
+    f.minimumRadius = 0.00457763671875f;
+    f.active = YES;
+    f.categoryBitMask = 0xFFFFFFFFu;
+}
+
+@implementation SKDragFieldNode
+- (instancetype)init { self = [super init]; if (self) SKFieldSubclassDefaults(self, 0.0f); return self; }
+@end
+
+@implementation SKVortexFieldNode
+- (instancetype)init { self = [super init]; if (self) SKFieldSubclassDefaults(self, 0.0f); return self; }
+@end
+
+@implementation SKRadialGravityFieldNode
+- (instancetype)init { self = [super init]; if (self) SKFieldSubclassDefaults(self, 2.0f); return self; }
+@end
+
+@implementation SKLinearGravityFieldNode
+- (instancetype)init {
+    self = [super init];
+    if (self) { SKFieldSubclassDefaults(self, 0.0f); [self setDirectionX:0.0f y:1.0f z:0.0f]; }
+    return self;
+}
+@end
+
+@implementation SKVelocityFieldNode
+- (instancetype)init {
+    self = [super init];
+    if (self) { SKFieldSubclassDefaults(self, 0.0f); [self setDirectionX:FLT_MAX y:FLT_MAX z:FLT_MAX]; }
+    return self;
+}
+@end
+
+@implementation SKNoiseFieldNode
+- (instancetype)init {
+    self = [super init];
+    if (self) { SKFieldSubclassDefaults(self, 0.0f); self.smoothness = 0.5f; }
+    return self;
+}
+@end
+
+@implementation SKTurbulenceFieldNode
+// Inherits SKNoiseFieldNode's defaults (falloff 0, smoothness 0.5, zero
+// direction); no extra fields.
+@end
+
+@implementation SKSpringFieldNode
+- (instancetype)init { self = [super init]; if (self) SKFieldSubclassDefaults(self, -1.0f); return self; }
+@end
+
+@implementation SKElectricFieldNode
+- (instancetype)init { self = [super init]; if (self) SKFieldSubclassDefaults(self, 1.0f); return self; }
+@end
+
+@implementation SKMagneticFieldNode
+- (instancetype)init { self = [super init]; if (self) SKFieldSubclassDefaults(self, 1.0f); return self; }
+@end
+
+@implementation SKCustomFieldNode
+- (instancetype)init { self = [super init]; if (self) SKFieldSubclassDefaults(self, 0.0f); return self; }
 @end
 
 #pragma mark - SKWarpGeometry / SKWarpGeometryGrid
