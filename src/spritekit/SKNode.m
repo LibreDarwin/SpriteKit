@@ -1077,6 +1077,54 @@ static NSMutableArray *SKCirclePath(CGFloat radius) {
 
 @end
 
+#pragma mark - SK3DNode
+
+// Own-field emit order after the 24 SKNode fields:
+//   viewportSize (encodeSize: -> geometry string), _scene (obj, the SCNScene).
+// The SCNScene is archived under key "_scene"; the base SKNode does not emit
+// "_scene", so it is emitted here.  Default viewportSize is "{1, 1}".
+
+@implementation SK3DNode
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _viewportSize = CGSizeMake(1, 1);
+        _loops = YES;
+    }
+    return self;
+}
+
+- (instancetype)initWithViewportSize:(CGSize)viewportSize {
+    self = [self init];
+    if (self) {
+        _viewportSize = viewportSize;
+    }
+    return self;
+}
+
++ (instancetype)nodeWithViewportSize:(CGSize)viewportSize {
+    return [[self alloc] initWithViewportSize:viewportSize];
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeSize:_viewportSize forKey:@"viewportSize"];
+    [coder encodeObject:_scnScene forKey:@"_scene"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _viewportSize = [coder decodeSizeForKey:@"viewportSize"];
+        _scnScene = [coder decodeObjectForKey:@"_scene"];
+        _loops = YES;
+    }
+    return self;
+}
+
+@end
+
 #pragma mark - SKLightNode
 
 // Own-field emit order after the 24 SKNode fields (from tools/sk_emit_spy.m):

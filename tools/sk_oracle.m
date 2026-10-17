@@ -81,6 +81,14 @@ int main(void) {
         ref.name = @"ref";
         save(ref, [dir stringByAppendingPathComponent:@"oracle_reference.skeep"]);
 
+        SK3DNode *d3 = [[SK3DNode alloc] init];
+        d3.name = @"d3";
+        save(d3, [dir stringByAppendingPathComponent:@"oracle_3dnode.skeep"]);
+
+        SK3DNode *d3vp = [SK3DNode nodeWithViewportSize:CGSizeMake(100, 200)];
+        d3vp.name = @"d3vp";
+        save(d3vp, [dir stringByAppendingPathComponent:@"oracle_3dnode_vp.skeep"]);
+
         SKLightNode *light = [SKLightNode node];
         light.name = @"light";
         save(light, [dir stringByAppendingPathComponent:@"oracle_light.skeep"]);

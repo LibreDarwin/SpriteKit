@@ -26,6 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class SKAttributeValue;
 @class SKTexture;
+@class SCNScene;
+@class SCNNode;
 
 @interface SKNode : SK_NODE_SUPERCLASS <NSCoding, NSCopying>
 
@@ -317,6 +319,25 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SKReferenceNode : SKNode
 @property (nonatomic, copy, nullable) NSURL *referenceURL;
 @property (nonatomic, copy, nullable) NSString *referenceFileName;
+@end
+
+#pragma mark - SK3DNode
+
+// Own fields (emit order): viewportSize (encodeSize:, default "{1, 1}"),
+// _scene (obj, holds the SCNScene, nil by default).  Note the SCNScene is
+// archived under the key "_scene" (the base SKNode does not encode "_scene").
+// sceneTime/loops/playing/autoenablesDefaultLighting/pointOfView are NOT
+// archived.
+@interface SK3DNode : SKNode
+@property (nonatomic) CGSize viewportSize;
+@property (nonatomic, strong, nullable) SCNScene *scnScene;
+@property (nonatomic) NSTimeInterval sceneTime;
+@property (nonatomic) BOOL loops;
+@property (nonatomic, getter=isPlaying) BOOL playing;
+@property (nonatomic) BOOL autoenablesDefaultLighting;
+@property (nonatomic, strong, nullable) SCNNode *pointOfView;
+- (instancetype)initWithViewportSize:(CGSize)viewportSize;
++ (instancetype)nodeWithViewportSize:(CGSize)viewportSize;
 @end
 
 #pragma mark - SKLightNode
